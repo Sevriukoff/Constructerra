@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TerrariaConstructor", "TerrariaConstructor\TerrariaConstructor.csproj", "{29E3D522-1F4A-47AB-A26C-3A6826838455}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29E3D522-1F4A-47AB-A26C-3A6826838455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29E3D522-1F4A-47AB-A26C-3A6826838455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29E3D522-1F4A-47AB-A26C-3A6826838455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29E3D522-1F4A-47AB-A26C-3A6826838455}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
