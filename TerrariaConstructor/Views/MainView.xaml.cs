@@ -25,8 +25,6 @@ namespace TerrariaConstructor
         public MainWindow()
         {
             InitializeComponent();
-            Player player = new Player();
-            player.LoadPlayer(@"C:\Users\Bellatrix\Documents\My Games\Terraria\Players\Пёплик.plr");
         }
     }
 }

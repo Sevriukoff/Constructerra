@@ -16,8 +16,14 @@
     <ItemGroup>
       <Folder Include="Infrastructure" />
       <Folder Include="Services" />
-      <Folder Include="ViewModels" />
-      <Folder Include="Views" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Page Update="Views\MainView.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <XamlRuntime>Wpf</XamlRuntime>
+        <SubType>Designer</SubType>
+      </Page>
     </ItemGroup>
 
 </Project>
