@@ -13,11 +13,11 @@ public class PlayerModel
 
     #region SubModels
 
-    public CharacteristicsModel Characteristic { get; set; }
-    public EquipsModel Equips { get; set; }
-    public ToolsModel Tools { get; set; }
-    public InventoriesModel Inventories { get; set; }
-    public BuffsModel Buffs { get; set; }
+    private readonly CharacteristicsModel _characteristic;
+    private readonly EquipsModel _equips;
+    private readonly ToolsModel _tools;
+    private readonly InventoriesModel _inventories;
+    private readonly BuffsModel _buffs;
 
     #endregion
     
@@ -29,9 +29,17 @@ public class PlayerModel
     
     #endregion
     
-    public PlayerModel()
+    public PlayerModel(CharacteristicsModel characteristic,
+        EquipsModel equips,
+        ToolsModel tools,
+        InventoriesModel inventories,
+        BuffsModel buffs)
     {
-        
+        _characteristic = characteristic;
+        _equips = equips;
+        _tools = tools;
+        _inventories = inventories;
+        _buffs = buffs;
     }
 
     private BinaryReader DecryptPlayer(string path)
@@ -83,60 +91,60 @@ public class PlayerModel
             ((long) reader.ReadUInt64() & 1L) ==
             1L; // Does not actually matter? favorites.json seems to handle favorites
         
-        Characteristic.Name = reader.ReadString();
-        Characteristic.Difficulty = reader.ReadByte();
-        Characteristic.PlayTime = new TimeSpan(reader.ReadInt64());
-        Characteristic.Hair = reader.ReadInt32();
-        Characteristic.HairDye = reader.ReadByte();
-        Characteristic.HideBytes = reader.ReadBytes(3);
-        Characteristic.SkinVariant = reader.ReadByte();
-        Characteristic.Health = reader.ReadInt32();
-        Characteristic.MaxHealth = reader.ReadInt32();
-        Characteristic.Mana = reader.ReadInt32();
-        Characteristic.MaxMana = reader.ReadInt32();
-        Characteristic.ExtraAccessory = reader.ReadBoolean();
-        Characteristic.UnlockedBiomeTorches = reader.ReadBoolean();
-        Characteristic.UsingBiomeTorches = reader.ReadBoolean();
-        Characteristic.AteArtisanBread = reader.ReadBoolean();
-        Characteristic.UsedAegisCrystal = reader.ReadBoolean();
-        Characteristic.UsedAegisFruit = reader.ReadBoolean();
-        Characteristic.UsedArcaneCrystal = reader.ReadBoolean();
-        Characteristic.UsedGalaxyPearl = reader.ReadBoolean();
-        Characteristic.UsedGummyWorm = reader.ReadBoolean();
-        Characteristic.UsedAmbrosia = reader.ReadBoolean();
-        Characteristic.DownedDd2EventAnyDifficulty = reader.ReadBoolean();
-        Characteristic.TaxMoney = reader.ReadInt32();
-        Characteristic.NumberOfDeathsPve = reader.ReadInt32();
-        Characteristic.NumberOfDeathsPvp = reader.ReadInt32();
-        Characteristic.HairColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        Characteristic.SkinColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        Characteristic.EyeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        Characteristic.ShirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        Characteristic.UnderShirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        Characteristic.PantsColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        Characteristic.ShoeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.Name = reader.ReadString();
+        _characteristic.Difficulty = reader.ReadByte();
+        _characteristic.PlayTime = new TimeSpan(reader.ReadInt64());
+        _characteristic.Hair = reader.ReadInt32();
+        _characteristic.HairDye = reader.ReadByte();
+        _characteristic.HideBytes = reader.ReadBytes(3);
+        _characteristic.SkinVariant = reader.ReadByte();
+        _characteristic.Health = reader.ReadInt32();
+        _characteristic.MaxHealth = reader.ReadInt32();
+        _characteristic.Mana = reader.ReadInt32();
+        _characteristic.MaxMana = reader.ReadInt32();
+        _characteristic.ExtraAccessory = reader.ReadBoolean();
+        _characteristic.UnlockedBiomeTorches = reader.ReadBoolean();
+        _characteristic.UsingBiomeTorches = reader.ReadBoolean();
+        _characteristic.AteArtisanBread = reader.ReadBoolean();
+        _characteristic.UsedAegisCrystal = reader.ReadBoolean();
+        _characteristic.UsedAegisFruit = reader.ReadBoolean();
+        _characteristic.UsedArcaneCrystal = reader.ReadBoolean();
+        _characteristic.UsedGalaxyPearl = reader.ReadBoolean();
+        _characteristic.UsedGummyWorm = reader.ReadBoolean();
+        _characteristic.UsedAmbrosia = reader.ReadBoolean();
+        _characteristic.DownedDd2EventAnyDifficulty = reader.ReadBoolean();
+        _characteristic.TaxMoney = reader.ReadInt32();
+        _characteristic.NumberOfDeathsPve = reader.ReadInt32();
+        _characteristic.NumberOfDeathsPvp = reader.ReadInt32();
+        _characteristic.HairColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.SkinColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.EyeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.ShirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.UnderShirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.PantsColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.ShoeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
 
-        for (int i = 0; i < Equips.Armor.Length; i++)
+        for (int i = 0; i < _equips.Armor.Length; i++)
         {
-            Equips.Armor[0] = new Item
+            _equips.Armor[0] = new Item
             {
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
         }
 
-        for (int i = 0; i < Equips.Dye.Length; i++)
+        for (int i = 0; i < _equips.Dye.Length; i++)
         {
-            Equips.Dye[i] = new Item
+            _equips.Dye[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
         }
         
-        for (int i = 0; i < Inventories.Inventory.Length; i++)
+        for (int i = 0; i < _inventories.Inventory.Length; i++)
         {
-            Inventories.Inventory[i] = new Item
+            _inventories.Inventory[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -145,9 +153,9 @@ public class PlayerModel
             };
         }
 
-        for (int i = 0; i < Equips.Purse.Length; i++)
+        for (int i = 0; i < _equips.Purse.Length; i++)
         {
-            Equips.Purse[i] = new Item
+            _equips.Purse[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -156,9 +164,9 @@ public class PlayerModel
             };
         }
 
-        for (int i = 0; i < Equips.Ammo.Length; i++)
+        for (int i = 0; i < _equips.Ammo.Length; i++)
         {
-            Equips.Ammo[i] = new Item
+            _equips.Ammo[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -167,24 +175,24 @@ public class PlayerModel
             };
         }
 
-        for (int i = 0; i < Tools.MiscEquip.Length; i++)
+        for (int i = 0; i < _tools.MiscEquip.Length; i++)
         {
-            Tools.MiscEquip[i] = new Item
+            _tools.MiscEquip[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte(),
             };
 
-            Tools.MiscDye[i] = new Item
+            _tools.MiscDye[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
         }
 
-        for (int i = 0; i < Inventories.Bank1.Length; i++)
+        for (int i = 0; i < _inventories.Bank1.Length; i++)
         {
-            Inventories.Bank1[i] = new Item
+            _inventories.Bank1[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -192,9 +200,9 @@ public class PlayerModel
             };
         }
         
-        for (int i = 0; i < Inventories.Bank2.Length; i++)
+        for (int i = 0; i < _inventories.Bank2.Length; i++)
         {
-            Inventories.Bank2[i] = new Item
+            _inventories.Bank2[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -202,9 +210,9 @@ public class PlayerModel
             };
         }
         
-        for (int i = 0; i < Inventories.Bank3.Length; i++)
+        for (int i = 0; i < _inventories.Bank3.Length; i++)
         {
-            Inventories.Bank3[i] = new Item
+            _inventories.Bank3[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -212,9 +220,9 @@ public class PlayerModel
             };
         }
         
-        for (int i = 0; i < Inventories.Bank4.Length; i++)
+        for (int i = 0; i < _inventories.Bank4.Length; i++)
         {
-            Inventories.Bank4[i] = new Item
+            _inventories.Bank4[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
@@ -224,9 +232,9 @@ public class PlayerModel
 
         var voidVaultInfo = reader.ReadByte();
 
-        for (int i = 0; i < Buffs.Buffs.Length; i++)
+        for (int i = 0; i < _buffs.Buffs.Length; i++)
         {
-            Buffs.Buffs[i] = new Buff
+            _buffs.Buffs[i] = new Buff
             {
                 Id = reader.ReadInt32(),
                 DurationTime = new TimeSpan(reader.ReadInt32())
@@ -250,31 +258,31 @@ public class PlayerModel
             }
         }
 
-        Characteristic.IsHotBarLocked = reader.ReadBoolean();
+        _characteristic.IsHotBarLocked = reader.ReadBoolean();
 
-        for (int i = 0; i < Characteristic.HideInfo.Length; i++)
-            Characteristic.HideInfo[i] = reader.ReadBoolean();
+        for (int i = 0; i < _characteristic.HideInfo.Length; i++)
+            _characteristic.HideInfo[i] = reader.ReadBoolean();
         
-        Characteristic.AnglerQuestsFinished = reader.ReadInt32();
+        _characteristic.AnglerQuestsFinished = reader.ReadInt32();
 
-        for (int i = 0; i < Characteristic.DPadRadialBindings.Length; i++)
-            Characteristic.DPadRadialBindings[i] = reader.ReadInt32();
+        for (int i = 0; i < _characteristic.DPadRadialBindings.Length; i++)
+            _characteristic.DPadRadialBindings[i] = reader.ReadInt32();
 
-        for (int i = 0; i < Characteristic.BuilderAccStatus.Length; i++)
-            Characteristic.BuilderAccStatus[i] = reader.ReadInt32();
+        for (int i = 0; i < _characteristic.BuilderAccStatus.Length; i++)
+            _characteristic.BuilderAccStatus[i] = reader.ReadInt32();
 
-        Characteristic.BartenderQuestLog = reader.ReadInt32();
+        _characteristic.BartenderQuestLog = reader.ReadInt32();
 
-        Characteristic.IsDead = reader.ReadBoolean();
+        _characteristic.IsDead = reader.ReadBoolean();
 
-        if (Characteristic.IsDead)
-            Characteristic.RespawnTimer = reader.ReadInt32();
+        if (_characteristic.IsDead)
+            _characteristic.RespawnTimer = reader.ReadInt32();
 
-        Characteristic.LastTimePlayerWasSaved = 0L;
+        _characteristic.LastTimePlayerWasSaved = 0L;
 
-        Characteristic.LastTimePlayerWasSaved = terrariaVersion < 202 ? DateTime.UtcNow.ToBinary() : reader.ReadInt64();
+        _characteristic.LastTimePlayerWasSaved = terrariaVersion < 202 ? DateTime.UtcNow.ToBinary() : reader.ReadInt64();
 
-        Characteristic.GolferScoreAccumulated = reader.ReadInt32();
+        _characteristic.GolferScoreAccumulated = reader.ReadInt32();
     }
     
     public void SavePlayer()

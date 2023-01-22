@@ -5,7 +5,6 @@ namespace TerrariaConstructor.Models;
 
 public class CharacteristicsModel
 {
-     
     #region Player statistics
     
     public string Name { get; set; }
@@ -60,5 +59,4 @@ public class CharacteristicsModel
     public bool IsDead { get; set; }
     
     #endregion
-
 }
