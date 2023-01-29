@@ -18,6 +18,7 @@ public class PlayerModel
     private readonly ToolsModel _tools;
     private readonly InventoriesModel _inventories;
     private readonly BuffsModel _buffs;
+    private readonly ResearchModel _research;
 
     #endregion
     
@@ -33,13 +34,15 @@ public class PlayerModel
         EquipsModel equips,
         ToolsModel tools,
         InventoriesModel inventories,
-        BuffsModel buffs)
+        BuffsModel buffs,
+        ResearchModel research)
     {
         _characteristic = characteristic;
         _equips = equips;
         _tools = tools;
         _inventories = inventories;
         _buffs = buffs;
+        _research = research;
     }
 
     private BinaryReader DecryptPlayer(string path)

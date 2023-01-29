@@ -5,6 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TerrariaConstructor"
         xmlns:views="clr-namespace:TerrariaConstructor.Views"
+        xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
+        DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
+        d:DataContext="{d:DesignInstance vm:MainViewModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Margin="10,0">
@@ -23,7 +26,8 @@
                     
                 </TabItem>
                 <TabItem Header="Характеритсика">
-                    <views:СharacteristicView/>
+                    <views:CharacteristicsView
+                        DataContext="{Binding CharacteristicViewModel}"/>
                 </TabItem>
                 <TabItem Header="Экипировка">
                 

@@ -8,6 +8,7 @@ using System.Windows;
 using Autofac;
 using Autofac.Core;
 using TerrariaConstructor.Models;
+using TerrariaConstructor.ViewModels;
 
 namespace TerrariaConstructor
 {
@@ -30,13 +31,18 @@ namespace TerrariaConstructor
             //register dependencies
             var builder = new ContainerBuilder();
 
-            builder.RegisterType<PlayerModel>();
+            builder.RegisterType<PlayerModel>().SingleInstance();
 
             builder.RegisterType<CharacteristicsModel>().SingleInstance();
             builder.RegisterType<EquipsModel>().SingleInstance();
             builder.RegisterType<ToolsModel>().SingleInstance();
             builder.RegisterType<InventoriesModel>().SingleInstance();
             builder.RegisterType<BuffsModel>().SingleInstance();
+            builder.RegisterType<ResearchModel>().SingleInstance();
+
+            builder.RegisterType<MainViewModel>().AsSelf();
+            
+            builder.RegisterType<CharacteristicViewModel>().AsSelf();
 
            return builder.Build();
         }

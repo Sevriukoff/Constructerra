@@ -2,9 +2,9 @@
 
 namespace TerrariaConstructor.Views;
 
-public partial class СharacteristicView : UserControl
+public partial class CharacteristicsView : UserControl
 {
-    public СharacteristicView()
+    public CharacteristicsView()
     {
         InitializeComponent();
     }

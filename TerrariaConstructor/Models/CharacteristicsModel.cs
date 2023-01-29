@@ -1,13 +1,25 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using ReactiveUI;
 
 namespace TerrariaConstructor.Models;
 
-public class CharacteristicsModel
+public class CharacteristicsModel : ReactiveObject
 {
+    private string _name;
+
     #region Player statistics
-    
-    public string Name { get; set; }
+
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+
+    public uint Revision { get; set; }
+    public bool IsFavorite { get; set; }
+
     public byte Difficulty { get; set; }
     public TimeSpan PlayTime { get; set; }
 
@@ -47,6 +59,7 @@ public class CharacteristicsModel
     public bool DownedDd2EventAnyDifficulty { get; set; }
     public int NumberOfDeathsPve { get; set; }
     public int NumberOfDeathsPvp { get; set; }
+    public byte VoidVaultInfo { get; set; }
     public bool IsHotBarLocked { get; set; }
     public bool[] HideInfo { get; set; } = new bool[13];
     public int AnglerQuestsFinished { get; set; }
@@ -57,6 +70,9 @@ public class CharacteristicsModel
     public long LastTimePlayerWasSaved { get; set; }
     public int RespawnTimer { get; set; }
     public bool IsDead { get; set; }
-    
+    public bool UnlockedSuperCart { get; set; }
+    public bool EnabledSuperCart { get; set; }
+    public Dictionary<ushort, string> PowersById { get; set; } = new();
+
     #endregion
 }
