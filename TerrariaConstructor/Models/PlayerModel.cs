@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using TerrariaConstructor.Common.Structures;
 
 namespace TerrariaConstructor.Models;
 
@@ -73,9 +78,28 @@ public class PlayerModel
         }
     }
 
-    private void EncryptPlayer(string path)
+    private BinaryWriter EncryptPlayer(string path)
     {
-        
+        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
+        var managed = new RijndaelManaged { Padding = PaddingMode.None };
+        var encryptor = managed.CreateEncryptor(key, key);
+        Stream fileStream = new FileStream(path, FileMode.Create);
+        CryptoStream output = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write);
+        return new BinaryWriter(output);
+    }
+    
+    private void EncryptDatToPlr(string inputFilePath, string outputFilePath)
+    {
+        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
+        var managed = new RijndaelManaged();
+        var encryptor = managed.CreateEncryptor(key, key);
+
+        using (var inputFileStream = new FileStream(inputFilePath, FileMode.Open))
+        using (var outputFileStream = new FileStream(outputFilePath, FileMode.Create))
+        using (var cryptoStream = new CryptoStream(outputFileStream, encryptor, CryptoStreamMode.Write))
+        {
+            inputFileStream.CopyTo(cryptoStream);
+        }
     }
 
     public void LoadPlayer(string plrPath)
@@ -88,9 +112,9 @@ public class PlayerModel
         if ((num1 & 72057594037927935L) != 27981915666277746L)
             throw new FormatException("Expected Re-Logic file format.");
         
-        var revision = reader
+        _characteristic.Revision = reader
             .ReadUInt32(); // Useless metadata stuff in player files, for now? Only used in maps
-        var isFavorite =
+        _characteristic.IsFavorite =
             ((long) reader.ReadUInt64() & 1L) ==
             1L; // Does not actually matter? favorites.json seems to handle favorites
         
@@ -129,7 +153,7 @@ public class PlayerModel
 
         for (int i = 0; i < _equips.Armor.Length; i++)
         {
-            _equips.Armor[0] = new Item
+            _equips.Armor[i] = new Item //[0]
             {
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
@@ -229,19 +253,27 @@ public class PlayerModel
             {
                 Id = reader.ReadInt32(),
                 Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
+                Prefix = reader.ReadByte(),
+                IsFavorite = reader.ReadBoolean()
             };
         }
 
-        var voidVaultInfo = reader.ReadByte();
+        _characteristic.VoidVaultInfo = reader.ReadByte();
 
-        for (int i = 0; i < _buffs.Buffs.Length; i++)
+        int buffIterator = 44;
+        for (int i = 0; i < buffIterator; i++)
         {
             _buffs.Buffs[i] = new Buff
             {
                 Id = reader.ReadInt32(),
                 DurationTime = new TimeSpan(reader.ReadInt32())
             };
+
+            if (_buffs.Buffs[i].Id == 0)
+            {
+                --i;
+                --buffIterator;
+            }
         }
 
         for (int i = 0; i < SpawnX.Length; i++)
@@ -253,7 +285,11 @@ public class PlayerModel
                 SpawnX[i] = spawnX;
                 SpawnY[i] = reader.ReadInt32();
                 WorldId[i] = reader.ReadInt32();
-                WorldNames[i] = reader.ReadString();
+                try
+                {
+                    WorldNames[i] = reader.ReadString();
+                }
+                catch (FormatException e) { }
             }
             else
             {
@@ -286,11 +322,598 @@ public class PlayerModel
         _characteristic.LastTimePlayerWasSaved = terrariaVersion < 202 ? DateTime.UtcNow.ToBinary() : reader.ReadInt64();
 
         _characteristic.GolferScoreAccumulated = reader.ReadInt32();
+
+        int numberOfIteration = reader.ReadInt32(); //CreativeTracker.Load();
+
+        for (int i = 0; i < numberOfIteration; i++)
+        {
+            string key = reader.ReadString();
+            int value = reader.ReadInt32();
+            
+            _research.Items.Add(new Item
+            {
+                Name = key,
+                Stack = value
+            });
+        }
+
+        BitsByte bitsByte = reader.ReadByte();
+
+        int num3 = !bitsByte[3] ? 3 : 4;
+        for (int i = 0; i < num3; i++)
+        {
+            if (bitsByte[i])
+            {
+                reader.ReadInt32();
+                reader.ReadInt32();
+                reader.ReadByte();
+            }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            ushort val = 1;
+            
+            if (!(reader.ReadBoolean() && (val = reader.ReadUInt16()) <= 14))
+                break;
+            
+            switch (i)
+            {
+                case 2:
+                    _characteristic.PowersById.Add(val, Convert.ToString(reader.ReadSingle(), CultureInfo.InvariantCulture));
+                    break;
+                case < 2:
+                {
+                    _characteristic.PowersById.Add(val, Convert.ToString(reader.ReadBoolean()));
+                    break;
+                }
+            }
+        }
+
+        bitsByte = reader.ReadByte();
+
+        _characteristic.UnlockedSuperCart = bitsByte[0];
+        _characteristic.EnabledSuperCart = bitsByte[1];
+
+        _equips.CurrentLoadoutIndex = reader.ReadInt32();
+
+        for (int i = 0; i < _equips.Loadouts.Length; i++)
+        {
+            _equips.Loadouts[i] = new EquipsModel.Loadout();
+            for (int j = 0; j < _equips.Loadouts[i].Armor.Length; j++)
+            {
+                _equips.Loadouts[i].Armor[j] = new Item
+                {
+                    Id = reader.ReadInt32(),
+                    Stack = reader.ReadInt32(),
+                    Prefix = reader.ReadByte()
+                };
+            }
+            
+            for (int j = 0; j < _equips.Loadouts[i].Dye.Length; j++)
+            {
+                _equips.Loadouts[i].Dye[j] = new Item
+                {
+                    Id = reader.ReadInt32(),
+                    Stack = reader.ReadInt32(),
+                    Prefix = reader.ReadByte()
+                };
+            }
+            
+            for (int j = 0; j < _equips.Loadouts[i].IsHide.Length; j++)
+            {
+                _equips.Loadouts[i].IsHide[j] = reader.ReadBoolean();
+            }
+        }
     }
     
-    public void SavePlayer()
+    public void SavePlayerIntoDat(string plrPath)
     {
+        using (Stream fileStream = new FileStream(plrPath, FileMode.Create))
+        {
+            using (BinaryWriter writer = new BinaryWriter(fileStream))
+            {
+                writer.Write(279);
+                writer.Write(244154697780061554L);
+                writer.Write(_characteristic.Revision);
+                writer.Write((ulong) (!_characteristic.IsFavorite ? 0 : 1) & 1 | 0);
+
+                writer.Write(_characteristic.Name);
+                writer.Write(_characteristic.Difficulty);
+                writer.Write(_characteristic.PlayTime.Ticks);
+                writer.Write(_characteristic.Hair);
+                writer.Write(_characteristic.HairDye);
+                writer.Write(_characteristic.HideBytes);
+                writer.Write(_characteristic.SkinVariant);
+                writer.Write(_characteristic.Health);
+                writer.Write(_characteristic.MaxHealth);
+                writer.Write(_characteristic.Mana);
+                writer.Write(_characteristic.MaxMana);
+                writer.Write(_characteristic.ExtraAccessory);
+                writer.Write(_characteristic.UnlockedBiomeTorches);
+                writer.Write(_characteristic.UsingBiomeTorches);
+                writer.Write(_characteristic.AteArtisanBread);
+                writer.Write(_characteristic.UsedAegisCrystal);
+                writer.Write(_characteristic.UsedAegisFruit);
+                writer.Write(_characteristic.UsedArcaneCrystal);
+                writer.Write(_characteristic.UsedGalaxyPearl);
+                writer.Write(_characteristic.UsedGummyWorm);
+                writer.Write(_characteristic.UsedAmbrosia);
+                writer.Write(_characteristic.DownedDd2EventAnyDifficulty);
+                writer.Write(_characteristic.TaxMoney);
+                writer.Write(_characteristic.NumberOfDeathsPve);
+                writer.Write(_characteristic.NumberOfDeathsPvp);
+                writer.Write(_characteristic.HairColor.R);
+                writer.Write(_characteristic.HairColor.G);
+                writer.Write(_characteristic.HairColor.B);
+                writer.Write(_characteristic.SkinColor.R);
+                writer.Write(_characteristic.SkinColor.G);
+                writer.Write(_characteristic.SkinColor.B);
+                writer.Write(_characteristic.EyeColor.R);
+                writer.Write(_characteristic.EyeColor.G);
+                writer.Write(_characteristic.EyeColor.B);
+                writer.Write(_characteristic.ShirtColor.R);
+                writer.Write(_characteristic.ShirtColor.G);
+                writer.Write(_characteristic.ShirtColor.B);
+                writer.Write(_characteristic.UnderShirtColor.R);
+                writer.Write(_characteristic.UnderShirtColor.G);
+                writer.Write(_characteristic.UnderShirtColor.B);
+                writer.Write(_characteristic.PantsColor.R);
+                writer.Write(_characteristic.PantsColor.G);
+                writer.Write(_characteristic.PantsColor.B);
+                writer.Write(_characteristic.ShoeColor.R);
+                writer.Write(_characteristic.ShoeColor.G);
+                writer.Write(_characteristic.ShoeColor.B);
+
+                for (int i = 0; i < _equips.Armor.Length; i++)
+                {
+                    writer.Write(_equips.Armor[i].Id);
+                    writer.Write(_equips.Armor[i].Prefix);
+                }
+
+                for (int i = 0; i < _equips.Dye.Length; i++)
+                {
+                    writer.Write(_equips.Dye[i].Id);
+                    writer.Write(_equips.Dye[i].Prefix);
+                }
+
+                for (int i = 0; i < _inventories.Inventory.Length; i++)
+                {
+                    writer.Write(_inventories.Inventory[i].Id);
+                    writer.Write(_inventories.Inventory[i].Stack);
+                    writer.Write(_inventories.Inventory[i].Prefix);
+                    writer.Write(_inventories.Inventory[i].IsFavorite);
+                }
+
+                for (int i = 0; i < _equips.Purse.Length; i++)
+                {
+                    writer.Write(_equips.Purse[i].Id);
+                    writer.Write(_equips.Purse[i].Stack);
+                    writer.Write(_equips.Purse[i].Prefix);
+                    writer.Write(_equips.Purse[i].IsFavorite);
+                }
+
+                for (int i = 0; i < _equips.Ammo.Length; i++)
+                {
+                    writer.Write(_equips.Ammo[i].Id);
+                    writer.Write(_equips.Ammo[i].Stack);
+                    writer.Write(_equips.Ammo[i].Prefix);
+                    writer.Write(_equips.Ammo[i].IsFavorite);
+                }
+
+                for (int i = 0; i < _tools.MiscEquip.Length; i++)
+                {
+                    writer.Write(_tools.MiscEquip[i].Id);
+                    writer.Write(_tools.MiscEquip[i].Prefix);
+
+                    writer.Write(_tools.MiscDye[i].Id);
+                    writer.Write(_tools.MiscDye[i].Prefix);
+                }
+
+                for (int i = 0; i < _inventories.Bank1.Length; i++)
+                {
+                    writer.Write(_inventories.Bank1[i].Id);
+                    writer.Write(_inventories.Bank1[i].Stack);
+                    writer.Write(_inventories.Bank1[i].Prefix);
+                }
+
+                for (int i = 0; i < _inventories.Bank2.Length; i++)
+                {
+                    writer.Write(_inventories.Bank2[i].Id);
+                    writer.Write(_inventories.Bank2[i].Stack);
+                    writer.Write(_inventories.Bank2[i].Prefix);
+                }
+
+                for (int i = 0; i < _inventories.Bank3.Length; i++)
+                {
+                    writer.Write(_inventories.Bank3[i].Id);
+                    writer.Write(_inventories.Bank3[i].Stack);
+                    writer.Write(_inventories.Bank3[i].Prefix);
+                }
+
+                for (int i = 0; i < _inventories.Bank4.Length; i++)
+                {
+                    writer.Write(_inventories.Bank4[i].Id);
+                    writer.Write(_inventories.Bank4[i].Stack);
+                    writer.Write(_inventories.Bank4[i].Prefix);
+                    writer.Write(_inventories.Bank4[i].IsFavorite);
+                }
+
+                writer.Write(_characteristic.VoidVaultInfo);
+
+                for (int i = 0; i < 44; i++)
+                {
+                    if (_buffs.Buffs[i] == null)
+                    {
+                        writer.Write(0);
+                        writer.Write(0);
+                    }
+                    else
+                    {
+                        writer.Write(_buffs.Buffs[i].Id);
+                        writer.Write((int) 0); //TODO: Fix buff time
+                    }
+                }
+
+                for (int i = 0; i < SpawnX.Length; i++)
+                {
+                    if (WorldNames[i] == null)
+                    {
+                        writer.Write(-1);
+                        break;
+                    }
+
+                    writer.Write(SpawnX[i]);
+                    writer.Write(SpawnY[i]);
+                    writer.Write(WorldId[i]);
+                    writer.Write(WorldNames[i]);
+                }
+
+                writer.Write(_characteristic.IsHotBarLocked);
+
+                for (int i = 0; i < _characteristic.HideInfo.Length; i++)
+                    writer.Write(_characteristic.HideInfo[i]);
+
+                writer.Write(_characteristic.AnglerQuestsFinished);
+
+                for (int i = 0; i < _characteristic.DPadRadialBindings.Length; i++)
+                    writer.Write(_characteristic.DPadRadialBindings[i]);
+
+                for (int i = 0; i < _characteristic.BuilderAccStatus.Length; i++)
+                    writer.Write(_characteristic.BuilderAccStatus[i]);
+
+                writer.Write(_characteristic.BartenderQuestLog);
+
+                writer.Write(_characteristic.IsDead);
+
+                if (_characteristic.IsDead)
+                    writer.Write(_characteristic.RespawnTimer);
+
+                writer.Write(DateTime.UtcNow.ToBinary());
+
+                writer.Write(_characteristic.GolferScoreAccumulated);
+
+                writer.Write(_research.Items.Count);
+
+                foreach (var researchItem in _research.Items)
+                {
+                    writer.Write(researchItem.Name);
+                    writer.Write(researchItem.Stack);
+                }
+
+                // SaveTemporaryItemSlotContents
+                BitsByte bitsByte = 0;
+                bitsByte[0] = false;
+                bitsByte[1] = false;
+                bitsByte[2] = false;
+                bitsByte[3] = false;
+                writer.Write(bitsByte);
+
+                foreach (var powerById in _characteristic.PowersById)
+                {
+                    writer.Write(true);
+                    writer.Write(powerById.Key);
+
+                    try
+                    {
+                        writer.Write(bool.Parse(powerById.Value));
+                    }
+                    catch (Exception e)
+                    {
+                        writer.Write(0.5f);
+                    }
+                }
+
+                writer.Write(false);
+
+                writer.Write(new BitsByte
+                {
+                    [0] = _characteristic.UnlockedSuperCart,
+                    [1] = _characteristic.EnabledSuperCart
+                });
+
+                writer.Write(_equips.CurrentLoadoutIndex);
+
+                for (int i = 0; i < _equips.Loadouts.Length; i++)
+                {
+                    for (int j = 0; j < _equips.Loadouts[i].Armor.Length; j++)
+                    {
+                        writer.Write(_equips.Loadouts[i].Armor[j].Id);
+                        writer.Write(_equips.Loadouts[i].Armor[j].Stack);
+                        writer.Write(_equips.Loadouts[i].Armor[j].Prefix);
+                    }
+
+                    for (int j = 0; j < _equips.Loadouts[i].Dye.Length; j++)
+                    {
+                        writer.Write(_equips.Loadouts[i].Dye[j].Id);
+                        writer.Write(_equips.Loadouts[i].Dye[j].Stack);
+                        writer.Write(_equips.Loadouts[i].Dye[j].Prefix);
+                    }
+
+                    for (int j = 0; j < _equips.Loadouts[i].IsHide.Length; j++)
+                    {
+                        writer.Write(_equips.Loadouts[i].IsHide[j]);
+                    }
+                }
+                
+                //writer.Flush();
+            }
+        }
+
+        EncryptDatToPlr(plrPath, plrPath.Remove(plrPath.Length - 4));
+    }
+    
+    public void SavePlayer(string plrPath)
+    {
+        var writer = EncryptPlayer(plrPath);
         
+        writer.Write(279);
+        writer.Write(27981915666277746L);
+        writer.Write(_characteristic.Revision);
+        writer.Write((ulong)(!_characteristic.IsFavorite ? 0 : 1) & 1 | 0);
+        
+        writer.Write(_characteristic.Name);
+        writer.Write(_characteristic.Difficulty);
+        writer.Write(_characteristic.PlayTime.Ticks);
+        writer.Write(_characteristic.Hair);
+        writer.Write(_characteristic.HairDye);
+        writer.Write(_characteristic.HideBytes);
+        writer.Write(_characteristic.SkinVariant);
+        writer.Write(_characteristic.Health);
+        writer.Write(_characteristic.MaxHealth);
+        writer.Write(_characteristic.Mana);
+        writer.Write(_characteristic.MaxMana);
+        writer.Write(_characteristic.ExtraAccessory);
+        writer.Write(_characteristic.UnlockedBiomeTorches);
+        writer.Write(_characteristic.UsingBiomeTorches);
+        writer.Write(_characteristic.AteArtisanBread);
+        writer.Write(_characteristic.UsedAegisCrystal);
+        writer.Write(_characteristic.UsedAegisFruit);
+        writer.Write(_characteristic.UsedArcaneCrystal);
+        writer.Write(_characteristic.UsedGalaxyPearl);
+        writer.Write(_characteristic.UsedGummyWorm);
+        writer.Write(_characteristic.UsedAmbrosia);
+        writer.Write(_characteristic.DownedDd2EventAnyDifficulty);
+        writer.Write(_characteristic.TaxMoney);
+        writer.Write(_characteristic.NumberOfDeathsPve);
+        writer.Write(_characteristic.NumberOfDeathsPvp);
+        writer.Write(_characteristic.HairColor.R);
+        writer.Write(_characteristic.HairColor.G);
+        writer.Write(_characteristic.HairColor.B);
+        writer.Write(_characteristic.SkinColor.R);
+        writer.Write(_characteristic.SkinColor.G);
+        writer.Write(_characteristic.SkinColor.B);
+        writer.Write(_characteristic.EyeColor.R);
+        writer.Write(_characteristic.EyeColor.G);
+        writer.Write(_characteristic.EyeColor.B);
+        writer.Write(_characteristic.ShirtColor.R);
+        writer.Write(_characteristic.ShirtColor.G);
+        writer.Write(_characteristic.ShirtColor.B);
+        writer.Write(_characteristic.UnderShirtColor.R);
+        writer.Write(_characteristic.UnderShirtColor.G);
+        writer.Write(_characteristic.UnderShirtColor.B);
+        writer.Write(_characteristic.PantsColor.R);
+        writer.Write(_characteristic.PantsColor.G);
+        writer.Write(_characteristic.PantsColor.B);
+        writer.Write(_characteristic.ShoeColor.R);
+        writer.Write(_characteristic.ShoeColor.G);
+        writer.Write(_characteristic.ShoeColor.B);
+        
+        for (int i = 0; i < _equips.Armor.Length; i++)
+        {
+            writer.Write(_equips.Armor[i].Id);
+            writer.Write(_equips.Armor[i].Prefix);
+        }
+        
+        for (int i = 0; i < _equips.Dye.Length; i++)
+        {
+            writer.Write(_equips.Dye[i].Id);
+            writer.Write(_equips.Dye[i].Prefix);
+        }
+        
+        for (int i = 0; i < _inventories.Inventory.Length; i++)
+        {
+            writer.Write(_inventories.Inventory[i].Id);
+            writer.Write(_inventories.Inventory[i].Stack);
+            writer.Write(_inventories.Inventory[i].Prefix);
+            writer.Write(_inventories.Inventory[i].IsFavorite);
+        }
+        
+        for (int i = 0; i < _equips.Purse.Length; i++)
+        {
+            writer.Write(_equips.Purse[i].Id);
+            writer.Write(_equips.Purse[i].Stack);
+            writer.Write(_equips.Purse[i].Prefix);
+            writer.Write(_equips.Purse[i].IsFavorite);
+        }
+        
+        for (int i = 0; i < _equips.Ammo.Length; i++)
+        {
+            writer.Write(_equips.Ammo[i].Id);
+            writer.Write(_equips.Ammo[i].Stack);
+            writer.Write(_equips.Ammo[i].Prefix);
+            writer.Write(_equips.Ammo[i].IsFavorite);
+        }
+        
+        for (int i = 0; i < _tools.MiscEquip.Length; i++)
+        {
+            writer.Write(_tools.MiscEquip[i].Id);
+            writer.Write(_tools.MiscEquip[i].Prefix);
+            
+            writer.Write(_tools.MiscDye[i].Id);
+            writer.Write(_tools.MiscDye[i].Prefix);
+        }
+        
+        for (int i = 0; i < _inventories.Bank1.Length; i++)
+        {
+            writer.Write(_inventories.Bank1[i].Id);
+            writer.Write(_inventories.Bank1[i].Stack);
+            writer.Write(_inventories.Bank1[i].Prefix);
+        }
+        
+        for (int i = 0; i < _inventories.Bank2.Length; i++)
+        {
+            writer.Write(_inventories.Bank2[i].Id);
+            writer.Write(_inventories.Bank2[i].Stack);
+            writer.Write(_inventories.Bank2[i].Prefix);
+        }
+        
+        for (int i = 0; i < _inventories.Bank3.Length; i++)
+        {
+            writer.Write(_inventories.Bank3[i].Id);
+            writer.Write(_inventories.Bank3[i].Stack);
+            writer.Write(_inventories.Bank3[i].Prefix);
+        }
+        
+        for (int i = 0; i < _inventories.Bank4.Length; i++)
+        {
+            writer.Write(_inventories.Bank4[i].Id);
+            writer.Write(_inventories.Bank4[i].Stack);
+            writer.Write(_inventories.Bank4[i].Prefix);
+            writer.Write(_inventories.Bank4[i].IsFavorite);
+        }
+        
+        writer.Write(_characteristic.VoidVaultInfo);
+        
+        for (int i = 0; i < 44; i++)
+        {
+            if (_buffs.Buffs[i] == null)
+            {
+                writer.Write(0);
+                writer.Write(0);
+            }
+            else
+            {
+                writer.Write(_buffs.Buffs[i].Id);
+                writer.Write((int)0); //TODO: Fix buff time
+            }
+        }
+        
+        for (int i = 0; i < SpawnX.Length; i++)
+        {
+            if (WorldNames[i] == null)
+            {
+                writer.Write(-1);
+                break;
+            }
+
+            writer.Write(SpawnX[i]);
+            writer.Write(SpawnY[i]);
+            writer.Write(WorldId[i]);
+            writer.Write(WorldNames[i]);
+        }
+        
+        writer.Write(_characteristic.IsHotBarLocked);
+        
+        for (int i = 0; i < _characteristic.HideInfo.Length; i++)
+            writer.Write(_characteristic.HideInfo[i]);
+        
+        writer.Write(_characteristic.AnglerQuestsFinished);
+        
+        for (int i = 0; i < _characteristic.DPadRadialBindings.Length; i++)
+            writer.Write(_characteristic.DPadRadialBindings[i]);
+        
+        for (int i = 0; i < _characteristic.BuilderAccStatus.Length; i++)
+            writer.Write(_characteristic.BuilderAccStatus[i]);
+        
+        writer.Write(_characteristic.BartenderQuestLog);
+        
+        writer.Write(_characteristic.IsDead);
+
+        if (_characteristic.IsDead)
+            writer.Write(_characteristic.RespawnTimer);
+
+        writer.Write(DateTime.UtcNow.ToBinary());
+        
+        writer.Write(_characteristic.GolferScoreAccumulated);
+        
+        writer.Write(_research.Items.Count);
+
+        foreach (var researchItem in _research.Items)
+        {
+            writer.Write(researchItem.Name);
+            writer.Write(researchItem.Stack);
+        }
+        
+        // SaveTemporaryItemSlotContents
+        BitsByte bitsByte = 0;
+        bitsByte[0] = false;
+        bitsByte[1] = false;
+        bitsByte[2] = false;
+        bitsByte[3] = false;
+        writer.Write(bitsByte);
+
+        foreach (var powerById in _characteristic.PowersById)
+        {
+            writer.Write(true);
+            writer.Write(powerById.Key);
+
+            try
+            {
+                writer.Write(bool.Parse(powerById.Value));
+            }
+            catch (Exception e)
+            {
+                writer.Write(0.5f);
+            }
+        }
+        
+        writer.Write(false);
+        
+        writer.Write(new BitsByte
+        {
+            [0] = _characteristic.UnlockedSuperCart,
+            [1] = _characteristic.EnabledSuperCart
+        });
+        
+        writer.Write(_equips.CurrentLoadoutIndex);
+        
+        for (int i = 0; i < _equips.Loadouts.Length; i++)
+        {
+            for (int j = 0; j < _equips.Loadouts[i].Armor.Length; j++)
+            {
+                writer.Write(_equips.Loadouts[i].Armor[j].Id);
+                writer.Write(_equips.Loadouts[i].Armor[j].Stack);
+                writer.Write(_equips.Loadouts[i].Armor[j].Prefix);
+            }
+            
+            for (int j = 0; j < _equips.Loadouts[i].Dye.Length; j++)
+            {
+                writer.Write(_equips.Loadouts[i].Dye[j].Id);
+                writer.Write(_equips.Loadouts[i].Dye[j].Stack);
+                writer.Write(_equips.Loadouts[i].Dye[j].Prefix);
+            }
+            
+            for (int j = 0; j < _equips.Loadouts[i].IsHide.Length; j++)
+            {
+                writer.Write(_equips.Loadouts[i].IsHide[j]);
+            }
+        }
+        
+        writer.Flush();
+        writer.Close();
+        writer.BaseStream.Close();
+        writer.BaseStream.Dispose();
     }
     
 }

@@ -18,8 +18,8 @@
         </Grid.RowDefinitions>
         <StackPanel>
             <StackPanel Orientation="Horizontal">
-                <Button Content="Загрузить"/>
-                <Button Content="Сохранить"/>
+                <Button Content="Загрузить" Click="ButtonBase_OnClick"/>
+                <Button Content="Сохранить" Click="ButtonSave_OnClick"/>
             </StackPanel>
             <TabControl Grid.Row="0" BorderThickness="0,1,0,0">
                 <TabItem Header="Старт">
