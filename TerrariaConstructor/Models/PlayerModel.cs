@@ -81,7 +81,7 @@ public class PlayerModel
     private BinaryWriter EncryptPlayer(string path)
     {
         byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
-        var managed = new RijndaelManaged { Padding = PaddingMode.None };
+        var managed = new RijndaelManaged();
         var encryptor = managed.CreateEncryptor(key, key);
         Stream fileStream = new FileStream(path, FileMode.Create);
         CryptoStream output = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write);
@@ -668,7 +668,7 @@ public class PlayerModel
         var writer = EncryptPlayer(plrPath);
         
         writer.Write(279);
-        writer.Write(27981915666277746L);
+        writer.Write(244154697780061554L); //27981915666277746L
         writer.Write(_characteristic.Revision);
         writer.Write((ulong)(!_characteristic.IsFavorite ? 0 : 1) & 1 | 0);
         
