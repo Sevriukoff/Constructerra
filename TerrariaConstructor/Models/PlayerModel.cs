@@ -2,13 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using Autofac;
 using TerrariaConstructor.Common.Structures;
+using TerrariaConstructor.Infrastructure;
 
 namespace TerrariaConstructor.Models;
 
@@ -69,7 +72,6 @@ public class PlayerModel
                     return new BinaryReader(newMemoryStream);
                 }
             }
-                   
         }
         catch (Exception e)
         {
@@ -104,6 +106,9 @@ public class PlayerModel
 
     public void LoadPlayer(string plrPath)
     {
+        using var scope = App.Container.BeginLifetimeScope();
+        var unitOfWork = scope.Resolve<UnitOfWork>();
+
         var reader = DecryptPlayer(plrPath);
 
         int terrariaVersion = reader.ReadInt32();
@@ -158,6 +163,8 @@ public class PlayerModel
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
+
+            var item = unitOfWork.ItemsRepository.GetById(_equips.Armor[i].Id);
         }
 
         for (int i = 0; i < _equips.Dye.Length; i++)
