@@ -27,10 +27,10 @@
                 </TabItem>
                 <TabItem Header="Характеритсика">
                     <views:CharacteristicsView
-                        DataContext="{Binding CharacteristicViewModel}"/>
+                        DataContext="{Binding CharacteristicsViewModel}"/>
                 </TabItem>
                 <TabItem Header="Экипировка">
-                
+                    
                 </TabItem>
                 <TabItem Header="Инструменты">
                 

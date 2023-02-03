@@ -8,10 +8,14 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
         <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Text="1000"/>
-        <TextBox Text="10000"/>
-        <TextBox Text="100000"/>
-        <TextBox Text="1000000"/>
+        <Slider Maximum="500"
+                Value="{Binding Health, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="{Binding Health, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <TextBox Text="100000"
+                 Background="{Binding HairColor}"/>
+        <TextBox Text="1000000"
+                 Background="Fuchsia"/>
         <TextBox Text="10000000"/>
     </StackPanel>
 </UserControl>

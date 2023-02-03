@@ -39,11 +39,23 @@ namespace TerrariaConstructor
 
             string itemsDatabaseName = ConfigurationManager.ConnectionStrings["ItemsDatabase"].ConnectionString;
             string playersDatabaseName = ConfigurationManager.ConnectionStrings["PlayersDatabase"].ConnectionString;
-
+            /*
             builder.RegisterInstance(new LiteDatabase(itemsDatabaseName , new ItemMapper()))
                 .Named<ILiteDatabase>(itemsDatabaseName).SingleInstance();
             builder.RegisterInstance(new LiteDatabase(playersDatabaseName))
                 .Named<ILiteDatabase>(playersDatabaseName).SingleInstance();
+            */
+            builder.RegisterType<LiteDatabase>().Named<ILiteDatabase>(itemsDatabaseName)
+                .InstancePerLifetimeScope()
+                .WithParameter((pi, ctx) => pi.ParameterType == typeof(string),
+                (pi, ctx) => itemsDatabaseName)
+                .WithParameter((pi, ctx) => pi.ParameterType == typeof(BsonMapper),
+                    (pi, ctx) => new ItemMapper());
+            
+            builder.RegisterType<LiteDatabase>().Named<ILiteDatabase>(playersDatabaseName)
+                .InstancePerLifetimeScope()
+                .WithParameter((pi, ctx) => pi.ParameterType == typeof(string),
+                    (pi, ctx) => playersDatabaseName);
 
             Func<ParameterInfo,IComponentContext,bool> parameterSelector = (pi, ctx) => pi.ParameterType == typeof(ILiteDatabase);
             Func<ParameterInfo,IComponentContext,object?> valueProvider = (pi, ctx) => ctx.ResolveNamed<ILiteDatabase>(itemsDatabaseName);
@@ -78,7 +90,9 @@ namespace TerrariaConstructor
 
             builder.RegisterType<MainViewModel>().AsSelf();
             
-            builder.RegisterType<CharacteristicViewModel>().AsSelf();
+            builder.RegisterType<CharacteristicsViewModel>().AsSelf();
+            builder.RegisterType<EquipsViewModel>().AsSelf();
+            builder.RegisterType<InventoriesViewModel>().AsSelf();
 
            return builder.Build();
         }

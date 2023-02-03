@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Autofac;
 using ReactiveUI;
 
 namespace TerrariaConstructor.Models;
 
-public class CharacteristicsModel : ReactiveObject
+public class CharacteristicsModel
 {
-    private string _name;
-
     #region Player statistics
 
-    public string Name
-    {
-        get => _name;
-        set => this.RaiseAndSetIfChanged(ref _name, value);
-    }
+    public string Name { get; set; }
 
     public uint Revision { get; set; }
     public bool IsFavorite { get; set; }
@@ -75,4 +70,9 @@ public class CharacteristicsModel : ReactiveObject
     public Dictionary<ushort, string> PowersById { get; set; } = new();
 
     #endregion
+
+    public CharacteristicsModel()
+    {
+        
+    }
 }
