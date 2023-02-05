@@ -11,11 +11,12 @@ using DynamicData.Binding;
 using ReactiveUI;
 using Splat.ModeDetection;
 using TerrariaConstructor.Models;
+using Wpf.Ui.Controls.Navigation;
 using Color = System.Drawing.Color;
 
 namespace TerrariaConstructor.ViewModels;
 
-public class CharacteristicsViewModel : ReactiveObject
+public class CharacteristicsViewModel : ReactiveObject, INavigationAware
 {
     public CharacteristicsModel Model { get; set; }
     public string PlayerName { get; set; }
@@ -323,9 +324,6 @@ public class CharacteristicsViewModel : ReactiveObject
         Skins = Model.GetSkins();
 
         this.WhenAnyValue(x => x.HairId)
-            .Subscribe(x => Model.Hair = x);
-
-        this.WhenAnyValue(x => x.HairId)
             .Where(x => x > 0 && x<= Hairs.Count)
             .Subscribe(id =>
             {
@@ -333,6 +331,8 @@ public class CharacteristicsViewModel : ReactiveObject
                 {
                     hair.IsSelected = hair.Id == HairId;
                 }
+
+                Model.Hair = id;
             });
         
         this.WhenAnyValue(x => x.SkinId)
@@ -392,6 +392,16 @@ public class CharacteristicsViewModel : ReactiveObject
         UsedGalaxyPearl = Model.UsedGalaxyPearl;
         UsedGummyWorm = Model.UsedGummyWorm;
         UsedAmbrosia = Model.UsedAmbrosia;
+    }
+
+    public void OnNavigatedTo()
+    {
+        Update();
+    }
+
+    public void OnNavigatedFrom()
+    {
+        
     }
 }
     

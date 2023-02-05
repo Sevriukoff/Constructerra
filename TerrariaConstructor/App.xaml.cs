@@ -16,6 +16,7 @@ using TerrariaConstructor.Infrastructure.Mappers;
 using TerrariaConstructor.Infrastructure.Repositories;
 using TerrariaConstructor.Models;
 using TerrariaConstructor.ViewModels;
+using TerrariaConstructor.Views;
 
 namespace TerrariaConstructor
 {
@@ -102,6 +103,10 @@ namespace TerrariaConstructor
             builder.RegisterType<CharacteristicsViewModel>().AsSelf();
             builder.RegisterType<EquipsViewModel>().AsSelf();
             builder.RegisterType<InventoriesViewModel>().AsSelf();
+            
+            builder.RegisterType<WelcomeView>().AsSelf();
+            builder.RegisterType<CharacteristicsView>().AsSelf();
+            builder.RegisterType<EquipsView>().AsSelf();
 
            return builder.Build();
         }
