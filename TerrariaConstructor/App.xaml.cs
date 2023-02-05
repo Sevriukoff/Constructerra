@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Autofac;
 using Autofac.Core;
 using LiteDB;
@@ -29,6 +30,10 @@ namespace TerrariaConstructor
         {
             base.OnStartup(e);
 
+            Wpf.Ui.Appearance.Accent.Apply(Wpf.Ui.Appearance.Accent.SystemAccent, 
+                Wpf.Ui.Appearance.Accent.PrimaryAccent, Color.FromRgb(130,99,255), 
+                Wpf.Ui.Appearance.Accent.TertiaryAccent);
+            
             Container = AppStartup();
         }
 
@@ -65,6 +70,10 @@ namespace TerrariaConstructor
                 .WithParameter(parameterSelector, valueProvider);
             
             builder.RegisterType<BuffsRepository>().As<IBuffsRepository>()
+                .InstancePerLifetimeScope()
+                .WithParameter(parameterSelector, valueProvider);
+
+            builder.RegisterType<AppearanceRepository>().As<IAppearanceRepository>()
                 .InstancePerLifetimeScope()
                 .WithParameter(parameterSelector, valueProvider);
             

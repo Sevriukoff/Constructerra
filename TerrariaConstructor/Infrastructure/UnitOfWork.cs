@@ -9,6 +9,7 @@ public class UnitOfWork : IDisposable
 {
     public IItemsRepository ItemsRepository { get; set; }
     public IBuffsRepository BuffsRepository { get; set; }
+    public IAppearanceRepository AppearanceRepository { get; set; }
     public IPlayerRepository PlayerRepository { get; set; }
     
     private readonly ILiteDatabase _itemsDatabase;
@@ -18,13 +19,15 @@ public class UnitOfWork : IDisposable
         ILiteDatabase playersDatabase,
         IItemsRepository itemsRepository,
         IBuffsRepository buffsRepository,
-        IPlayerRepository playerRepository)
+        IPlayerRepository playerRepository,
+        IAppearanceRepository appearanceRepository)
     {
         _itemsDatabase = itemsDatabase;
         _playersDatabase = playersDatabase;
         ItemsRepository = itemsRepository;
         BuffsRepository = buffsRepository;
         PlayerRepository = playerRepository;
+        AppearanceRepository = appearanceRepository;
     }
 
     public void Rollback()

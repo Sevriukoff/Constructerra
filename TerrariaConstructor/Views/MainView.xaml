@@ -1,15 +1,16 @@
-﻿<Window x:Class="TerrariaConstructor.Views.MainWindow"
+﻿<ui:FluentWindow x:Class="TerrariaConstructor.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TerrariaConstructor"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:views="clr-namespace:TerrariaConstructor.Views"
         xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
         d:DataContext="{d:DesignInstance vm:MainViewModel}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="1200">
     <Grid Margin="10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,14 +21,15 @@
             <StackPanel Orientation="Horizontal">
                 <Button Content="Загрузить" Click="ButtonBase_OnClick"/>
                 <Button Content="Сохранить" Click="ButtonSave_OnClick"/>
+                <ui:TitleBar Width="900"/>
             </StackPanel>
-            <TabControl Grid.Row="0" BorderThickness="0,1,0,0">
+            <TabControl Grid.Row="0" BorderThickness="0,0,0,0">
                 <TabItem Header="Старт">
                     
                 </TabItem>
                 <TabItem Header="Характеритсика">
-                    <views:CharacteristicsView
-                        DataContext="{Binding CharacteristicsViewModel}"/>
+                    <views:CharacteristicsView Height="650"
+                        DataContext="{Binding CharacteristicsViewModel}" />
                 </TabItem>
                 <TabItem Header="Экипировка">
                     
@@ -45,4 +47,4 @@
         </StackPanel>
 
     </Grid>
-</Window>
+</ui:FluentWindow>

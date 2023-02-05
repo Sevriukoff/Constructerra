@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Autofac;
 using ReactiveUI;
+using TerrariaConstructor.Infrastructure;
 
 namespace TerrariaConstructor.Models;
 
@@ -74,5 +76,25 @@ public class CharacteristicsModel
     public CharacteristicsModel()
     {
         
+    }
+
+    public List<Appearance> GetHairs()
+    {
+        using (var scope = App.Container.BeginLifetimeScope())
+        {
+            var unitOfWork = scope.Resolve<UnitOfWork>();
+            
+            return unitOfWork.AppearanceRepository.GetAllHairs().ToList();
+        }
+    }
+
+    public List<Appearance> GetSkins()
+    {
+        using (var scope = App.Container.BeginLifetimeScope())
+        {
+            var unitOfWork = scope.Resolve<UnitOfWork>();
+
+            return unitOfWork.AppearanceRepository.GetAllSkins().ToList();
+        }
     }
 }

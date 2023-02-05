@@ -4,18 +4,290 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TerrariaConstructor.Views"
+             xmlns:models="clr-namespace:TerrariaConstructor.Models"
+             xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
+             xmlns:validators="clr-namespace:TerrariaConstructor.Common.ValidationRules"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <StackPanel>
-        <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <Slider Maximum="500"
-                Value="{Binding Health, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Text="{Binding Health, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Text="{Binding PlayTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-        <TextBox Text="100000"
-                 Background="{Binding HairColor}"/>
-        <TextBox Text="1000000"
-                 Background="Fuchsia"/>
-        <TextBox Text="10000000"/>
-    </StackPanel>
+             d:DesignHeight="300" d:DesignWidth="1200"
+             d:DataContext="{d:DesignInstance vm:CharacteristicsViewModel}">
+    <UserControl.Resources>
+        <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
+        <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter" />
+    </UserControl.Resources>
+    <ScrollViewer>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Основные характеристики" />
+                    <Border BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="300"
+                            Margin="0,10" />
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Имя персонажа: " VerticalAlignment="Center" />
+                        <TextBox Text="{Binding Name}"
+                                 Foreground="#8263FF"
+                                 BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Режим: " VerticalAlignment="Center" />
+                        <ComboBox Text="{Binding Name}"
+                                  Foreground="#8263FF"
+                                  BorderThickness="0"
+                                  Style="{DynamicResource MaterialDesignComboBox}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Здоровье: " VerticalAlignment="Center" />
+                        <TextBox Text="{Binding Health}" Foreground="#FF7070" BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                        <TextBlock Text="/ " VerticalAlignment="Center" Foreground="#FF7070" />
+                        <TextBox Text="{Binding MaxHealth}" Foreground="#FF7070" BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Манна: " VerticalAlignment="Center" />
+                        <TextBox Text="{Binding Manna}" Foreground="#57AEFE" BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                        <TextBlock Text="/ " VerticalAlignment="Center" Foreground="#57AEFE" />
+                        <TextBox Text="{Binding MaxManna}" Foreground="#57AEFE" BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Выполнено квестов у рыбака: " VerticalAlignment="Center" />
+                        <TextBox Text="{Binding AnglerQuestsFinished}"
+                                 Foreground="#8263FF"
+                                 BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Заработано очков в гольфе: " VerticalAlignment="Center" />
+                        <TextBox Text="{Binding GolferScoreAccumulated}"
+                                 Foreground="#8263FF"
+                                 BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Время в игре: " VerticalAlignment="Center" />
+                        <TextBox Text="{Binding PlayTime}"
+                                 Foreground="#8263FF"
+                                 BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}" />
+                    </StackPanel>
+
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="0,30,0,0">
+                    <TextBlock Text="Внешний вид" />
+                    <Border BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="300"
+                            Margin="0,10" />
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Прическа: " VerticalAlignment="Center" />
+                        <TextBox MinWidth="150"
+                                 Foreground="#8263FF"
+                                 BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}">
+                            <TextBox.Text>
+                                <Binding Path="HairId"
+                                         UpdateSourceTrigger="PropertyChanged"
+                                         ValidatesOnDataErrors="True"
+                                         ValidatesOnExceptions="True">
+                                    <Binding.ValidationRules>
+                                        <validators:NumberRangeValidationRule MinValue="1" MaxValue="165" />
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </TextBox.Text>
+                        </TextBox>
+                    </StackPanel>
+                    <Border BorderThickness="1"
+                            BorderBrush="Black"
+                            CornerRadius="5">
+                        <ui:VirtualizingItemsControl ItemsSource="{Binding Hairs}"
+                                                     VirtualizingPanel.CacheLengthUnit="Item"
+                                                     Height="150">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:Appearance}">
+                                    <Grid>
+                                        <ui:Button
+                                            Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
+                                            Appearance="Secondary"
+                                            BorderThickness="1"
+                                            MouseOverBorderBrush="Transparent"
+                                            Command="{Binding DataContext.SelectHairCommand,
+                                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            CommandParameter="{Binding }"
+                                            Padding="5"
+                                            Margin="5">
+                                            <Image Stretch="Fill" StretchDirection="DownOnly" Width="32" Height="56"
+                                                   Source="{Binding Image, Converter={StaticResource ByteArrayToImageSourceConverter}}" />
+                                            <!--<b:Interaction.Triggers>
+                                            <b:EventTrigger EventName="Click">
+                                                <b:ChangePropertyAction TargetObject="{Binding}" PropertyName="Background" Value="#00FF00"/>
+                                            </b:EventTrigger>
+                                        </b:Interaction.Triggers>-->
+
+                                        </ui:Button>
+                                        <TextBlock FontSize="9" Text="{Binding Id}" VerticalAlignment="Bottom"
+                                                   HorizontalAlignment="Right" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ui:VirtualizingItemsControl>
+                    </Border>
+                    <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                        <TextBlock Text="Пол + Одежда: " VerticalAlignment="Center" />
+                        <TextBox MinWidth="150"
+                                 Foreground="#8263FF"
+                                 BorderThickness="0"
+                                 Style="{DynamicResource MaterialDesignTextBox}">
+                            <Binding Path="SkinId"
+                                     UpdateSourceTrigger="PropertyChanged"
+                                     ValidatesOnDataErrors="True">
+                                <Binding.ValidationRules>
+                                    <validators:NumberRangeValidationRule MinValue="0" MaxValue="10" />
+                                </Binding.ValidationRules>
+                            </Binding>
+                        </TextBox>
+                    </StackPanel>
+                    <Border BorderThickness="1"
+                            BorderBrush="Black"
+                            CornerRadius="5">
+                        <ui:VirtualizingItemsControl ItemsSource="{Binding Skins}"
+                                                     VirtualizingPanel.CacheLengthUnit="Item"
+                                                     Height="75">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type models:Appearance}">
+                                    <Grid>
+                                        <ui:Button
+                                            Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
+                                            Appearance="Secondary"
+                                            BorderThickness="1"
+                                            MouseOverBorderBrush="Transparent"
+                                            Command="{Binding DataContext.SelectSkinCommand,
+                                                    RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                                            CommandParameter="{Binding }"
+                                            Padding="5"
+                                            Margin="5">
+                                            <Image Stretch="Fill" StretchDirection="DownOnly" Width="32" Height="56"
+                                                   Source="{Binding Image, Converter={StaticResource ByteArrayToImageSourceConverter}}" />
+
+                                        </ui:Button>
+                                        <TextBlock FontSize="9" Text="{Binding Id}" VerticalAlignment="Bottom"
+                                                   HorizontalAlignment="Right" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ui:VirtualizingItemsControl>
+                    </Border>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет волос: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет кожы: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет глаз: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет рубашки: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет майки: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет штанов: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:ColorPicker Color="{Binding HairColor}" />
+                                <TextBlock Text="Цвет бутсов: " VerticalAlignment="Center" />
+                                <TextBox Text="{Binding HairColor}"
+                                         BorderThickness="0"
+                                         Style="{DynamicResource MaterialDesignTextBox}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="2">
+                <StackPanel>
+                    <TextBlock Text="Дополнительные характеристики" />
+                    <Border BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="300"
+                            Margin="0,10" />
+
+                    <StackPanel Orientation="Vertical">
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding AteArtisanBread}" Content="Съедена ремесленная буханка" />
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding UsedAegisCrystal}" Content="Использован кристал Эгиды"
+                                  Margin="0,5,0,0" />
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding UsedAegisFruit}" Content="Использован фрукт Эгиды"
+                                  Margin="0,5,0,0" />
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding UsedArcaneCrystal}" Content="Использован тайный кристалл"
+                                  Margin="0,5,0,0" />
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding UsedGalaxyPearl}" Content="Использована галактическая жемчужина"
+                                  Margin="0,5,0,0" />
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding UsedGummyWorm}" Content="Схрумкан мармеладный червячок"
+                                  Margin="0,5,0,0" />
+                        <CheckBox ToolTip="Бла-бла-бла"
+                                  IsChecked="{Binding UsedAmbrosia}" Content="Использовна амброзия"
+                                  Margin="0,5,0,0" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using DynamicData.Binding;
 using ReactiveUI;
 using Splat.ModeDetection;
 using TerrariaConstructor.Models;
@@ -27,7 +31,7 @@ public class CharacteristicsViewModel : ReactiveObject
     private TimeSpan _playTime;
     private int _hairId;
     private byte _skinId;
-    private Color _hairColor;
+    private System.Windows.Media.Color _hairColor;
     private Color _skinColor;
     private Color _eyeColor;
     private Color _shirtColor;
@@ -43,7 +47,16 @@ public class CharacteristicsViewModel : ReactiveObject
     private bool _usedAmbrosia;
 
     #region Properties
-    
+
+    public List<Appearance> Hairs { get; set; }
+    public List<Appearance> Skins { get; set; }
+
+    public Appearance SelectedAppearance
+    {
+        get => _selectedAppearance;
+        set => this.RaiseAndSetIfChanged(ref _selectedAppearance, value);
+    }
+
     public string Name
     {
         get => _name;
@@ -137,11 +150,7 @@ public class CharacteristicsViewModel : ReactiveObject
     public int HairId
     {
         get => _hairId;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _hairId, value);
-            Model.Hair = value;
-        }
+        set => this.RaiseAndSetIfChanged(ref _hairId, value);
     }
 
     public byte SkinId
@@ -154,13 +163,13 @@ public class CharacteristicsViewModel : ReactiveObject
         }
     }
 
-    public Color HairColor
+    public System.Windows.Media.Color HairColor
     {
         get => _hairColor;
         set
         {
             this.RaiseAndSetIfChanged(ref _hairColor, value);
-            Model.HairColor = value;
+            Model.HairColor = Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -295,10 +304,58 @@ public class CharacteristicsViewModel : ReactiveObject
     }
 
     #endregion
+
+    #region Commands
+    private Appearance _selectedAppearance;
+
+    private readonly ReactiveCommand<Appearance, Unit> _selectHairCommand;
+    public ReactiveCommand<Appearance, Unit> SelectHairCommand => _selectHairCommand;
+    
+    private readonly ReactiveCommand<Appearance, Unit> _selectSkinCommand;
+    public ReactiveCommand<Appearance, Unit> SelectSkinCommand => _selectSkinCommand;
+
+    #endregion
     
     public CharacteristicsViewModel(CharacteristicsModel model)
     {
         Model = model;
+        Hairs = Model.GetHairs();
+        Skins = Model.GetSkins();
+
+        this.WhenAnyValue(x => x.HairId)
+            .Subscribe(x => Model.Hair = x);
+
+        this.WhenAnyValue(x => x.HairId)
+            .Where(x => x > 0 && x<= Hairs.Count)
+            .Subscribe(id =>
+            {
+                foreach (var hair in Hairs)
+                {
+                    hair.IsSelected = hair.Id == HairId;
+                }
+            });
+        
+        this.WhenAnyValue(x => x.SkinId)
+            .Where(x => x > 0 && x<= Skins.Count)
+            .Subscribe(id =>
+            {
+                foreach (var skin in Skins)
+                {
+                    skin.IsSelected = skin.Id == SkinId;
+                }
+            });
+
+        _selectHairCommand = ReactiveCommand.Create<Appearance>(selectedHair =>
+        {
+            HairId = selectedHair.Id;
+        });
+
+        _selectSkinCommand = ReactiveCommand.Create<Appearance>(selectedSkin =>
+        {
+            SkinId = (byte) selectedSkin.Id;
+        });
+
+        //ConstructTerra
 
         /*
         this.WhenAnyValue(x => x.Model.Name)
@@ -315,9 +372,26 @@ public class CharacteristicsViewModel : ReactiveObject
     public void Update()
     {
         Name = Model.Name;
+        Difficulty = Model.Difficulty;
         Health = Model.Health;
+        MaxHealth = Model.MaxHealth;
+        Manna = Model.Mana;
+        MaxManna = Model.MaxMana;
+        AnglerQuestsFinished = Model.AnglerQuestsFinished;
+        GolferScoreAccumulated = Model.GolferScoreAccumulated;
         PlayTime = Model.PlayTime;
-        HairColor = Model.HairColor;
+        HairId = Model.Hair;
+        SkinId = Model.SkinVariant;
+
+        HairColor = System.Windows.Media.Color.FromArgb(Model.HairColor.A,Model.HairColor.R,Model.HairColor.G,Model.HairColor.B);
+
+        AteArtisanBread = Model.AteArtisanBread;
+        UsedAegisCrystal = Model.UsedAegisCrystal;
+        UsedAegisFruit = Model.UsedAegisFruit;
+        UsedArcaneCrystal = Model.UsedArcaneCrystal;
+        UsedGalaxyPearl = Model.UsedGalaxyPearl;
+        UsedGummyWorm = Model.UsedGummyWorm;
+        UsedAmbrosia = Model.UsedAmbrosia;
     }
 }
     
