@@ -100,13 +100,17 @@ namespace TerrariaConstructor
 
             builder.RegisterType<MainViewModel>().AsSelf();
             
-            builder.RegisterType<CharacteristicsViewModel>().AsSelf();
+            builder.RegisterType<CharacteristicsViewModel>().SingleInstance();
             builder.RegisterType<EquipsViewModel>().AsSelf();
             builder.RegisterType<InventoriesViewModel>().AsSelf();
             
             builder.RegisterType<WelcomeView>().AsSelf();
-            builder.RegisterType<CharacteristicsView>().AsSelf();
+            builder.RegisterType<CharacteristicsView>().SingleInstance();
             builder.RegisterType<EquipsView>().AsSelf();
+            builder.RegisterType<ToolsView>().AsSelf();
+            builder.RegisterType<InventoriesView>().AsSelf();
+            builder.RegisterType<BuffsView>().AsSelf();
+            builder.RegisterType<ResearchView>().AsSelf();
 
            return builder.Build();
         }

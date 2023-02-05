@@ -11,6 +11,7 @@
                  <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                  <ui:ThemesDictionary Theme="Light"/>
                  <ui:ControlsDictionary />
+                 <ResourceDictionary Source="Controls/GalleryNavigationPresenter.xaml"/>
              </ResourceDictionary.MergedDictionaries>
              
              <vm:ViewModelLocator x:Key="Locator"/>
