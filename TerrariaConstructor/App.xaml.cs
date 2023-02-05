@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Reactive.Concurrency;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,8 +16,11 @@ using TerrariaConstructor.Infrastructure.Interfaces;
 using TerrariaConstructor.Infrastructure.Mappers;
 using TerrariaConstructor.Infrastructure.Repositories;
 using TerrariaConstructor.Models;
+using TerrariaConstructor.Services;
 using TerrariaConstructor.ViewModels;
 using TerrariaConstructor.Views;
+using Wpf.Ui.Contracts;
+using Wpf.Ui.Services;
 
 namespace TerrariaConstructor
 {
@@ -36,6 +40,10 @@ namespace TerrariaConstructor
                 Wpf.Ui.Appearance.Accent.TertiaryAccent);
             
             Container = AppStartup();
+
+            MainWindow = App.Container.Resolve<MainWindow>();
+            if (MainWindow != null)
+                MainWindow.Show();
         }
 
         private static IContainer AppStartup()
@@ -103,7 +111,8 @@ namespace TerrariaConstructor
             builder.RegisterType<CharacteristicsViewModel>().SingleInstance();
             builder.RegisterType<EquipsViewModel>().AsSelf();
             builder.RegisterType<InventoriesViewModel>().AsSelf();
-            
+
+            builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<WelcomeView>().AsSelf();
             builder.RegisterType<CharacteristicsView>().SingleInstance();
             builder.RegisterType<EquipsView>().AsSelf();
@@ -111,6 +120,8 @@ namespace TerrariaConstructor
             builder.RegisterType<InventoriesView>().AsSelf();
             builder.RegisterType<BuffsView>().AsSelf();
             builder.RegisterType<ResearchView>().AsSelf();
+
+            builder.RegisterType<NavigationPageService>().As<INavigationService>().SingleInstance();
 
            return builder.Build();
         }

@@ -28,6 +28,8 @@
     <ItemGroup>
       <None Remove="Resources\Logo.png" />
       <Resource Include="Resources\Logo.png" />
+      <None Remove="Resources\ImageLogo.png" />
+      <Resource Include="Resources\ImageLogo.png" />
     </ItemGroup>
 
 </Project>

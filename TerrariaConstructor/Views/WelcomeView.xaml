@@ -1,12 +1,86 @@
-<UserControl x:Class="TerrariaConstructor.Views.WelcomeView"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:TerrariaConstructor.Views"
-             mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        
-    </Grid>
-</UserControl>
+<Page x:Class="TerrariaConstructor.Views.WelcomeView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:local="clr-namespace:TerrariaConstructor.Views"
+      mc:Ignorable="d"
+      d:DesignHeight="500" d:DesignWidth="600">
+    <ScrollViewer>
+        <Grid Margin="5">
+            <Grid.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="FontSize" Value="18" />
+                </Style>
+            </Grid.Resources>
+            <StackPanel>
+                <Image Height="150" Source="pack://application:,,,/Resources/ImageLogo.png" Margin="0,15" />
+                <ui:Card>
+                    <StackPanel>
+                        <TextBlock Text="Инструкция:" FontWeight="Medium" Margin="0,0,0,15"/>
+                        <TextBlock Text="Нажмите &quot;Загрузить&quot;, чтобы загрузить файл персонажа"
+                                   TextWrapping="WrapWithOverflow"
+                                   Foreground="#8263FF" />
+                        <TextBlock Text="Нажмите &quot;Сохранить&quot;, чтобы сохранить файл персонажа"
+                                   TextWrapping="WrapWithOverflow"
+                                   Foreground="#8263FF" />
+                        <TextBlock
+                            Text="Нажмите &quot;Создать&quot;, чтобы создать нового персонажа, которого потом можно будет сохранить"
+                            TextWrapping="WrapWithOverflow"
+                            Foreground="#8263FF" />
+                        <TextBlock Text="Обычно файлы персонажей находятся в:" />
+                        <TextBlock Text="Windows:&#32;" Foreground="#8263FF" TextWrapping="WrapWithOverflow">
+                            <Run Text="&quot;My Documents/My Games/Terraria/Players&quot;" Foreground="Black" />
+                        </TextBlock>
+                        <TextBlock Text="Mac:&#32;" Foreground="#8263FF" TextWrapping="WrapWithOverflow">
+                            <Run Text="&quot;~/Library/Application Support/Terraria/Players&quot; (user home)"
+                                 Foreground="Black" />
+                        </TextBlock>
+                        <TextBlock Text="Linux:&#32;" Foreground="#8263FF" TextWrapping="WrapWithOverflow">
+                            <Run
+                                Text="&quot;~/.local/share/Terraria/Players&quot; (или $XDG_DATA_HOME/Terraria/Players)"
+                                Foreground="Black" />
+                        </TextBlock>
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card Margin="0,30">
+                    <StackPanel >
+                        <TextBlock Text="Конструктерра сделан&#32;">
+                            <Run Text="Bellatrix270" Foreground="#90BDFF" />
+                        </TextBlock>
+                    </StackPanel>
+                </ui:Card>
+
+                <StackPanel >
+                    <ui:Card Margin="0" Padding="0">
+                        <StackPanel Margin="15">
+                            <TextBlock Text="Обновления:" FontWeight="Medium" Margin="0,0,0,15"/>
+                            <TextBlock Text="Последние обновление было&#32;">
+                                <Run Text="05.02.23" Foreground="#90BDFF" />
+                                <Run Text="(для Террарии"/>
+                                <Run Text="1.4.4.x):" Foreground="#90BDFF"/>
+                            </TextBlock>
+                            <TextBlock Text="- Что-то добавлено #1"/>
+                            <TextBlock Text="- Что-то ещё добавлено #2"/>
+                            <TextBlock Text="- Что-то пофикшено, наверно баг какой-то #3"/>
+                        </StackPanel>
+                        <ui:Card.Footer>
+                            <StackPanel Background="White">
+                                <ui:ThumbRate State="None" Background="White"/>
+                            </StackPanel>
+                        </ui:Card.Footer>
+                    </ui:Card>
+                    
+                </StackPanel>
+
+            </StackPanel>
+            <TextBlock Text="Версия приложения: 0.1"
+                       FontSize="9"
+                       FontWeight="Light"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"/>
+        </Grid>
+    </ScrollViewer>
+</Page>

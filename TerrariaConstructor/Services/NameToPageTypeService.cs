@@ -12,9 +12,9 @@ public class NameToPageTypeService
         .Where(t => t.Namespace?.StartsWith("TerrariaConstructor.Views") ?? false)
         .ToArray();
 
-    public static Type? Convert(string pageName)
+    public static Type Convert(string pageName)
     {
-        pageName = pageName.Trim().ToLower() + "page";
+        pageName = pageName.Trim().ToLower() + "view";
 
         return PageTypes.FirstOrDefault(singlePageType => singlePageType.Name.ToLower() == pageName);
     }

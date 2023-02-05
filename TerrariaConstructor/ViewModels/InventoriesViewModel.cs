@@ -17,7 +17,7 @@ public class InventoriesViewModel : ReactiveObject
             Name = "Основной инветарь",
             Icon = SymbolRegular.Navigation24,
             Description = "Основной инвентарь игрока, где храниться всякая шелуха.",
-            Link = "NavigationView"
+            Link = "Characteristics"
         },
         new()
         {

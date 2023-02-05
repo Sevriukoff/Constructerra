@@ -18,13 +18,12 @@ namespace TerrariaConstructor.Views
     /// </summary>
     public partial class MainWindow : INavigationWindow
     {
-        public MainWindow()
+        public MainWindow(INavigationService navigationService)
         {
             InitializeComponent();
 
             var pageService = new PageService();
-            var navigationService = new NavigationService(null);
-            
+
             SetPageService(pageService);
             navigationService.SetNavigationControl(RootNavigation);
         }

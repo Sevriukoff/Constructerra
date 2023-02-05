@@ -6,6 +6,7 @@ using Autofac;
 using ReactiveUI;
 using TerrariaConstructor.Services;
 using Wpf.Ui.Contracts;
+using Wpf.Ui.Services;
 
 namespace TerrariaConstructor.Controls;
 

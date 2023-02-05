@@ -66,7 +66,35 @@ public class MainViewModel : ReactiveObject
             {
                 Content = "Инвентарь",
                 Icon = new SymbolIcon{Symbol = SymbolRegular.Savings16},
-                TargetPageType = typeof(InventoriesView)
+                TargetPageType = typeof(InventoriesView),
+                MenuItems = new ObservableCollection<object>
+                {
+                    new NavigationViewItem
+                    {
+                        Content = "Основной инветарь",
+                        TargetPageType = typeof(CharacteristicsView)
+                    },
+                    new NavigationViewItem
+                    {
+                        Content = "Копилка",
+                        TargetPageType = typeof(CharacteristicsView)
+                    },
+                    new NavigationViewItem
+                    {
+                        Content = "Сейф",
+                        TargetPageType = typeof(CharacteristicsView)
+                    },
+                    new NavigationViewItem
+                    {
+                        Content = "Кузница",
+                        TargetPageType = typeof(CharacteristicsView)
+                    },
+                    new NavigationViewItem
+                    {
+                        Content = "Безднонный мешок",
+                        TargetPageType = typeof(CharacteristicsView)
+                    }
+                }
             },
             new NavigationViewItem
             {

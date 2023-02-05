@@ -195,6 +195,12 @@
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <ui:VirtualizingWrapPanel
+                                        Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
                         </ui:VirtualizingItemsControl>
                     </Border>
                     <Grid>
