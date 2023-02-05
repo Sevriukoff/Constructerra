@@ -186,6 +186,10 @@ public class PlayerModel
                 Prefix = reader.ReadByte(),
                 IsFavorite = reader.ReadBoolean()
             };
+            
+            var item = unitOfWork.ItemsRepository.GetById(_inventories.Inventory[i].Id);
+
+            _inventories.Inventory[i].Name = item.Name;
         }
 
         for (int i = 0; i < _equips.Purse.Length; i++)

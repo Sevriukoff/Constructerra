@@ -17,35 +17,35 @@ public class InventoriesViewModel : ReactiveObject
             Name = "Основной инветарь",
             Icon = SymbolRegular.Navigation24,
             Description = "Основной инвентарь игрока, где храниться всякая шелуха.",
-            Link = "Characteristics"
+            Link = "MainInventory"
         },
         new()
         {
             Name = "Копилка",
             Icon = SymbolRegular.Navigation24,
             Description = "Свиное пездное рыло",
-            Link = "NavigationView"
+            Link = "Characteristics"
         },
         new()
         {
             Name = "Сейф",
             Icon = SymbolRegular.Navigation24,
             Description = "Сейф",
-            Link = "NavigationView"
+            Link = "MainInventory"
         },
         new()
         {
             Name = "Кузница",
             Icon = SymbolRegular.Navigation24,
             Description = "Кузница",
-            Link = "NavigationView"
+            Link = "MainInventory"
         },
         new()
         {
             Name = "Безднонный мешок",
             Icon = SymbolRegular.Navigation24,
             Description = "Безднонный мешок",
-            Link = "NavigationView"
+            Link = "MainInventory"
         }
     };
     

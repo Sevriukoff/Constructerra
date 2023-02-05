@@ -1,4 +1,6 @@
+using System;
 using System.Collections.ObjectModel;
+using Microsoft.Win32;
 using ReactiveUI;
 using TerrariaConstructor.Models;
 using TerrariaConstructor.Views;
@@ -12,6 +14,7 @@ namespace TerrariaConstructor.ViewModels;
 public class MainViewModel : ReactiveObject
 {
     private ObservableCollection<object> _navigationItems;
+    private ObservableCollection<object> _footerItems;
     public PlayerModel PlayerModel { get; }
     public CharacteristicsViewModel CharacteristicsViewModel { get; set; }
     public EquipsViewModel EquipsViewModel { get; set; }
@@ -20,6 +23,12 @@ public class MainViewModel : ReactiveObject
     {
         get => _navigationItems;
         set => this.RaiseAndSetIfChanged(ref _navigationItems, value);
+    }
+
+    public ObservableCollection<object> FooterItems
+    {
+        get => _footerItems;
+        set => this.RaiseAndSetIfChanged(ref _footerItems, value);
     }
 
     public InventoriesViewModel InventoriesViewModel { get; set; }
@@ -72,7 +81,7 @@ public class MainViewModel : ReactiveObject
                     new NavigationViewItem
                     {
                         Content = "Основной инветарь",
-                        TargetPageType = typeof(CharacteristicsView)
+                        TargetPageType = typeof(MainInventoryView)
                     },
                     new NavigationViewItem
                     {
@@ -110,6 +119,59 @@ public class MainViewModel : ReactiveObject
             }
         };
 
+        FooterItems = new ObservableCollection<object>();
+
+        var uploadNavigationViewItem = new NavigationViewItem
+        {
+            Content = "Загрузить",
+            Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowUpload16},
+        };
+
+        uploadNavigationViewItem.Click += (_, _) =>
+        {
+            var openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string filePath = openFileDialog.FileName;
+                PlayerModel.LoadPlayer(filePath);
+            }
+        };
+        
+        var saveNavigationViewItem = new NavigationViewItem
+        {
+            Content = "Сохранить",
+            Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowDownload16},
+        };
+
+        saveNavigationViewItem.Click += (_, _) =>
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Plr files (*.plr)|*.plr";
+            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            saveFileDialog.FileName = "Name";
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string fileName = saveFileDialog.FileName;
+                PlayerModel.SavePlayer(fileName);
+            }
+        };
+        
+        var createNavigationViewItem = new NavigationViewItem
+        {
+            Content = "Создать",
+            Icon = new SymbolIcon {Symbol = SymbolRegular.Add12},
+        };
+
+        createNavigationViewItem.Click += (_, _) =>
+        {
+            
+        };
+        
+        FooterItems.Add(uploadNavigationViewItem);
+        FooterItems.Add(saveNavigationViewItem);
+        FooterItems.Add(createNavigationViewItem);
+        
         PlayerModel.PlayerUpdated += () =>
         {
             CharacteristicsViewModel.Update();

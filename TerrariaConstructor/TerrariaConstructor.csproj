@@ -6,6 +6,7 @@
         <Nullable>disable</Nullable>
         <UseWPF>true</UseWPF>
         <LangVersion>latest</LangVersion>
+        <ApplicationIcon>Logo.ico</ApplicationIcon>
     </PropertyGroup>
 
     <ItemGroup>

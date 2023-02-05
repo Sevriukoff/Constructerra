@@ -39,7 +39,7 @@ public class ItemMapper : BsonMapper
                 result.Id = b["_id"].AsInt32;
                 result.Name = string.IsNullOrEmpty(b["RuName"].AsString) ? b["Name"] : b["RuName"];
                 result.Description = string.IsNullOrEmpty(b["RuToolTip"].AsString)
-                    ? b["Types"].AsArray[0].AsString
+                    ? b["Types"].AsArray.Count > 0 ? b["Types"].AsArray[0].AsString : "None"
                     : b["RuToolTip"];
 
                 return result;
