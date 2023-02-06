@@ -18,7 +18,7 @@ namespace TerrariaConstructor.Views
     /// </summary>
     public partial class MainWindow : INavigationWindow
     {
-        public MainWindow(INavigationService navigationService)
+        public MainWindow(INavigationService navigationService, ISnackbarService snackbarService)
         {
             InitializeComponent();
 
@@ -26,6 +26,7 @@ namespace TerrariaConstructor.Views
 
             SetPageService(pageService);
             navigationService.SetNavigationControl(RootNavigation);
+            snackbarService.SetSnackbarControl(RootSnackbar);
 
             RootNavigation.Loaded += (_, _) => RootNavigation.Navigate(typeof(WelcomeView));
         }

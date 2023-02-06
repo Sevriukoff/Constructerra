@@ -30,6 +30,9 @@
                            TransitionType="SlideLeft"
                            MenuItemsSource="{Binding NavigationItems, Mode=OneWay}"
                            FooterMenuItemsSource="{Binding FooterItems, Mode=OneWay}">
+            <ui:NavigationView.ContentOverlay>
+                <ui:Snackbar x:Name="RootSnackbar"/>
+            </ui:NavigationView.ContentOverlay>
             
         </ui:NavigationView>
     </Grid>

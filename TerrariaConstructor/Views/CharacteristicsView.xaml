@@ -17,6 +17,11 @@
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
         <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter" />
+        <Style TargetType="TextBlock" x:Key="CaptionText">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
     </Page.Resources>
     <ScrollViewer>
         <Grid Margin="10">
@@ -31,7 +36,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
-                    <TextBlock Text="Основные характеристики" />
+                    <TextBlock Text="Основные характеристики"
+                               Style="{StaticResource CaptionText}"/>
                     <Border BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="300"
                             Margin="0,10" />
 
@@ -95,7 +101,8 @@
 
                 </StackPanel>
                 <StackPanel Grid.Row="1" Margin="0,30,0,0">
-                    <TextBlock Text="Внешний вид" />
+                    <TextBlock Text="Внешний вид"
+                               Style="{StaticResource CaptionText}"/>
                     <Border BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="300"
                             Margin="0,10" />
 
@@ -266,7 +273,8 @@
             </Grid>
             <Grid Grid.Column="2">
                 <StackPanel>
-                    <TextBlock Text="Дополнительные характеристики" />
+                    <TextBlock Text="Дополнительные характеристики"
+                               Style="{StaticResource CaptionText}"/>
                     <Border BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="300"
                             Margin="0,10" />
 

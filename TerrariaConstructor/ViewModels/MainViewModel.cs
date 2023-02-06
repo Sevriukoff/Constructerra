@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using Microsoft.Win32;
 using ReactiveUI;
 using TerrariaConstructor.Models;
@@ -13,6 +14,7 @@ namespace TerrariaConstructor.ViewModels;
 
 public class MainViewModel : ReactiveObject
 {
+    private readonly ISnackbarService _snackbarService;
     private ObservableCollection<object> _navigationItems;
     private ObservableCollection<object> _footerItems;
     public PlayerModel PlayerModel { get; }
@@ -38,12 +40,14 @@ public class MainViewModel : ReactiveObject
     public MainViewModel(PlayerModel playerModel,
         CharacteristicsViewModel characteristicsViewModel,
         EquipsViewModel equipsViewModel,
-        InventoriesViewModel inventoriesViewModel)
+        InventoriesViewModel inventoriesViewModel,
+        ISnackbarService snackbarService)
     {
         PlayerModel = playerModel;
         CharacteristicsViewModel = characteristicsViewModel;
         EquipsViewModel = equipsViewModel;
         InventoriesViewModel = inventoriesViewModel;
+        _snackbarService = snackbarService;
 
         NavigationItems = new ObservableCollection<object>
         {
@@ -133,7 +137,25 @@ public class MainViewModel : ReactiveObject
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
-                PlayerModel.LoadPlayer(filePath);
+                string playerName = Path.GetFileNameWithoutExtension(filePath);
+                _snackbarService.Timeout = 3000;
+                
+                try
+                {
+                    PlayerModel.LoadPlayer(filePath);
+                }
+                catch (Exception e)
+                {
+                    _snackbarService.Show("Ошибка",
+                        $"При загрузке {playerName} произошла ошибка. Возможно файл повреждён или имеет не правильный формат",
+                        SymbolRegular.ArrowUpload16,
+                        ControlAppearance.Danger);
+                    
+                    return;
+                }
+                
+                _snackbarService.Show("Успешно", $"Персонаж {playerName} был загружен", SymbolRegular.ArrowUpload16,
+                    ControlAppearance.Success);
             }
         };
         

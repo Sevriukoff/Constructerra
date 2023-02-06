@@ -1,3 +1,4 @@
+using System.IO;
 using LiteDB;
 using TerrariaConstructor.Infrastructure.Interfaces;
 using TerrariaConstructor.Models;
@@ -13,10 +14,17 @@ public class ItemsRepository : IItemsRepository
         _itemsDatabase = itemsDatabase;
     }
 
-    public Item GetById(int id)
+    public Item GetById(int id, bool loadImage = true)
     {
         var result =_itemsDatabase.GetCollection<Item>("items").FindOne(x => x.Id == id);
-
+        
+        if (result != null && loadImage)
+        {
+            var fileInfo = _itemsDatabase.FileStorage.OpenRead(result.Id.ToString());
+            result.Image = new byte[fileInfo.Length];
+            fileInfo.Read(result.Image, 0, (int) fileInfo.Length);
+        }
+        
         return result;
     }
 

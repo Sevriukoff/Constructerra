@@ -124,6 +124,7 @@ namespace TerrariaConstructor
             builder.RegisterType<ResearchView>().AsSelf();
 
             builder.RegisterType<NavigationPageService>().As<INavigationService>().SingleInstance();
+            builder.RegisterType<SnackbarService>().As<ISnackbarService>().SingleInstance();
 
            return builder.Build();
         }

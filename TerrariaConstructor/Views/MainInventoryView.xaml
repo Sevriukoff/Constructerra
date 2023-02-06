@@ -7,25 +7,56 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
       xmlns:models="clr-namespace:TerrariaConstructor.Models"
+      xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance vm:MainInventoryViewModel}">
+    <Page.Resources>
+        <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+    </Page.Resources>
     <Grid>
         <ui:VirtualizingItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
                                      VirtualizingPanel.CacheLengthUnit="Item">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Item}">
-                    <ui:Button
-                        Width="80"
-                        Height="80"
-                        Margin="2"
-                        Padding="0"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Appearance="Secondary"
-                        FontSize="25"
-                        ToolTip="{Binding Name, Mode=OneTime}" >
-                        <Image Source="pack://application:,,,/Resources/Logo.png"/>
-                    </ui:Button>
+                    <Grid>
+                        <ui:Button
+                            Width="80"
+                            Height="80"
+                            Margin="2"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            Appearance="Secondary"
+                            FontSize="25">
+                            <Image
+                                Width="32"
+                                Height="32"
+                                Source="{Binding Image,
+                        Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
+                            <ui:Button.ToolTip>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}"
+                                                   Foreground="#8263FF"
+                                                   FontWeight="Medium"/>
+                                        <TextBlock Text="{Binding Id, StringFormat=' (#{0})'}"
+                                                   Foreground="#8263FF"
+                                                   FontWeight="Medium"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Description}"
+                                               TextWrapping="WrapWithOverflow"/>
+                                    <TextBlock Text="{Binding Stack}"/>
+                                </StackPanel>
+                            </ui:Button.ToolTip>
+                        </ui:Button>
+                        <TextBlock Text="{Binding Stack}"
+                                   FontSize="11"
+                                   FontWeight="Light"
+                                   Padding="5"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"/>
+                    </Grid>
+                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ui:VirtualizingItemsControl>
