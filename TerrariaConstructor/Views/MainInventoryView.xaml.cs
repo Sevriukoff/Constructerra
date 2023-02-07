@@ -1,18 +1,18 @@
 using System.Windows.Controls;
+using ReactiveUI;
 using TerrariaConstructor.ViewModels;
 using Wpf.Ui.Controls.Navigation;
 
 namespace TerrariaConstructor.Views;
 
-public partial class MainInventoryView : INavigableView<MainInventoryViewModel>
+public partial class MainInventoryView : INavigableView<ReactiveObject>
 {
-    public MainInventoryView(MainInventoryViewModel viewModel)
+    public MainInventoryView()
     {
-        ViewModel = viewModel;
-        DataContext = ViewModel;
+        //DataContext = ViewModel;
         
         InitializeComponent();
     }
 
-    public MainInventoryViewModel ViewModel { get; }
+    public ReactiveObject ViewModel { get; }
 }

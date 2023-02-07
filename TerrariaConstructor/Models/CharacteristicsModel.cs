@@ -34,7 +34,7 @@ public class CharacteristicsModel
     public Color SkinColor { get; set; }
     public Color EyeColor { get; set; }
     public Color ShirtColor { get; set; }
-    public Color UnderShirtColor { get; set; }
+    public Color UndershirtColor { get; set; }
     public Color PantsColor { get; set; }
     public Color ShoeColor { get; set; }
 

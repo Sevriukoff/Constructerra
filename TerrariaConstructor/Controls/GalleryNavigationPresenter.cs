@@ -5,8 +5,10 @@ using System.Windows.Controls;
 using Autofac;
 using ReactiveUI;
 using TerrariaConstructor.Services;
+using TerrariaConstructor.ViewModels;
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Services;
+using INavigationService = TerrariaConstructor.Services.INavigationService;
 
 namespace TerrariaConstructor.Controls;
 
@@ -53,10 +55,11 @@ public class GalleryNavigationPresenter : Control
         if (navigationService == null)
             return;
 
-        var pageType = NameToPageTypeService.Convert(parameter);
+        var pageType = NameToPageTypeService.Convert("MainInventory");
+        var viewModelType = NameToViewModelTypeService.Convert(parameter);
 
         if (pageType != null)
-            navigationService.Navigate(pageType);
+            navigationService.NavigateWithDataContext(pageType, (ReactiveObject)App.Container.Resolve(viewModelType));
 
 #if DEBUG
         System.Diagnostics.Debug.WriteLine(

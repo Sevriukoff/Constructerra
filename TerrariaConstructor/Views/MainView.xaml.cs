@@ -10,6 +10,7 @@ using TerrariaConstructor.ViewModels;
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls.Navigation;
 using Wpf.Ui.Services;
+using INavigationService = TerrariaConstructor.Services.INavigationService;
 
 namespace TerrariaConstructor.Views
 {

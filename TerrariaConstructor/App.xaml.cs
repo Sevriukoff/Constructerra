@@ -21,6 +21,7 @@ using TerrariaConstructor.ViewModels;
 using TerrariaConstructor.Views;
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Services;
+using INavigationService = TerrariaConstructor.Services.INavigationService;
 
 namespace TerrariaConstructor
 {
@@ -112,6 +113,10 @@ namespace TerrariaConstructor
             builder.RegisterType<EquipsViewModel>().AsSelf();
             builder.RegisterType<InventoriesViewModel>().AsSelf();
             builder.RegisterType<MainInventoryViewModel>().AsSelf();
+            builder.RegisterType<PiggyInventoryViewModel>().AsSelf();
+            builder.RegisterType<SafeInventoryViewModel>().AsSelf();
+            builder.RegisterType<ForgeInventoryViewModel>().AsSelf();
+            builder.RegisterType<VoidInventoryViewModel>().AsSelf();
             
             builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<WelcomeView>().AsSelf();

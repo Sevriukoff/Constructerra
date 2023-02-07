@@ -153,7 +153,7 @@ public class PlayerModel
         _characteristic.SkinColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
         _characteristic.EyeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
         _characteristic.ShirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
-        _characteristic.UnderShirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
+        _characteristic.UndershirtColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
         _characteristic.PantsColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
         _characteristic.ShoeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
 
@@ -243,6 +243,16 @@ public class PlayerModel
                 Stack = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
+            
+            if (_inventories.Bank1[i].Id > 0)
+            {
+                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank1[i].Id);
+
+                _inventories.Bank1[i].Name = item.Name;
+                _inventories.Bank1[i].Description = item.Description;
+                _inventories.Bank1[i].Image = item.Image;
+                _inventories.Bank1[i].Sell = item.Sell;
+            }
         }
         
         for (int i = 0; i < _inventories.Bank2.Length; i++)
@@ -253,6 +263,16 @@ public class PlayerModel
                 Stack = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
+            
+            if (_inventories.Bank2[i].Id > 0)
+            {
+                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank2[i].Id);
+
+                _inventories.Bank2[i].Name = item.Name;
+                _inventories.Bank2[i].Description = item.Description;
+                _inventories.Bank2[i].Image = item.Image;
+                _inventories.Bank2[i].Sell = item.Sell;
+            }
         }
         
         for (int i = 0; i < _inventories.Bank3.Length; i++)
@@ -263,6 +283,16 @@ public class PlayerModel
                 Stack = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
             };
+            
+            if (_inventories.Bank3[i].Id > 0)
+            {
+                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank3[i].Id);
+
+                _inventories.Bank3[i].Name = item.Name;
+                _inventories.Bank3[i].Description = item.Description;
+                _inventories.Bank3[i].Image = item.Image;
+                _inventories.Bank3[i].Sell = item.Sell;
+            }
         }
         
         for (int i = 0; i < _inventories.Bank4.Length; i++)
@@ -274,6 +304,16 @@ public class PlayerModel
                 Prefix = reader.ReadByte(),
                 IsFavorite = reader.ReadBoolean()
             };
+            
+            if (_inventories.Bank4[i].Id > 0)
+            {
+                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank4[i].Id);
+
+                _inventories.Bank4[i].Name = item.Name;
+                _inventories.Bank4[i].Description = item.Description;
+                _inventories.Bank4[i].Image = item.Image;
+                _inventories.Bank4[i].Sell = item.Sell;
+            }
         }
 
         _characteristic.VoidVaultInfo = reader.ReadByte();
@@ -475,9 +515,9 @@ public class PlayerModel
         writer.Write(_characteristic.ShirtColor.R);
         writer.Write(_characteristic.ShirtColor.G);
         writer.Write(_characteristic.ShirtColor.B);
-        writer.Write(_characteristic.UnderShirtColor.R);
-        writer.Write(_characteristic.UnderShirtColor.G);
-        writer.Write(_characteristic.UnderShirtColor.B);
+        writer.Write(_characteristic.UndershirtColor.R);
+        writer.Write(_characteristic.UndershirtColor.G);
+        writer.Write(_characteristic.UndershirtColor.B);
         writer.Write(_characteristic.PantsColor.R);
         writer.Write(_characteristic.PantsColor.G);
         writer.Write(_characteristic.PantsColor.B);
@@ -731,9 +771,9 @@ public class PlayerModel
                 writer.Write(_characteristic.ShirtColor.R);
                 writer.Write(_characteristic.ShirtColor.G);
                 writer.Write(_characteristic.ShirtColor.B);
-                writer.Write(_characteristic.UnderShirtColor.R);
-                writer.Write(_characteristic.UnderShirtColor.G);
-                writer.Write(_characteristic.UnderShirtColor.B);
+                writer.Write(_characteristic.UndershirtColor.R);
+                writer.Write(_characteristic.UndershirtColor.G);
+                writer.Write(_characteristic.UndershirtColor.B);
                 writer.Write(_characteristic.PantsColor.R);
                 writer.Write(_characteristic.PantsColor.G);
                 writer.Write(_characteristic.PantsColor.B);

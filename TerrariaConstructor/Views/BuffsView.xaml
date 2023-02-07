@@ -7,6 +7,29 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <TextBlock Text="Страничка баффов"
+                       Foreground="#272727"
+                       FontWeight="Medium"
+                       FontSize="36"
+                       TextAlignment="Center"/>
+            <Border BorderThickness="1"
+                    BorderBrush="#272727" 
+                    HorizontalAlignment="Center"
+                    Width="300"
+                    Margin="0,15" />
+            <TextBlock Text="Пока здесь ничего нет"
+                       Foreground="#656464"
+                       FontWeight="Normal"
+                       FontSize="36"
+                       TextAlignment="Center"/>
+            <TextBlock Text="следите за обновлениями"
+                       Foreground="#939292"
+                       FontWeight="Light"
+                       FontSize="21"
+                       TextAlignment="Center"
+                       Margin="0,15,0,0"/>
+        </StackPanel>
     </Grid>
 </UserControl>

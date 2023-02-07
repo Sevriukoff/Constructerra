@@ -12,7 +12,7 @@ using ReactiveUI;
 using Splat.ModeDetection;
 using TerrariaConstructor.Models;
 using Wpf.Ui.Controls.Navigation;
-using Color = System.Drawing.Color;
+using Color = System.Windows.Media.Color;
 
 namespace TerrariaConstructor.ViewModels;
 
@@ -32,7 +32,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     private TimeSpan _playTime;
     private int _hairId;
     private byte _skinId;
-    private System.Windows.Media.Color _hairColor;
+    private Color _hairColor;
     private Color _skinColor;
     private Color _eyeColor;
     private Color _shirtColor;
@@ -172,7 +172,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _hairColor, value);
-            Model.HairColor = Color.FromArgb(value.A, value.R, value.G, value.B);
+            Model.HairColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -182,7 +182,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _skinColor, value);
-            Model.SkinColor = value;
+            Model.SkinColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -192,7 +192,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _eyeColor, value);
-            Model.EyeColor = value;
+            Model.EyeColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -202,7 +202,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _shirtColor, value);
-            Model.ShirtColor = value;
+            Model.ShirtColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -212,7 +212,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _undershirtColor, value);
-            Model.UnderShirtColor = value;
+            Model.UndershirtColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -222,7 +222,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _pantsColor, value);
-            Model.PantsColor = value;
+            Model.PantsColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -232,7 +232,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set
         {
             this.RaiseAndSetIfChanged(ref _shoeColor, value);
-            Model.ShoeColor = value;
+            Model.ShoeColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
 
@@ -468,7 +468,13 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         HairId = Model.Hair;
         SkinId = Model.SkinVariant;
 
-        HairColor = System.Windows.Media.Color.FromArgb(Model.HairColor.A,Model.HairColor.R,Model.HairColor.G,Model.HairColor.B);
+        HairColor = Color.FromArgb(Model.HairColor.A,Model.HairColor.R,Model.HairColor.G,Model.HairColor.B);
+        SkinColor = Color.FromArgb(Model.SkinColor.A,Model.SkinColor.R,Model.SkinColor.G,Model.SkinColor.B);
+        EyeColor = Color.FromArgb(Model.EyeColor.A,Model.EyeColor.R,Model.EyeColor.G,Model.EyeColor.B);
+        ShirtColor = Color.FromArgb(Model.ShirtColor.A,Model.ShirtColor.R,Model.ShirtColor.G,Model.ShirtColor.B);
+        UndershirtColor = Color.FromArgb(Model.UndershirtColor.A,Model.UndershirtColor.R,Model.UndershirtColor.G,Model.UndershirtColor.B);
+        PantsColor = Color.FromArgb(Model.PantsColor.A,Model.PantsColor.R,Model.PantsColor.G,Model.PantsColor.B);
+        ShoeColor = Color.FromArgb(Model.ShoeColor.A,Model.ShoeColor.R,Model.ShoeColor.G,Model.ShoeColor.B);
 
         AteArtisanBread = Model.AteArtisanBread;
         UsedAegisCrystal = Model.UsedAegisCrystal;

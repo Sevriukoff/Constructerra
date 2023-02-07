@@ -1,4 +1,5 @@
 using System;
+using ReactiveUI;
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Controls.Navigation;
 
@@ -42,6 +43,8 @@ public class NavigationPageService : INavigationService
 
     /// <inheritdoc />
     public bool Navigate(Type pageType) => this.NavigationControl != null && this.NavigationControl.Navigate(pageType);
+    public bool NavigateWithDataContext(Type pageType, ReactiveObject dataContext)
+        => this.NavigationControl != null && this.NavigationControl.Navigate(pageType, dataContext);
 
     /// <inheritdoc />
     public bool Navigate(string pageTag) => this.NavigationControl != null && this.NavigationControl.Navigate(pageTag);

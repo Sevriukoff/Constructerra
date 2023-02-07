@@ -15,7 +15,8 @@
     </Page.Resources>
     <Grid>
         <ui:VirtualizingItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
-                                     VirtualizingPanel.CacheLengthUnit="Item">
+                                     VirtualizingPanel.CacheLengthUnit="Item"
+                                     MaxWidth="850">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Item}">
                     <Grid>
@@ -29,8 +30,7 @@
                             Appearance="Secondary"
                             FontSize="25">
                             <Image
-                                Width="32"
-                                Height="32"
+                                Stretch="None"
                                 Source="{Binding Image,
                         Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
                             <ui:Button.ToolTip>

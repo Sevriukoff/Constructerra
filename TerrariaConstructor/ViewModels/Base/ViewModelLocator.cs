@@ -1,6 +1,6 @@
 using Autofac;
 
-namespace TerrariaConstructor.ViewModels;
+namespace TerrariaConstructor.ViewModels.Base;
 
 public class ViewModelLocator
 {

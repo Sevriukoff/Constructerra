@@ -1,24 +1,14 @@
 using System.Collections.ObjectModel;
 using ReactiveUI;
 using TerrariaConstructor.Models;
+using TerrariaConstructor.ViewModels.Base;
 
 namespace TerrariaConstructor.ViewModels;
 
-public class MainInventoryViewModel : ReactiveObject
+public class MainInventoryViewModel : BaseInventoryViewModel
 {
-    private readonly InventoriesModel _model;
-    private ObservableCollection<Item> _items;
-
-    public ObservableCollection<Item> Items
+    public MainInventoryViewModel(InventoriesModel model) : base(model)
     {
-        get => _items;
-        set => this.RaiseAndSetIfChanged(ref _items, value);
-    }
-
-    public MainInventoryViewModel(InventoriesModel model)
-    {
-        _model = model;
-
         Items = new ObservableCollection<Item>(model.Inventory);
     }
 }

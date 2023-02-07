@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using Autofac;
 using Microsoft.Win32;
 using ReactiveUI;
 using TerrariaConstructor.Models;
@@ -53,13 +54,14 @@ public class MainViewModel : ReactiveObject
         {
             new NavigationViewItem
             {
-                Content = "Приветсвие",
+                Content = "Приветствие",
                 Icon = new SymbolIcon{Symbol = SymbolRegular.Star12},
                 TargetPageType = typeof(WelcomeView)
             },
             new NavigationViewItem
             {
                 Content = "Характеристика",
+                ToolTip = "Основные характеристики персонажа",
                 Icon = new SymbolIcon{Symbol = SymbolRegular.Heart12},
                 TargetPageType = typeof(CharacteristicsView)
             },
@@ -85,27 +87,32 @@ public class MainViewModel : ReactiveObject
                     new NavigationViewItem
                     {
                         Content = "Основной инветарь",
-                        TargetPageType = typeof(MainInventoryView)
+                        TargetPageType = typeof(MainInventoryView),
+                        DataContext = App.Container.Resolve<MainInventoryViewModel>()
                     },
                     new NavigationViewItem
                     {
                         Content = "Копилка",
-                        TargetPageType = typeof(CharacteristicsView)
+                        TargetPageType = typeof(MainInventoryView),
+                        DataContext = App.Container.Resolve<PiggyInventoryViewModel>()
                     },
                     new NavigationViewItem
                     {
                         Content = "Сейф",
-                        TargetPageType = typeof(CharacteristicsView)
+                        TargetPageType = typeof(MainInventoryView),
+                        DataContext = App.Container.Resolve<SafeInventoryViewModel>()
                     },
                     new NavigationViewItem
                     {
                         Content = "Кузница",
-                        TargetPageType = typeof(CharacteristicsView)
+                        TargetPageType = typeof(MainInventoryView),
+                        DataContext = App.Container.Resolve<ForgeInventoryViewModel>()
                     },
                     new NavigationViewItem
                     {
                         Content = "Безднонный мешок",
-                        TargetPageType = typeof(CharacteristicsView)
+                        TargetPageType = typeof(MainInventoryView),
+                        DataContext = App.Container.Resolve<VoidInventoryViewModel>()
                     }
                 }
             },

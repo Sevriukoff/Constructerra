@@ -7,8 +7,8 @@ namespace TerrariaConstructor.Common.Converters;
 
 public class BooleanToBrushConverter : IValueConverter
 {
-    public Brush TrueValue { get; set; } = new SolidColorBrush(Colors.Aquamarine);
-    public Brush FalseValue { get; set; } = new SolidColorBrush(Colors.Bisque);
+    public Brush TrueValue { get; set; } = new SolidColorBrush(Wpf.Ui.Appearance.Accent.SecondaryAccent){Opacity = 0.6};
+    public Brush FalseValue { get; set; } = new SolidColorBrush(Color.FromRgb(234,237,237)){Opacity = 0.9};
     
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

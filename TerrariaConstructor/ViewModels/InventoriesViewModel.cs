@@ -54,7 +54,7 @@ public class InventoriesViewModel : ReactiveObject
             Name = "Свиная копилка",
             Icon = SymbolRegular.Navigation24,
             Description = "Основной инвентарь игрока, где храниться всякая шелуха.",
-            Link = "MainInventory",
+            Link = "PiggyInventory",
         };
         
         var Bank2 = new InventoryNavigationCard
@@ -62,7 +62,7 @@ public class InventoriesViewModel : ReactiveObject
             Name = "Сейф",
             Icon = SymbolRegular.Navigation24,
             Description = "Основной инвентарь игрока, где храниться всякая шелуха.",
-            Link = "MainInventory",
+            Link = "SafeInventory",
         };
         
         var Bank3 = new InventoryNavigationCard
@@ -70,7 +70,7 @@ public class InventoriesViewModel : ReactiveObject
             Name = "Кузница",
             Icon = SymbolRegular.Navigation24,
             Description = "Основной инвентарь игрока, где храниться всякая шелуха.",
-            Link = "MainInventory",
+            Link = "ForgeInventory",
         };
         
         var Bank4 = new InventoryNavigationCard
@@ -78,7 +78,7 @@ public class InventoriesViewModel : ReactiveObject
             Name = "Бездонный мешок",
             Icon = SymbolRegular.Navigation24,
             Description = "Основной инвентарь игрока, где храниться всякая шелуха.",
-            Link = "MainInventory",
+            Link = "VoidInventory",
         };
 
         var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.Sell * x.Stack);
