@@ -194,6 +194,7 @@ public class PlayerModel
                 _inventories.Inventory[i].Name = item.Name;
                 _inventories.Inventory[i].Description = item.Description;
                 _inventories.Inventory[i].Image = item.Image;
+                _inventories.Inventory[i].Sell = item.Sell;
             }
         }
 

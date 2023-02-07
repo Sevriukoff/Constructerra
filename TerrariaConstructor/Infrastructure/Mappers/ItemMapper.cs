@@ -41,6 +41,7 @@ public class ItemMapper : BsonMapper
                 result.Description = string.IsNullOrEmpty(b["RuToolTip"].AsString)
                     ? b["Types"].AsArray.Count > 0 ? b["Types"].AsArray[0].AsString : "None"
                     : b["RuToolTip"];
+                result.Sell = b["Sell"];
 
                 return result;
             });

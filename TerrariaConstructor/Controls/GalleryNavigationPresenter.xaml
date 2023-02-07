@@ -2,8 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                     xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
+                    xmlns:converter="clr-namespace:TerrariaConstructor.Common.Converters"
                     xmlns:models="clr-namespace:TerrariaConstructor.Models">
     <Style TargetType="{x:Type controls:GalleryNavigationPresenter}">
+        <Style.Resources>
+            <converter:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+        </Style.Resources>
         <Setter Property="Focusable" Value="False" />
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -12,7 +16,7 @@
                 <ControlTemplate TargetType="{x:Type controls:GalleryNavigationPresenter}">
                     <ItemsControl ItemsSource="{TemplateBinding ItemsSource}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate DataType="{x:Type models:NavigationCard}">
+                            <DataTemplate DataType="{x:Type models:InventoryNavigationCard}">
                                 <ui:CardAction
                                     Margin="4"
                                     HorizontalAlignment="Stretch"
@@ -29,11 +33,41 @@
                                             FontWeight="Medium"
                                             Text="{Binding Name, Mode=OneTime}"
                                             TextWrapping="WrapWithOverflow" />
-                                        <TextBlock
-                                            FontSize="10"
-                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                            Text="{Binding Description, Mode=OneTime}"
-                                            TextWrapping="WrapWithOverflow" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                            <TextBlock Text="Стоимость содержимого: "
+                                                       FontSize="10"
+                                                       VerticalAlignment="Center">
+                                                <TextBlock.ToolTip>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <TextBlock Text="Примерная стоимость всех предметов в"/>
+                                                        <TextBlock Text="{Binding Name}"/>
+                                                    </StackPanel>
+                                                </TextBlock.ToolTip>
+                                            </TextBlock>
+                                            <ItemsControl ItemsSource="{Binding Coins}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate DataType="{x:Type models:Coin}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Image Source="{Binding Image,
+                                                            Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                                   Height="9" Width="12" />
+                                                            <TextBlock Text="{Binding Amount}"
+                                                                       FontSize="10"
+                                                                       Margin="3,0,0,0" />
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <ui:VirtualizingWrapPanel
+                                                            IsItemsHost="True"
+                                                            Orientation="Vertical"
+                                                            SpacingMode="Uniform"
+                                                            StretchItems="True" />
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                            </ItemsControl>
+                                        </StackPanel>
                                     </StackPanel>
                                 </ui:CardAction>
                             </DataTemplate>
@@ -42,7 +76,7 @@
                             <ItemsPanelTemplate>
                                 <ui:VirtualizingWrapPanel
                                     IsItemsHost="True"
-                                    ItemSize="290,70"
+                                    ItemSize="290,80"
                                     Orientation="Vertical"
                                     SpacingMode="Uniform"
                                     StretchItems="True" />

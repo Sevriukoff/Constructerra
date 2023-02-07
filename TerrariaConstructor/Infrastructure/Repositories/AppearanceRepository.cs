@@ -81,4 +81,18 @@ public class AppearanceRepository : IAppearanceRepository
 
         return result;
     }
+
+    public Appearance GetItemImageById(int itemId)
+    {
+        var fileInfo = _itemsDatabase.FileStorage.OpenRead(itemId.ToString());
+        var image = new byte[fileInfo.Length];
+        fileInfo.Read(image, 0, (int) fileInfo.Length);
+
+        return new Appearance
+        {
+            Id = itemId,
+            Image = image,
+            IsSelected = false
+        };
+    }
 }

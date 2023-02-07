@@ -46,6 +46,8 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     private bool _usedGalaxyPearl;
     private bool _usedGummyWorm;
     private bool _usedAmbrosia;
+    private int _numberOfDeathsPve;
+    private int _numberOfDeathsPvp;
 
     #region Properties
 
@@ -304,19 +306,102 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         }
     }
 
+    public bool UsingBiomeTorches
+    {
+        get => _usingBiomeTorches;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _usingBiomeTorches, value);
+            Model.UsingBiomeTorches = value;
+        }
+    }
+
+    public bool UnlockedBiomeTorches
+    {
+        get => _unlockedBiomeTorches;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _unlockedBiomeTorches, value);
+            Model.UnlockedBiomeTorches = value;
+        }
+    }
+
+    public bool DownedDd2EventAnyDifficulty
+    {
+        get => _downedDd2EventAnyDifficulty;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _downedDd2EventAnyDifficulty, value);
+            Model.DownedDd2EventAnyDifficulty = value;
+        }
+    }
+
+    public bool ExtraAccessory
+    {
+        get => _extraAccessory;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _extraAccessory, value);
+            Model.ExtraAccessory = value;
+        }
+    }
+
+    public bool UnlockedSuperCart
+    {
+        get => _unlockedSuperCart;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _unlockedSuperCart, value);
+            Model.UnlockedSuperCart = value;
+        }
+    }
+
+    public bool EnabledSuperCart
+    {
+        get => _enabledSuperCart;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _enabledSuperCart, value);
+            Model.EnabledSuperCart = value;
+        }
+    }
+
+    public int NumberOfDeathsPve
+    {
+        get => _numberOfDeathsPve;
+        set => this.RaiseAndSetIfChanged(ref _numberOfDeathsPve, value);
+    }
+    
+    public int NumberOfDeathsPvp
+    {
+        get => _numberOfDeathsPvp;
+        set => this.RaiseAndSetIfChanged(ref _numberOfDeathsPvp, value);
+    }
+
+    public List<string> Difficulties => new List<string>
+    {
+        "Классика", "Средняя сложность", "Сложный режим", "Путешествие"
+    };
+
     #endregion
 
     #region Commands
+    
     private Appearance _selectedAppearance;
 
     private readonly ReactiveCommand<Appearance, Unit> _selectHairCommand;
     public ReactiveCommand<Appearance, Unit> SelectHairCommand => _selectHairCommand;
     
     private readonly ReactiveCommand<Appearance, Unit> _selectSkinCommand;
+    private bool _usingBiomeTorches;
+    private bool _unlockedBiomeTorches;
+    private bool _downedDd2EventAnyDifficulty;
+    private bool _extraAccessory;
+    private bool _unlockedSuperCart;
+    private bool _enabledSuperCart;
     public ReactiveCommand<Appearance, Unit> SelectSkinCommand => _selectSkinCommand;
-
-    #endregion
     
+    #endregion
     public CharacteristicsViewModel(CharacteristicsModel model)
     {
         Model = model;
@@ -392,6 +477,15 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         UsedGalaxyPearl = Model.UsedGalaxyPearl;
         UsedGummyWorm = Model.UsedGummyWorm;
         UsedAmbrosia = Model.UsedAmbrosia;
+        UsingBiomeTorches = Model.UsingBiomeTorches;
+        UnlockedBiomeTorches = Model.UnlockedBiomeTorches;
+        DownedDd2EventAnyDifficulty = Model.DownedDd2EventAnyDifficulty;
+        ExtraAccessory = Model.ExtraAccessory;
+        UnlockedSuperCart = Model.UnlockedSuperCart;
+        EnabledSuperCart = Model.EnabledSuperCart;
+
+        NumberOfDeathsPve = Model.NumberOfDeathsPve;
+        NumberOfDeathsPvp = Model.NumberOfDeathsPvp;
     }
 
     public void OnNavigatedTo()

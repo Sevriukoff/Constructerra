@@ -11,4 +11,6 @@ public interface IAppearanceRepository
     Appearance GetSkinById(int id);
 
     IEnumerable<Appearance> GetAllSkins();
+
+    Appearance GetItemImageById(int itemId);
 }
