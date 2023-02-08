@@ -10,6 +10,8 @@ namespace TerrariaConstructor.Models;
 
 public class CharacteristicsModel
 {
+    private int _hair;
+
     #region Player statistics
 
     public string Name { get; set; }
@@ -20,7 +22,12 @@ public class CharacteristicsModel
     public byte Difficulty { get; set; }
     public TimeSpan PlayTime { get; set; }
 
-    public int Hair { get; set; }
+    public int Hair
+    {
+        get => _hair + 1;
+        set => _hair = value - 1;
+    }
+
     public byte HairDye { get; set; }
     public byte SkinVariant { get; set; }
     

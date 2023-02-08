@@ -130,7 +130,8 @@ public class PlayerModel
         _characteristic.Hair = reader.ReadInt32();
         _characteristic.HairDye = reader.ReadByte();
         _characteristic.HideBytes = reader.ReadBytes(3);
-        _characteristic.SkinVariant = reader.ReadByte();
+        _characteristic.SkinVariant = reader.ReadByte(); //TODO: Fix SkinId
+        
         _characteristic.Health = reader.ReadInt32();
         _characteristic.MaxHealth = reader.ReadInt32();
         _characteristic.Mana = reader.ReadInt32();
@@ -721,6 +722,85 @@ public class PlayerModel
         writer.BaseStream.Close();
         writer.BaseStream.Dispose();
     }
+
+    public void CreateNewPlayer()
+    {
+        _characteristic.Name = "ConstrucTerraPlayer";
+        _characteristic.Revision = 100;
+        _characteristic.IsFavorite = false;
+        _characteristic.Difficulty = 1;
+        _characteristic.PlayTime = TimeSpan.FromSeconds(0);
+        _characteristic.Hair = 1;
+        _characteristic.SkinVariant = 1;
+        _characteristic.Health = 100;
+        _characteristic.MaxHealth = 100;
+        _characteristic.Mana = 20;
+        _characteristic.MaxMana = 20;
+        _characteristic.TaxMoney = 0;
+        _characteristic.HairColor = Color.White;
+        _characteristic.SkinColor = Color.White;
+        _characteristic.EyeColor = Color.White;
+        _characteristic.ShirtColor = Color.White;
+        _characteristic.UndershirtColor = Color.White;
+        _characteristic.PantsColor = Color.White;
+        _characteristic.ShoeColor = Color.White;
+
+        _characteristic.ExtraAccessory = false;
+        _characteristic.UnlockedBiomeTorches = false;
+        _characteristic.UsingBiomeTorches = false;
+        _characteristic.AteArtisanBread = false;
+        _characteristic.UsedAegisCrystal = false;
+        _characteristic.UsedAegisFruit = false;
+        _characteristic.UsedArcaneCrystal = false;
+        _characteristic.UsedGalaxyPearl = false;
+        _characteristic.UsedGummyWorm = false;
+        _characteristic.UsedAmbrosia = false;
+        _characteristic.DownedDd2EventAnyDifficulty = false;
+        _characteristic.NumberOfDeathsPve = 0;
+        _characteristic.NumberOfDeathsPvp = 0;
+        _characteristic.VoidVaultInfo = 0;
+        _characteristic.IsHotBarLocked = false;
+        _characteristic.AnglerQuestsFinished = 0;
+        _characteristic.BartenderQuestLog = 0;
+        _characteristic.GolferScoreAccumulated = 0;
+        _characteristic.LastTimePlayerWasSaved = 0;
+        _characteristic.RespawnTimer = 0;
+        _characteristic.IsDead = false;
+        _characteristic.UnlockedSuperCart = false;
+        _characteristic.EnabledSuperCart = false;
+
+        InitializationArray(_equips.Purse);
+        InitializationArray(_equips.Ammo);
+        InitializationArray(_equips.Armor);
+        InitializationArray(_equips.Dye);
+
+        for (int i = 0; i < _equips.Loadouts.Length; i++)
+        {
+            var loadout = new EquipsModel.Loadout();
+            InitializationArray(loadout.Armor);
+            InitializationArray(loadout.Dye);
+
+            _equips.Loadouts[i] = loadout;
+        }
+
+        _equips.CurrentLoadoutIndex = 1;
+        
+        InitializationArray(_tools.MiscEquip);
+        InitializationArray(_tools.MiscDye);
+        
+        InitializationArray(_inventories.Inventory);
+        InitializationArray(_inventories.Bank1);
+        InitializationArray(_inventories.Bank2);
+        InitializationArray(_inventories.Bank3);
+        InitializationArray(_inventories.Bank4);
+
+        _buffs.Buffs[0] = new Buff
+        {
+            Id = 0
+        };
+        
+        OnPlayerUpdated();
+    }
     
     [Obsolete]
     public void SavePlayerIntoDat(string plrPath)
@@ -982,5 +1062,18 @@ public class PlayerModel
     protected virtual void OnPlayerUpdated()
     {
         PlayerUpdated?.Invoke();
+    }
+
+    private void InitializationArray(Item[] items)
+    {
+        for (var i = 0; i < items.Length; i++)
+        {
+            items[i] = new Item
+            {
+                Id = 0,
+                Stack = 0,
+                Prefix = 0
+            };
+        }
     }
 }

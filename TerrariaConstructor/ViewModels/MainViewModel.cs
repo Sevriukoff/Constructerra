@@ -137,6 +137,7 @@ public class MainViewModel : ReactiveObject
             Content = "Загрузить",
             Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowUpload16},
         };
+        PlayerModel.CreateNewPlayer();
 
         uploadNavigationViewItem.Click += (_, _) =>
         {
@@ -194,7 +195,11 @@ public class MainViewModel : ReactiveObject
 
         createNavigationViewItem.Click += (_, _) =>
         {
+            PlayerModel.CreateNewPlayer();
             
+            _snackbarService.Timeout = 3000;
+            _snackbarService.Show("Оповещение", $"Новый персонаж был создан, можете приступить к его настройке", SymbolRegular.Add16,
+                ControlAppearance.Info);
         };
         
         FooterItems.Add(uploadNavigationViewItem);
