@@ -16,13 +16,15 @@
     <Grid>
         <ui:VirtualizingItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
                                      VirtualizingPanel.CacheLengthUnit="Item"
-                                     MaxWidth="850">
+                                     MaxWidth="690"
+                                     HorizontalAlignment="Left"
+                                     VerticalAlignment="Top">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Item}">
                     <Grid>
                         <ui:Button
-                            Width="80"
-                            Height="80"
+                            Width="65"
+                            Height="65"
                             Margin="2"
                             Padding="0"
                             HorizontalAlignment="Stretch"
@@ -30,24 +32,28 @@
                             Appearance="Secondary"
                             FontSize="25">
                             <Image
-                                Stretch="None"
+                                Stretch="Uniform"
+                                StretchDirection="DownOnly"
+                                MaxHeight="32"
+                                MaxWidth="32"
                                 Source="{Binding Image,
-                        Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
-                            <ui:Button.ToolTip>
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Name}"
-                                                   Foreground="#8263FF"
-                                                   FontWeight="Medium"/>
-                                        <TextBlock Text="{Binding Id, StringFormat=' (#{0})'}"
-                                                   Foreground="#8263FF"
-                                                   FontWeight="Medium"/>
+                        Converter={StaticResource ByteArrayToImageSourceConverter}}">
+                                <Image.ToolTip>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Name}"
+                                                       Foreground="#8263FF"
+                                                       FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding Id, StringFormat=' (#{0})'}"
+                                                       Foreground="#8263FF"
+                                                       FontWeight="Medium"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Description}"
+                                                   TextWrapping="WrapWithOverflow"/>
+                                        <TextBlock Text="{Binding Stack}"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding Description}"
-                                               TextWrapping="WrapWithOverflow"/>
-                                    <TextBlock Text="{Binding Stack}"/>
-                                </StackPanel>
-                            </ui:Button.ToolTip>
+                                </Image.ToolTip>
+                            </Image>
                         </ui:Button>
                         <TextBlock Text="{Binding Stack}"
                                    FontSize="11"

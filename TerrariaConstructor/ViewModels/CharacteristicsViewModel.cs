@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Text.RegularExpressions;
@@ -9,7 +10,9 @@ using System.Windows;
 using System.Windows.Media;
 using DynamicData.Binding;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using Splat.ModeDetection;
+using TerrariaConstructor.Common.Events;
 using TerrariaConstructor.Models;
 using Wpf.Ui.Controls.Navigation;
 using Color = System.Windows.Media.Color;
@@ -21,17 +24,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     public CharacteristicsModel Model { get; set; }
     public string PlayerName { get; set; }
     
-    private string _name;
-    private int _health;
-    private int _maxHealth;
-    private int _manna;
-    private int _maxManna;
-    private byte _difficulty;
-    private int _anglerQuestsFinished;
-    private int _golferScoreAccumulated;
     private TimeSpan _playTime;
-    private int _hairId;
-    private byte _skinId;
     private Color _hairColor;
     private Color _skinColor;
     private Color _eyeColor;
@@ -39,15 +32,6 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     private Color _undershirtColor;
     private Color _pantsColor;
     private Color _shoeColor;
-    private bool _ateArtisanBread;
-    private bool _usedAegisCrystal;
-    private bool _usedAegisFruit;
-    private bool _usedArcaneCrystal;
-    private bool _usedGalaxyPearl;
-    private bool _usedGummyWorm;
-    private bool _usedAmbrosia;
-    private int _numberOfDeathsPve;
-    private int _numberOfDeathsPvp;
 
     #region Properties
 
@@ -60,85 +44,22 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         set => this.RaiseAndSetIfChanged(ref _selectedAppearance, value);
     }
 
-    public string Name
-    {
-        get => _name;
-        set
-        { 
-            this.RaiseAndSetIfChanged(ref _name, value);
-            Model.Name = value;
-        }
-    }
-    
-    public byte Difficulty
-    {
-        get => _difficulty;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _difficulty, value);
-            Model.Difficulty = value;
-        }
-    }
-
-    public int Health
-    {
-        get => _health;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _health, value);
-            Model.Health = value;
-        }
-    }
-    
-    public int MaxHealth
-    {
-        get => _maxHealth;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _maxHealth, value);
-            Model.MaxHealth = value;
-        }
-    }
-
-    public int Manna
-    {
-        get => _manna;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _manna, value);
-            Model.Mana = value;
-        }
-    }
-    
-    public int MaxManna
-    {
-        get => _maxManna;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _maxManna, value);
-            Model.MaxMana = value;
-        }
-    }
-
-    public int AnglerQuestsFinished
-    {
-        get => _anglerQuestsFinished;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _anglerQuestsFinished, value);
-            Model.AnglerQuestsFinished = value;
-        }
-    }
-
-    public int GolferScoreAccumulated
-    {
-        get => _golferScoreAccumulated;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _golferScoreAccumulated, value);
-            Model.GolferScoreAccumulated = value;
-        }
-    }
+    [Reactive]
+    public string Name { get; set; }
+    [Reactive]
+    public byte Difficulty { get; set; }
+    [Reactive]
+    public int Health { get; set; }
+    [Reactive]
+    public int MaxHealth { get; set; }
+    [Reactive]
+    public int Mana { get; set; }
+    [Reactive]
+    public int MaxMana { get; set; }
+    [Reactive]
+    public int AnglerQuestsFinished { get; set; }
+    [Reactive]
+    public int GolferScoreAccumulated { get; set; }
 
     public TimeSpan PlayTime
     {
@@ -150,21 +71,10 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         }
     }
 
-    public int HairId
-    {
-        get => _hairId;
-        set => this.RaiseAndSetIfChanged(ref _hairId, value);
-    }
-
-    public byte SkinId
-    {
-        get => _skinId;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _skinId, value);
-            Model.SkinVariant = value;
-        }
-    }
+    [Reactive]
+    public int HairId { get; set; }
+    [Reactive]
+    public byte SkinId { get; set; }
 
     public System.Windows.Media.Color HairColor
     {
@@ -235,148 +145,36 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
             Model.ShoeColor = System.Drawing.Color.FromArgb(value.A, value.R, value.G, value.B);
         }
     }
-
-    public bool AteArtisanBread
-    {
-        get => _ateArtisanBread;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _ateArtisanBread, value);
-            Model.AteArtisanBread = value;
-        }
-    }
-
-    public bool UsedAegisCrystal
-    {
-        get => _usedAegisCrystal;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usedAegisCrystal, value);
-            Model.UsedAegisCrystal = value;
-        }
-    }
-
-    public bool UsedAegisFruit
-    {
-        get => _usedAegisFruit;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usedAegisFruit, value);
-            Model.UsedAegisFruit = value;
-        }
-    }
-
-    public bool UsedArcaneCrystal
-    {
-        get => _usedArcaneCrystal;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usedArcaneCrystal, value);
-            Model.UsedArcaneCrystal = value;
-        }
-    }
-
-    public bool UsedGalaxyPearl
-    {
-        get => _usedGalaxyPearl;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usedGalaxyPearl, value);
-            Model.UsedGalaxyPearl = value;
-        }
-    }
-
-    public bool UsedGummyWorm
-    {
-        get => _usedGummyWorm;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usedGummyWorm, value);
-            Model.UsedGummyWorm = value;
-        }
-    }
-
-    public bool UsedAmbrosia
-    {
-        get => _usedAmbrosia;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usedAmbrosia, value);
-            Model.UsedAmbrosia = value;
-        }
-    }
-
-    public bool UsingBiomeTorches
-    {
-        get => _usingBiomeTorches;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _usingBiomeTorches, value);
-            Model.UsingBiomeTorches = value;
-        }
-    }
-
-    public bool UnlockedBiomeTorches
-    {
-        get => _unlockedBiomeTorches;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _unlockedBiomeTorches, value);
-            Model.UnlockedBiomeTorches = value;
-        }
-    }
-
-    public bool DownedDd2EventAnyDifficulty
-    {
-        get => _downedDd2EventAnyDifficulty;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _downedDd2EventAnyDifficulty, value);
-            Model.DownedDd2EventAnyDifficulty = value;
-        }
-    }
-
-    public bool ExtraAccessory
-    {
-        get => _extraAccessory;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _extraAccessory, value);
-            Model.ExtraAccessory = value;
-        }
-    }
-
-    public bool UnlockedSuperCart
-    {
-        get => _unlockedSuperCart;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _unlockedSuperCart, value);
-            Model.UnlockedSuperCart = value;
-        }
-    }
-
-    public bool EnabledSuperCart
-    {
-        get => _enabledSuperCart;
-        set
-        {
-            this.RaiseAndSetIfChanged(ref _enabledSuperCart, value);
-            Model.EnabledSuperCart = value;
-        }
-    }
-
-    public int NumberOfDeathsPve
-    {
-        get => _numberOfDeathsPve;
-        set => this.RaiseAndSetIfChanged(ref _numberOfDeathsPve, value);
-    }
-    
-    public int NumberOfDeathsPvp
-    {
-        get => _numberOfDeathsPvp;
-        set => this.RaiseAndSetIfChanged(ref _numberOfDeathsPvp, value);
-    }
+    [Reactive]
+    public bool AteArtisanBread { get; set; }
+    [Reactive]
+    public bool UsedAegisCrystal { get; set; }
+    [Reactive]
+    public bool UsedAegisFruit { get; set; }
+    [Reactive]
+    public bool UsedArcaneCrystal { get; set; }
+    [Reactive]
+    public bool UsedGalaxyPearl { get; set; }
+    [Reactive]
+    public bool UsedGummyWorm { get; set; }
+    [Reactive]
+    public bool UsedAmbrosia { get; set; }
+    [Reactive]
+    public bool UsingBiomeTorches { get; set; }
+    [Reactive]
+    public bool UnlockedBiomeTorches { get; set; }
+    [Reactive]
+    public bool DownedDd2EventAnyDifficulty { get; set; }
+    [Reactive]
+    public bool ExtraAccessory { get; set; }
+    [Reactive]
+    public bool UnlockedSuperCart { get; set; }
+    [Reactive]
+    public bool EnabledSuperCart { get; set; }
+    [Reactive]
+    public int NumberOfDeathsPve { get; set; }
+    [Reactive]
+    public int NumberOfDeathsPvp { get; set; }
 
     public List<string> Difficulties => new List<string>
     {
@@ -391,22 +189,58 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
 
     private readonly ReactiveCommand<Appearance, Unit> _selectHairCommand;
     public ReactiveCommand<Appearance, Unit> SelectHairCommand => _selectHairCommand;
-    
+
     private readonly ReactiveCommand<Appearance, Unit> _selectSkinCommand;
-    private bool _usingBiomeTorches;
-    private bool _unlockedBiomeTorches;
-    private bool _downedDd2EventAnyDifficulty;
-    private bool _extraAccessory;
-    private bool _unlockedSuperCart;
-    private bool _enabledSuperCart;
     public ReactiveCommand<Appearance, Unit> SelectSkinCommand => _selectSkinCommand;
-    
+
+
     #endregion
     public CharacteristicsViewModel(CharacteristicsModel model)
     {
         Model = model;
         Hairs = Model.GetHairs();
         Skins = Model.GetSkins();
+
+        var properties = new (Expression<Func<CharacteristicsViewModel, object>> property, Action<object> setter)[] {
+            (x => x.Difficulty, x => Model.Difficulty = (byte) x),
+            (x => x.Health, x => Model.Health = (int) x),
+            (x => x.MaxHealth, x => Model.MaxHealth = (int) x),
+            (x => x.Mana, x => Model.Mana = (int) x),
+            (x => x.MaxMana, x => Model.MaxMana = (int) x),
+            (x => x.AnglerQuestsFinished, x => Model.AnglerQuestsFinished = (int) x),
+            (x => x.GolferScoreAccumulated, x => Model.GolferScoreAccumulated = (int) x),
+            (x => x.AteArtisanBread, x => Model.AteArtisanBread = (bool) x),
+            (x => x.UsedAegisCrystal, x => Model.UsedAegisCrystal = (bool) x),
+            (x => x.UsedAegisFruit, x => Model.UsedAegisFruit = (bool) x),
+            (x => x.UsedArcaneCrystal, x => Model.UsedArcaneCrystal = (bool) x),
+            (x => x.UsedGalaxyPearl, x => Model.UsedGalaxyPearl = (bool) x),
+            (x => x.UsedGummyWorm, x => Model.UsedGummyWorm = (bool) x),
+            (x => x.UsedAmbrosia, x => Model.UsedAmbrosia = (bool) x),
+            (x => x.UsingBiomeTorches, x => Model.UsingBiomeTorches = (bool) x),
+            (x => x.UnlockedBiomeTorches, x => Model.UnlockedBiomeTorches = (bool) x),
+            (x => x.DownedDd2EventAnyDifficulty, x => Model.DownedDd2EventAnyDifficulty = (bool) x),
+            (x => x.ExtraAccessory, x => Model.ExtraAccessory = (bool) x),
+            (x => x.UnlockedSuperCart, x => Model.UnlockedSuperCart = (bool) x),
+            (x => x.EnabledSuperCart, x => Model.EnabledSuperCart = (bool) x),
+            (x => x.NumberOfDeathsPve, x => Model.NumberOfDeathsPve = (int) x),
+            (x => x.NumberOfDeathsPvp, x => Model.NumberOfDeathsPvp = (int) x)
+        };
+
+        foreach (var (property, setter) in properties)
+        {
+            this.WhenAnyValue(property)
+                .Subscribe(x => setter(x));
+        }
+
+        this.WhenAnyValue(x => x.Name)
+            .Subscribe(x => Model.Name = x);
+
+        T GetValueOrNull<T>(object value) where T : struct
+        {
+            if (value == null) throw new ArgumentException();
+            if (!(value is T)) throw new ArgumentException();
+            return (T)value;
+        }
 
         this.WhenAnyValue(x => x.HairId)
             .Where(x => x > 0 && x<= Hairs.Count)
@@ -428,6 +262,8 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
                 {
                     skin.IsSelected = skin.Id == SkinId;
                 }
+
+                Model.SkinVariant = id;
             });
 
         _selectHairCommand = ReactiveCommand.Create<Appearance>(selectedHair =>
@@ -439,6 +275,9 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         {
             SkinId = (byte) selectedSkin.Id;
         });
+
+        MessageBus.Current.Listen<PlayerUpdatedEvent>()
+            .Subscribe(x => Update());
 
         //ConstructTerra
 
@@ -460,8 +299,8 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         Difficulty = Model.Difficulty;
         Health = Model.Health;
         MaxHealth = Model.MaxHealth;
-        Manna = Model.Mana;
-        MaxManna = Model.MaxMana;
+        Mana = Model.Mana;
+        MaxMana = Model.MaxMana;
         AnglerQuestsFinished = Model.AnglerQuestsFinished;
         GolferScoreAccumulated = Model.GolferScoreAccumulated;
         PlayTime = Model.PlayTime;

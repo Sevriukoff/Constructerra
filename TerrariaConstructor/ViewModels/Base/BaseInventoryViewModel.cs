@@ -4,17 +4,17 @@ using TerrariaConstructor.Models;
 
 namespace TerrariaConstructor.ViewModels.Base;
 
-public class BaseInventoryViewModel : ReactiveObject
+public abstract class BaseInventoryViewModel : ReactiveObject
 {
     #region Fields
 
-    private readonly InventoriesModel _model;
+    protected readonly InventoriesModel _model;
 
     #endregion
 
     #region Properties
 
-    private ObservableCollection<Item> _items;
+    protected ObservableCollection<Item> _items;
 
     public ObservableCollection<Item> Items
     {
@@ -26,10 +26,16 @@ public class BaseInventoryViewModel : ReactiveObject
 
     #region ctor's
 
-    public BaseInventoryViewModel(InventoriesModel model)
+    protected BaseInventoryViewModel(InventoriesModel model)
     {
         _model = model;
     }
+
+    #endregion
+
+    #region Methods
+
+    protected abstract void Update();
 
     #endregion
 }

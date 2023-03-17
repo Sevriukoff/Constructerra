@@ -4,7 +4,9 @@ using System.IO;
 using Autofac;
 using Microsoft.Win32;
 using ReactiveUI;
+using TerrariaConstructor.Common.Events;
 using TerrariaConstructor.Models;
+using TerrariaConstructor.Services;
 using TerrariaConstructor.Views;
 using Wpf.Ui.Common;
 using Wpf.Ui.Contracts;
@@ -19,8 +21,6 @@ public class MainViewModel : ReactiveObject
     private ObservableCollection<object> _navigationItems;
     private ObservableCollection<object> _footerItems;
     public PlayerModel PlayerModel { get; }
-    public CharacteristicsViewModel CharacteristicsViewModel { get; set; }
-    public EquipsViewModel EquipsViewModel { get; set; }
 
     public ObservableCollection<object> NavigationItems
     {
@@ -33,21 +33,12 @@ public class MainViewModel : ReactiveObject
         get => _footerItems;
         set => this.RaiseAndSetIfChanged(ref _footerItems, value);
     }
-
-    public InventoriesViewModel InventoriesViewModel { get; set; }
-
+    
     public string Title => "ConstrucTerra - создавай своих героев";
 
-    public MainViewModel(PlayerModel playerModel,
-        CharacteristicsViewModel characteristicsViewModel,
-        EquipsViewModel equipsViewModel,
-        InventoriesViewModel inventoriesViewModel,
-        ISnackbarService snackbarService)
+    public MainViewModel(PlayerModel playerModel, ISnackbarService snackbarService)
     {
         PlayerModel = playerModel;
-        CharacteristicsViewModel = characteristicsViewModel;
-        EquipsViewModel = equipsViewModel;
-        InventoriesViewModel = inventoriesViewModel;
         _snackbarService = snackbarService;
 
         NavigationItems = new ObservableCollection<object>
@@ -206,11 +197,10 @@ public class MainViewModel : ReactiveObject
         FooterItems.Add(saveNavigationViewItem);
         FooterItems.Add(createNavigationViewItem);
         
+        
         PlayerModel.PlayerUpdated += () =>
         {
-            CharacteristicsViewModel.Update();
-            EquipsViewModel.Update();
-            InventoriesViewModel.Update();
+            MessageBus.Current.SendMessage(new PlayerUpdatedEvent());
         };
 
         //MessageBus.Current.SendMessage();

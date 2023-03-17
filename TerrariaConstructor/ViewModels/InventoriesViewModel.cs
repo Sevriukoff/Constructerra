@@ -5,6 +5,7 @@ using System.Linq;
 using Autofac;
 using ReactiveUI;
 using TerrariaConstructor.Common.Enums;
+using TerrariaConstructor.Common.Events;
 using TerrariaConstructor.Infrastructure;
 using TerrariaConstructor.Models;
 using Wpf.Ui.Common;
@@ -26,6 +27,11 @@ public class InventoriesViewModel : ReactiveObject
     private Appearance _goldCoin;
     private Appearance _platinumCoin;
     private ICollection<InventoryNavigationCard> _navigationCards;
+    private InventoryNavigationCard _mainInventory;
+    private InventoryNavigationCard _bank1;
+    private InventoryNavigationCard _bank2;
+    private InventoryNavigationCard _bank3;
+    private InventoryNavigationCard _bank4;
 
     public InventoriesViewModel(InventoriesModel model)
     {
@@ -41,7 +47,7 @@ public class InventoriesViewModel : ReactiveObject
             _platinumCoin = unitOfWork.AppearanceRepository.GetItemImageById(74);
         }
 
-        var mainInventory = new InventoryNavigationCard
+        _mainInventory = new InventoryNavigationCard
         {
             Name = "Основной инветарь",
             Icon = SymbolRegular.Navigation24,
@@ -49,7 +55,7 @@ public class InventoriesViewModel : ReactiveObject
             Link = "MainInventory",
         };
         
-        var Bank1 = new InventoryNavigationCard
+        _bank1 = new InventoryNavigationCard
         {
             Name = "Свиная копилка",
             Icon = SymbolRegular.Navigation24,
@@ -57,7 +63,7 @@ public class InventoriesViewModel : ReactiveObject
             Link = "PiggyInventory",
         };
         
-        var Bank2 = new InventoryNavigationCard
+        _bank2 = new InventoryNavigationCard
         {
             Name = "Сейф",
             Icon = SymbolRegular.Navigation24,
@@ -65,7 +71,7 @@ public class InventoriesViewModel : ReactiveObject
             Link = "SafeInventory",
         };
         
-        var Bank3 = new InventoryNavigationCard
+        _bank3 = new InventoryNavigationCard
         {
             Name = "Кузница",
             Icon = SymbolRegular.Navigation24,
@@ -73,7 +79,7 @@ public class InventoriesViewModel : ReactiveObject
             Link = "ForgeInventory",
         };
         
-        var Bank4 = new InventoryNavigationCard
+        _bank4 = new InventoryNavigationCard
         {
             Name = "Бездонный мешок",
             Icon = SymbolRegular.Navigation24,
@@ -82,26 +88,29 @@ public class InventoriesViewModel : ReactiveObject
         };
 
         var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.Sell * x.Stack);
-        mainInventory.Coins = GetCoinsList(mainInventorySum);
+        _mainInventory.Coins = GetCoinsList(mainInventorySum);
         
         var Bank1Sum = (int) Model.Bank1.Where(x => x != null).Sum(x => x.Sell * x.Stack);
-        Bank1.Coins = GetCoinsList(Bank1Sum);
+        _bank1.Coins = GetCoinsList(Bank1Sum);
         
         var Bank2Sum = (int) Model.Bank2.Where(x => x != null).Sum(x => x.Sell * x.Stack);
-        Bank2.Coins = GetCoinsList(Bank2Sum);
+        _bank2.Coins = GetCoinsList(Bank2Sum);
         
         var Bank3Sum = (int) Model.Bank3.Where(x => x != null).Sum(x => x.Sell * x.Stack);
-        Bank3.Coins = GetCoinsList(Bank3Sum);
+        _bank3.Coins = GetCoinsList(Bank3Sum);
         
         var Bank4Sum = (int) Model.Bank4.Where(x => x != null).Sum(x => x.Sell * x.Stack);
-        Bank4.Coins = GetCoinsList(Bank4Sum);
+        _bank4.Coins = GetCoinsList(Bank4Sum);
 
         NavigationCards = new ObservableCollection<InventoryNavigationCard>();
-        NavigationCards.Add(mainInventory);
-        NavigationCards.Add(Bank1);
-        NavigationCards.Add(Bank2);
-        NavigationCards.Add(Bank3);
-        NavigationCards.Add(Bank4);
+        NavigationCards.Add(_mainInventory);
+        NavigationCards.Add(_bank1);
+        NavigationCards.Add(_bank2);
+        NavigationCards.Add(_bank3);
+        NavigationCards.Add(_bank4);
+
+        MessageBus.Current.Listen<PlayerUpdatedEvent>()
+            .Subscribe(x => Update());
     }
 
     private List<Coin> GetCoinsList(int sum)
@@ -145,9 +154,21 @@ public class InventoriesViewModel : ReactiveObject
         
     }
     
-
     public void Update()
     {
+        var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        _mainInventory.Coins = GetCoinsList(mainInventorySum);
         
+        var Bank1Sum = (int) Model.Bank1.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        _bank1.Coins = GetCoinsList(Bank1Sum);
+        
+        var Bank2Sum = (int) Model.Bank2.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        _bank2.Coins = GetCoinsList(Bank2Sum);
+        
+        var Bank3Sum = (int) Model.Bank3.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        _bank3.Coins = GetCoinsList(Bank3Sum);
+        
+        var Bank4Sum = (int) Model.Bank4.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        _bank4.Coins = GetCoinsList(Bank4Sum);
     }
 }

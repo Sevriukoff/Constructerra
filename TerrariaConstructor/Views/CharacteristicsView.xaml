@@ -49,12 +49,15 @@
                             Margin="0,10" />
 
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconNameTextBox" Symbol="Edit16" Margin="0,0,5,0"/>
                         <TextBlock Text="Имя персонажа: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Name}"
+                        <TextBox x:Name="NameTextBox"
+                                 Text="{Binding Name}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"
                                  MinWidth="150"
+                                 ToolTip="Поля можно редактировать"
                                  Style="{DynamicResource MaterialDesignTextBox}" />
                     </StackPanel>
 
@@ -68,14 +71,15 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconHealthTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Здоровье: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Health}" 
+                        <TextBox x:Name="HealthTextBox" Text="{Binding Health}" 
                                  Foreground="#FF7070" 
                                  BorderThickness="0"
                                  FontSize="14"
                                  Style="{DynamicResource MaterialDesignTextBox}" />
                         <TextBlock Text="/ " VerticalAlignment="Center" Foreground="#FF7070" />
-                        <TextBox Text="{Binding MaxHealth}" 
+                        <TextBox x:Name="MaxHealthTextBox" Text="{Binding MaxHealth}" 
                                  Foreground="#FF7070" 
                                  BorderThickness="0"
                                  FontSize="14"
@@ -83,14 +87,15 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconManaTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Манна: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding Manna}"
+                        <TextBox x:Name="ManaTextBox" Text="{Binding Mana}"
                                  Foreground="#57AEFE" 
                                  BorderThickness="0"
                                  FontSize="14"
                                  Style="{DynamicResource MaterialDesignTextBox}" />
                         <TextBlock Text="/ " VerticalAlignment="Center" Foreground="#57AEFE" />
-                        <TextBox Text="{Binding MaxManna}"
+                        <TextBox x:Name="MaxManaTextBox" Text="{Binding MaxMana}"
                                  Foreground="#57AEFE"
                                  BorderThickness="0"
                                  FontSize="14"
@@ -98,8 +103,9 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconAnglerQuestsTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Выполнено квестов у рыбака: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding AnglerQuestsFinished}"
+                        <TextBox x:Name="AnglerQuestsTextBox" Text="{Binding AnglerQuestsFinished}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"
@@ -108,8 +114,9 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconGolferScoreTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Заработано очков в гольфе: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding GolferScoreAccumulated}"
+                        <TextBox x:Name="GolferScoreTextBox" Text="{Binding GolferScoreAccumulated}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"
@@ -118,8 +125,9 @@
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconPveTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Сметрей в pve: " VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding NumberOfDeathsPve}"
+                        <TextBox x:Name="PveTextBox" Text="{Binding NumberOfDeathsPve}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"
@@ -128,8 +136,9 @@
                     </StackPanel>
                     
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconPvpTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Сметрей в pvp: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding NumberOfDeathsPvp}"
+                        <TextBox x:Name="PvpTextBox" Text="{Binding NumberOfDeathsPvp}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"
@@ -138,8 +147,9 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon x:Name="IconPlayTimeTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Время в игре: " VerticalAlignment="Center" />
-                        <TextBox Text="{Binding PlayTime.Seconds, Mode=OneWay}"
+                        <TextBox x:Name="PlayTimeTextBox" Text="{Binding PlayTime.Seconds, Mode=OneWay}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"

@@ -35,7 +35,7 @@ public class AppearanceRepository : IAppearanceRepository
         for (var i = 0; i < liteFileInfos.Length; i++)
         {
             var info = liteFileInfos[i];
-            var hair = new Appearance {Id = i + 1};
+            var hair = new Appearance {Id = i};
 
             var stream = info.OpenRead();
             var bytes = new byte[stream.Length];
@@ -67,7 +67,7 @@ public class AppearanceRepository : IAppearanceRepository
         for (var i = 0; i < liteFileInfos.Length; i++)
         {
             var info = liteFileInfos[i];
-            var hair = new Appearance {Id = i + 1};
+            var hair = new Appearance {Id = i};
 
             var stream = info.OpenRead();
             var bytes = new byte[stream.Length];
