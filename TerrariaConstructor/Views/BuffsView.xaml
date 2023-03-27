@@ -1,35 +1,49 @@
-<UserControl x:Class="TerrariaConstructor.Views.BuffsView"
+<Page x:Class="TerrariaConstructor.Views.BuffsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TerrariaConstructor.Views"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
+             xmlns:models="clr-namespace:TerrariaConstructor.Models"
+             xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
              mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance vm:BuffsViewModel}"
              d:DesignHeight="500" d:DesignWidth="500">
+    <Page.Resources>
+        <converters:ByteArrayToImageSourceConverter x:Key="ImageSourceConverter"/>
+    </Page.Resources>
     <Grid>
-        <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <TextBlock Text="Страничка баффов"
-                       Foreground="#272727"
-                       FontWeight="Medium"
-                       FontSize="36"
-                       TextAlignment="Center"/>
-            <Border BorderThickness="1"
-                    BorderBrush="#272727" 
-                    HorizontalAlignment="Center"
-                    Width="300"
-                    Margin="0,15" />
-            <TextBlock Text="Пока здесь ничего нет"
-                       Foreground="#656464"
-                       FontWeight="Normal"
-                       FontSize="36"
-                       TextAlignment="Center"/>
-            <TextBlock Text="следите за обновлениями"
-                       Foreground="#939292"
-                       FontWeight="Light"
-                       FontSize="21"
-                       TextAlignment="Center"
-                       Margin="0,15,0,0"/>
-        </StackPanel>
+       <ui:VirtualizingItemsControl ItemsSource="{Binding Buffs, Mode=OneWay}"
+                                    VirtualizingPanel.CacheLengthUnit="Item"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Top">
+           <ItemsControl.ItemTemplate>
+               <DataTemplate DataType="{x:Type models:Buff}">
+                   <Grid>
+                       <ui:Button
+                           Width="65"
+                           Height="65"
+                           Margin="2"
+                           Padding="0"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           Appearance="Secondary"
+                           FontSize="25">
+                           <Image
+                               Stretch="Uniform"
+                               StretchDirection="DownOnly"
+                               Height="48"
+                               Width="48"
+                               Source="{Binding Image, Converter={StaticResource ImageSourceConverter}}"/>
+                       </ui:Button>
+                       <TextBlock Text="{Binding StringFormat={}{0}M, Path=DurationTime.Hours}"
+                                  HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                   </Grid>
+               </DataTemplate>
+           </ItemsControl.ItemTemplate>
+           
+       </ui:VirtualizingItemsControl>
     </Grid>
-</UserControl>
+</Page>

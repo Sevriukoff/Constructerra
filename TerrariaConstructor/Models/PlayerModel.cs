@@ -325,14 +325,22 @@ public class PlayerModel
             _buffs.Buffs[i] = new Buff
             {
                 Id = reader.ReadInt32(),
-                DurationTime = new TimeSpan(reader.ReadInt32())
+                DurationTime = TimeSpan.FromSeconds(reader.ReadInt32())
             };
 
+            if (_buffs.Buffs[i].Id != 0)
+            {
+                var buff = unitOfWork.BuffsRepository.GetById(_buffs.Buffs[i].Id);
+                _buffs.Buffs[i].Image = buff.Image;
+                //_buffs.Buffs[i].DurationTime = buff.DurationTime;
+            }
+            
             if (_buffs.Buffs[i].Id == 0)
             {
                 --i;
                 --buffIterator;
             }
+
         }
 
         for (int i = 0; i < SpawnX.Length; i++)

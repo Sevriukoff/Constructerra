@@ -1,3 +1,4 @@
+using System;
 using LiteDB;
 using TerrariaConstructor.Models;
 
@@ -7,6 +8,30 @@ public class ItemMapper : BsonMapper
 {
     public ItemMapper()
     {
+        this.RegisterType(
+            (Buff b) => new BsonDocument
+            {
+                {"_id", b.Id}
+            }, 
+            (value =>
+            {
+                var result = new Buff();
+
+                result.Id = value["_id"].AsInt32;
+                result.Name = value["RuName"].AsString;
+                result.IsNegative = value["Type"].AsString == "Debuff";
+                result.ToolTip = value["RuTooltip"].AsString;
+                result.EffectDescription = value["RuEffectDescription"].AsString;
+                result.ImageId = value["ImageId"].AsInt32;
+                
+                if (value["Durations"].Type != BsonType.Null)
+                {
+                    result.DurationTime = TimeSpan.FromTicks(value["Durations"].AsArray[0].AsInt64);
+                }
+
+                return result;
+            }));
+        
         this.RegisterType(
             (Item i) => new BsonDocument
             {

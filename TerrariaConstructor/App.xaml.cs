@@ -117,6 +117,7 @@ namespace TerrariaConstructor
             builder.RegisterType<SafeInventoryViewModel>().AsSelf();
             builder.RegisterType<ForgeInventoryViewModel>().AsSelf();
             builder.RegisterType<VoidInventoryViewModel>().AsSelf();
+            builder.RegisterType<BuffsViewModel>().AsSelf();
             
             builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<WelcomeView>().AsSelf();

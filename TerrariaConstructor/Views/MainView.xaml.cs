@@ -61,5 +61,17 @@ namespace TerrariaConstructor.Views
         {
             Close();
         }
+
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width < 1000)
+            {
+                RootNavigation.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftFluent;
+            }
+            else
+            {
+                 RootNavigation.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
+            }
+        }
     }
 }

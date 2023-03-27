@@ -17,6 +17,7 @@
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
         <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter" />
+        <converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
         </Style>
@@ -28,6 +29,14 @@
             <Setter Property="Foreground" Value="Black"/>
             <Setter Property="FontSize" Value="18"/>
             <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}" x:Key="RoundButton">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                </Style>
+            </Style.Resources>
         </Style>
     </Page.Resources>
     <ScrollViewer>
@@ -275,28 +284,56 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding HairColor}" Opacity="0.6" />
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding HairColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="HairColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет волос: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding HairColor}"
                                          BorderThickness="0"
                                          Style="{DynamicResource MaterialDesignTextBox}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding SkinColor}" Opacity="0.6" />
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding SkinColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="SkinColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет кожы: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding SkinColor}"
                                          BorderThickness="0"
                                          Style="{DynamicResource MaterialDesignTextBox}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding EyeColor}" Opacity="0.6" />
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding EyeColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="EyeColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет глаз: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding EyeColor}"
                                          BorderThickness="0"
                                          Style="{DynamicResource MaterialDesignTextBox}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding ShirtColor}" Opacity="0.6" />
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding ShirtColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="ShirtColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет рубашки: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding ShirtColor}"
                                          BorderThickness="0"
@@ -304,22 +341,44 @@
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Grid.Column="1">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding UndershirtColor}" Opacity="0.6" />
+                            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding UndershirtColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="UndershirtColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет майки: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding UndershirtColor}"
                                          BorderThickness="0"
                                          Style="{DynamicResource MaterialDesignTextBox}" />
                             </StackPanel>
+                            
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding PantsColor}" Opacity="0.6" />
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding PantsColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="PantsColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет штанов: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding PantsColor}"
                                          BorderThickness="0"
                                          Style="{DynamicResource MaterialDesignTextBox}" />
                             </StackPanel>
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:ColorPicker Color="{Binding ShoeColor}" Opacity="0.6" />
+                                <Border BorderBrush="#EDEDED" BorderThickness="1" Width="20" Height="20" CornerRadius="10"  Margin="0,0,5,0">
+                                    <Button Width="18" Height="18"
+                                            Style="{StaticResource MaterialDesignIconButton}"
+                                            Background="{Binding ShoeColor, Converter={StaticResource ColorToBrushConverter}, UpdateSourceTrigger=PropertyChanged}"
+                                            Command="{Binding ToggleFlyoutCommand}"
+                                            CommandParameter="ShoeColor" />
+                                </Border>
+
                                 <TextBlock Text="Цвет бутсов: " VerticalAlignment="Center" />
                                 <TextBox Text="{Binding ShoeColor}"
                                          BorderThickness="0"
@@ -378,6 +437,13 @@
                     </StackPanel>
                 </StackPanel>
             </Grid>
+            <ui:Flyout
+                Placement="MousePoint"
+                IsOpen="{Binding UndershirtColorFlyout, Mode=TwoWay}">
+                <materialDesign:ColorPicker Width="210" Height="150" Color="{Binding FlyoutColor}" />
+            </ui:Flyout>
         </Grid>
+        
     </ScrollViewer>
+    
 </Page>

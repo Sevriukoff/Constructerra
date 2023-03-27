@@ -26,7 +26,7 @@
         
         <ui:NavigationView Grid.Row="1"
                            x:Name="RootNavigation"
-                           PaneDisplayMode="LeftMinimal"
+                           PaneDisplayMode='LeftMinimal'
                            TransitionType="SlideLeft"
                            MenuItemsSource="{Binding NavigationItems, Mode=OneWay}"
                            FooterMenuItemsSource="{Binding FooterItems, Mode=OneWay}">

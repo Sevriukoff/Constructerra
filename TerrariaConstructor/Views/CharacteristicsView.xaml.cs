@@ -1,5 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using ReactiveUI;
 using TerrariaConstructor.Models;
 using TerrariaConstructor.ViewModels;
@@ -11,9 +13,6 @@ public partial class CharacteristicsView : INavigableView<CharacteristicsViewMod
 {
     public CharacteristicsView(CharacteristicsViewModel model)
     {
-        ViewModel = model;
-        DataContext = ViewModel;
-        
         InitializeComponent();
 
         NameTextBox.Focus();
@@ -28,6 +27,9 @@ public partial class CharacteristicsView : INavigableView<CharacteristicsViewMod
         AddTextBoxFocusEvent(PveTextBox, IconPveTextBox);
         AddTextBoxFocusEvent(PvpTextBox, IconPvpTextBox);
         AddTextBoxFocusEvent(PlayTimeTextBox, IconPlayTimeTextBox);
+        
+        ViewModel = model;
+        DataContext = ViewModel;
     }
     
     private void AddTextBoxFocusEvent(TextBox textBox, UIElement icon)

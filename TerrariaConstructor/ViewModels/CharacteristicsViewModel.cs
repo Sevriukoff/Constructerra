@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive;
@@ -181,6 +182,51 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         "Классика", "Средняя сложность", "Сложный режим", "Путешествие"
     };
 
+    public string CurrentColorSelected { get; set; }
+
+    public Color FlyoutColor
+    {
+        get => _flyoutColor;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _flyoutColor, value);
+
+            switch (CurrentColorSelected)
+            {
+                case "HairColor":
+                    HairColor = value;
+                    break;
+                
+                case "SkinColor":
+                    SkinColor = value;
+                    break;
+                
+                case "EyeColor":
+                    EyeColor = value;
+                    break;
+                
+                case "ShirtColor":
+                    ShirtColor = value;
+                    break;
+                
+                case "PantsColor":
+                    PantsColor = value;
+                    break;
+                
+                case "ShoeColor":
+                    ShoeColor = value;
+                    break;
+
+                case "UndershirtColor":
+                    UndershirtColor = value;
+                    break;
+            }
+        }
+    }
+
+    [Reactive]
+    public bool UndershirtColorFlyout { get; set; }
+
     #endregion
 
     #region Commands
@@ -191,17 +237,22 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     public ReactiveCommand<Appearance, Unit> SelectHairCommand => _selectHairCommand;
 
     private readonly ReactiveCommand<Appearance, Unit> _selectSkinCommand;
+    private Color _flyoutColor;
     public ReactiveCommand<Appearance, Unit> SelectSkinCommand => _selectSkinCommand;
-
-
+    
+    public ReactiveCommand<string, Unit> ToggleFlyoutCommand { get; }
+    
     #endregion
     public CharacteristicsViewModel(CharacteristicsModel model)
     {
         Model = model;
         Hairs = Model.GetHairs();
         Skins = Model.GetSkins();
+        
+        Update();
 
         var properties = new (Expression<Func<CharacteristicsViewModel, object>> property, Action<object> setter)[] {
+            (x => x.Name, x => Model.Name = (string) x),
             (x => x.Difficulty, x => Model.Difficulty = (byte) x),
             (x => x.Health, x => Model.Health = (int) x),
             (x => x.MaxHealth, x => Model.MaxHealth = (int) x),
@@ -231,9 +282,6 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
             this.WhenAnyValue(property)
                 .Subscribe(x => setter(x));
         }
-
-        this.WhenAnyValue(x => x.Name)
-            .Subscribe(x => Model.Name = x);
 
         T GetValueOrNull<T>(object value) where T : struct
         {
@@ -274,6 +322,14 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         _selectSkinCommand = ReactiveCommand.Create<Appearance>(selectedSkin =>
         {
             SkinId = (byte) selectedSkin.Id;
+        });
+
+        IDisposable flyoutDisposable;
+
+        ToggleFlyoutCommand = ReactiveCommand.Create<string>(parameter =>
+        {
+            CurrentColorSelected = parameter;
+            UndershirtColorFlyout = !UndershirtColorFlyout;
         });
 
         MessageBus.Current.Listen<PlayerUpdatedEvent>()

@@ -4,5 +4,5 @@ namespace TerrariaConstructor.Infrastructure.Interfaces;
 
 public interface IBuffsRepository
 {
-    Buff GetById(int id);
+    Buff GetById(int id, bool loadImage = true);
 }
