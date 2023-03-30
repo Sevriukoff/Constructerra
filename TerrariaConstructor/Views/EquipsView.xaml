@@ -1,35 +1,80 @@
-<UserControl x:Class="TerrariaConstructor.Views.EquipsView"
+<Page x:Class="TerrariaConstructor.Views.EquipsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TerrariaConstructor.Views"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+             xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
+             xmlns:model="clr-namespace:TerrariaConstructor.Models"
+             xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="900" d:DataContext="{d:DesignInstance vm:EquipsViewModel}">
+    <Page.Resources>
+        <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+    </Page.Resources>
     <Grid>
-        <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <TextBlock Text="Страничка экипировки"
-                       Foreground="#272727"
-                       FontWeight="Medium"
-                       FontSize="36"
-                       TextAlignment="Center"/>
-            <Border BorderThickness="1"
-                    BorderBrush="#272727" 
-                    HorizontalAlignment="Center"
-                    Width="300"
-                    Margin="0,15" />
-            <TextBlock Text="Пока здесь ничего нет"
-                       Foreground="#656464"
-                       FontWeight="Normal"
-                       FontSize="36"
-                       TextAlignment="Center"/>
-            <TextBlock Text="следите за обновлениями"
-                       Foreground="#939292"
-                       FontWeight="Light"
-                       FontSize="21"
-                       TextAlignment="Center"
-                       Margin="0,15,0,0"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.7*"/>
+            <ColumnDefinition Width="0.3*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
+            <TextBlock Text="Выберите вкладку экипировки"/>
+            <Button Command="{Binding ChangeLoadout}" CommandParameter="0" Content="1" />
+            <Button Command="{Binding ChangeLoadout}" CommandParameter="1" Content="2" />
+            <Button Command="{Binding ChangeLoadout}" CommandParameter="2" Content="3" />
         </StackPanel>
+        
+        <StackPanel Grid.Row="1" Grid.Column="0" Background="Bisque">
+            <ui:VirtualizingItemsControl ItemsSource="{Binding SelectedLoadout}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type model:Item}">
+                         <Grid>
+                            <ui:Button
+                                Width="65"
+                                Height="65"
+                                Margin="2"
+                                Padding="0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Appearance="Secondary"
+                                FontSize="25">
+                                <Image
+                                    Stretch="Uniform"
+                                    StretchDirection="DownOnly"
+                                    MaxHeight="32"
+                                    MaxWidth="32"
+                                    Source="{Binding Image,
+                                    Converter={StaticResource ByteArrayToImageSourceConverter}}">
+                                    <Image.ToolTip>
+                                        <StackPanel>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding Name}"
+                                                           Foreground="#8263FF"
+                                                           FontWeight="Medium"/>
+                                                <TextBlock Text="{Binding Id, StringFormat=' (#{0})'}"
+                                                           Foreground="#8263FF"
+                                                           FontWeight="Medium"/>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Description}"
+                                                       TextWrapping="WrapWithOverflow"/>
+                                            <TextBlock Text="{Binding Stack}"/>
+                                        </StackPanel>
+                                    </Image.ToolTip>
+                                </Image>
+                            </ui:Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ui:VirtualizingItemsControl>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="0" Background="Beige"></StackPanel>
     </Grid>
-</UserControl>
+</Page>

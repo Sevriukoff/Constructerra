@@ -25,7 +25,7 @@ public class ItemsRepository : IItemsRepository
             fileInfo.Read(result.Image, 0, (int) fileInfo.Length);
         }
         
-        return result;
+        return result ?? new Item {Id = id};
     }
 
     public Item GetByName(string name)

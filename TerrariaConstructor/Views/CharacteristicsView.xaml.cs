@@ -1,9 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using ReactiveUI;
-using TerrariaConstructor.Models;
 using TerrariaConstructor.ViewModels;
 using Wpf.Ui.Controls.Navigation;
 

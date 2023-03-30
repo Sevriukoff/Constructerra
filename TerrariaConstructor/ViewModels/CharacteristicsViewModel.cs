@@ -22,9 +22,8 @@ namespace TerrariaConstructor.ViewModels;
 
 public class CharacteristicsViewModel : ReactiveObject, INavigationAware
 {
-    public CharacteristicsModel Model { get; set; }
-    public string PlayerName { get; set; }
-    
+    private CharacteristicsModel Model { get; set; }
+
     private TimeSpan _playTime;
     private Color _hairColor;
     private Color _skinColor;
@@ -33,6 +32,8 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     private Color _undershirtColor;
     private Color _pantsColor;
     private Color _shoeColor;
+    private Color _flyoutColor;
+    private Appearance _selectedAppearance;
 
     #region Properties
 
@@ -230,14 +231,11 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
     #endregion
 
     #region Commands
-    
-    private Appearance _selectedAppearance;
 
     private readonly ReactiveCommand<Appearance, Unit> _selectHairCommand;
     public ReactiveCommand<Appearance, Unit> SelectHairCommand => _selectHairCommand;
 
     private readonly ReactiveCommand<Appearance, Unit> _selectSkinCommand;
-    private Color _flyoutColor;
     public ReactiveCommand<Appearance, Unit> SelectSkinCommand => _selectSkinCommand;
     
     public ReactiveCommand<string, Unit> ToggleFlyoutCommand { get; }

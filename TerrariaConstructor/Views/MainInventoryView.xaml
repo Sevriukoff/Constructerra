@@ -62,7 +62,6 @@
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Bottom"/>
                     </Grid>
-                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ui:VirtualizingItemsControl>

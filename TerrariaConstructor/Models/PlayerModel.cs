@@ -158,20 +158,18 @@ public class PlayerModel
         _characteristic.PantsColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
         _characteristic.ShoeColor = Color.FromArgb(reader.ReadByte(), reader.ReadByte(), reader.ReadByte());
 
-        for (int i = 0; i < _equips.Armor.Length; i++)
+        for (int i = 0; i < _equips.Loadouts[0].Armor.Length; i++)
         {
-            _equips.Armor[i] = new Item //[0]
-            {
-                Id = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
-            };
-
-            var item = unitOfWork.ItemsRepository.GetById(_equips.Armor[i].Id);
+            int id = reader.ReadInt32();
+            var item = unitOfWork.ItemsRepository.GetById(id);
+            
+            _equips.Loadouts[0].Armor[i] = item;
+            _equips.Loadouts[0].Armor[i].Prefix = reader.ReadByte();
         }
 
-        for (int i = 0; i < _equips.Dye.Length; i++)
+        for (int i = 0; i < _equips.Loadouts[0].Dye.Length; i++)
         {
-            _equips.Dye[i] = new Item
+            _equips.Loadouts[0].Dye[i] = new Item
             {
                 Id = reader.ReadInt32(),
                 Prefix = reader.ReadByte()
@@ -445,18 +443,25 @@ public class PlayerModel
         _characteristic.EnabledSuperCart = bitsByte[1];
 
         _equips.CurrentLoadoutIndex = reader.ReadInt32();
+        _equips.Loadouts[_equips.CurrentLoadoutIndex] = _equips.Loadouts[0];
 
         for (int i = 0; i < _equips.Loadouts.Length; i++)
         {
+            if (i == _equips.CurrentLoadoutIndex)
+            {
+                reader.ReadBytes((4+4+1) * 20 + (4+4+1) * 10 + 1 * 10);
+                continue;
+            }
+            
             _equips.Loadouts[i] = new EquipsModel.Loadout();
             for (int j = 0; j < _equips.Loadouts[i].Armor.Length; j++)
             {
-                _equips.Loadouts[i].Armor[j] = new Item
-                {
-                    Id = reader.ReadInt32(),
-                    Stack = reader.ReadInt32(),
-                    Prefix = reader.ReadByte()
-                };
+                var item = unitOfWork.ItemsRepository.GetById(reader.ReadInt32());
+
+                _equips.Loadouts[i].Armor[j] = item;
+
+                _equips.Loadouts[i].Armor[j].Stack = reader.ReadInt32();
+                _equips.Loadouts[i].Armor[j].Prefix = reader.ReadByte();
             }
             
             for (int j = 0; j < _equips.Loadouts[i].Dye.Length; j++)
@@ -534,16 +539,16 @@ public class PlayerModel
         writer.Write(_characteristic.ShoeColor.G);
         writer.Write(_characteristic.ShoeColor.B);
         
-        for (int i = 0; i < _equips.Armor.Length; i++)
+        for (int i = 0; i < _equips.Loadouts[_equips.CurrentLoadoutIndex].Armor.Length; i++)
         {
-            writer.Write(_equips.Armor[i].Id);
-            writer.Write(_equips.Armor[i].Prefix);
+            writer.Write(_equips.Loadouts[_equips.CurrentLoadoutIndex].Armor[i].Id);
+            writer.Write(_equips.Loadouts[_equips.CurrentLoadoutIndex].Armor[i].Prefix);
         }
         
-        for (int i = 0; i < _equips.Dye.Length; i++)
+        for (int i = 0; i < _equips.Loadouts[_equips.CurrentLoadoutIndex].Dye.Length; i++)
         {
-            writer.Write(_equips.Dye[i].Id);
-            writer.Write(_equips.Dye[i].Prefix);
+            writer.Write(_equips.Loadouts[_equips.CurrentLoadoutIndex].Dye[i].Id);
+            writer.Write(_equips.Loadouts[_equips.CurrentLoadoutIndex].Dye[i].Prefix);
         }
         
         for (int i = 0; i < _inventories.Inventory.Length; i++)
@@ -705,6 +710,12 @@ public class PlayerModel
         
         for (int i = 0; i < _equips.Loadouts.Length; i++)
         {
+            if (i == _equips.CurrentLoadoutIndex)
+            {
+                writer.Write(Enumerable.Repeat((byte)0, 280).ToArray());
+                continue;
+            }
+            
             for (int j = 0; j < _equips.Loadouts[i].Armor.Length; j++)
             {
                 writer.Write(_equips.Loadouts[i].Armor[j].Id);
@@ -779,8 +790,6 @@ public class PlayerModel
 
         InitializationArray(_equips.Purse);
         InitializationArray(_equips.Ammo);
-        InitializationArray(_equips.Armor);
-        InitializationArray(_equips.Dye);
 
         for (int i = 0; i < _equips.Loadouts.Length; i++)
         {
@@ -791,7 +800,7 @@ public class PlayerModel
             _equips.Loadouts[i] = loadout;
         }
 
-        _equips.CurrentLoadoutIndex = 1;
+        _equips.CurrentLoadoutIndex = 0;
         
         InitializationArray(_tools.MiscEquip);
         InitializationArray(_tools.MiscDye);
@@ -869,6 +878,7 @@ public class PlayerModel
                 writer.Write(_characteristic.ShoeColor.G);
                 writer.Write(_characteristic.ShoeColor.B);
 
+                /*
                 for (int i = 0; i < _equips.Armor.Length; i++)
                 {
                     writer.Write(_equips.Armor[i].Id);
@@ -880,7 +890,7 @@ public class PlayerModel
                     writer.Write(_equips.Dye[i].Id);
                     writer.Write(_equips.Dye[i].Prefix);
                 }
-
+                */
                 for (int i = 0; i < _inventories.Inventory.Length; i++)
                 {
                     writer.Write(_inventories.Inventory[i].Id);
