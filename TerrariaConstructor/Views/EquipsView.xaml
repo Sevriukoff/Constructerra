@@ -8,7 +8,7 @@
              xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
              xmlns:model="clr-namespace:TerrariaConstructor.Models"
              xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="900" d:DataContext="{d:DesignInstance vm:EquipsViewModel}">
     <Page.Resources>
@@ -37,7 +37,11 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Item}">
                          <Grid>
-                            <ui:Button
+                             <Grid.ColumnDefinitions>
+                                 <ColumnDefinition/>
+                                 <ColumnDefinition/>
+                             </Grid.ColumnDefinitions>
+                             <ui:Button
                                 Width="65"
                                 Height="65"
                                 Margin="2"
@@ -54,22 +58,15 @@
                                     Source="{Binding Image,
                                     Converter={StaticResource ByteArrayToImageSourceConverter}}">
                                     <Image.ToolTip>
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding Name}"
-                                                           Foreground="#8263FF"
-                                                           FontWeight="Medium"/>
-                                                <TextBlock Text="{Binding Id, StringFormat=' (#{0})'}"
-                                                           Foreground="#8263FF"
-                                                           FontWeight="Medium"/>
-                                            </StackPanel>
-                                            <TextBlock Text="{Binding Description}"
-                                                       TextWrapping="WrapWithOverflow"/>
-                                            <TextBlock Text="{Binding Stack}"/>
-                                        </StackPanel>
+                                        <controls:ImageTooltipPresenter Item="{Binding}" />
                                     </Image.ToolTip>
                                 </Image>
                             </ui:Button>
+                             <StackPanel Grid.Column="1">
+                                 <TextBlock Text="{Binding Name}" />
+                                 <controls:ImageTooltipPresenter />
+                             </StackPanel>
+                             
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

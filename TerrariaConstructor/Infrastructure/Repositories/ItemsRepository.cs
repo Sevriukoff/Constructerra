@@ -16,7 +16,8 @@ public class ItemsRepository : IItemsRepository
 
     public Item GetById(int id, bool loadImage = true)
     {
-        var result =_itemsDatabase.GetCollection<Item>("items").FindOne(x => x.Id == id);
+        var result =_itemsDatabase.GetCollection<Item>("items")
+            .FindOne(x => x.Id == id);
         
         if (result != null && loadImage)
         {

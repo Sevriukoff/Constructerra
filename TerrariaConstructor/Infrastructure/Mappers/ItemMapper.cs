@@ -59,15 +59,61 @@ public class ItemMapper : BsonMapper
             },
             (BsonValue b) =>
             {
-                var result = new Item();
+                var result = new Item
+                {
+                    Id = b["_id"].AsInt32,
+                    Name = string.IsNullOrEmpty(b["RuName"].AsString) ? b["Name"] : b["RuName"],
+                    InternalName = b["InternalName"].AsString,
+                    Tooltip = b["RuToolTip"].AsString,
+                    Rarity = Enum.Parse<ItemRarity>(b["Rarity"].AsString),
+                    Damage = b["Damage"].AsInt32,
+                    DamageType = Enum.Parse<DamageType>(b["DamageType"].AsString),
+                    CriticalChance = b["CriticalChance"].AsInt32,
+                    Knockback = b["Knockback"].AsDouble,
+                    KnockbackType = Enum.Parse<KnockbackType>(b["KnockbackType"]),
+                    UseTime = b["UseTime"].AsInt32,
+                    PickaxePower = b["PickaxePower"].AsInt32,
+                    AxePower = b["AxePower"].AsInt32,
+                    HammerPower = b["HammerPower"].AsInt32,
+                    DefensePoint = b["Defense"].AsInt32,
+                    QuantityForResearch = b["QuantityForResearch"].AsInt32,
+                    CostByBuy = b["Buy"].AsInt32,
+                    CostBySell = b["Sell"],
+                    MaxStack = b["MaxStack"].AsInt32,
+                    IsPlaceable = b["IsPlaceable"].AsBoolean,
+                    WikiUrl = b["WikiUrl"].AsString,
+                    Description = string.IsNullOrEmpty(b["RuToolTip"].AsString)
+                        ? b["Types"].AsArray.Count > 0 ? b["Types"].AsArray[0].AsString : "None"
+                        : b["RuToolTip"]
+                };
 
-                result.Id = b["_id"].AsInt32;
-                result.Name = string.IsNullOrEmpty(b["RuName"].AsString) ? b["Name"] : b["RuName"];
-                result.Description = string.IsNullOrEmpty(b["RuToolTip"].AsString)
-                    ? b["Types"].AsArray.Count > 0 ? b["Types"].AsArray[0].AsString : "None"
-                    : b["RuToolTip"];
-                result.Sell = b["Sell"];
+                return result;
+            });
+        
+        this.RegisterType(
+            (Modifier m) => new BsonDocument
+            {
+                
+            },
+            (BsonValue b) =>
+            {
+                var result = new Modifier();
 
+                result.Id = b["_id"].AsObjectId;
+                result.Name = b["Name"].AsString;
+                result.Category = b["Category"].AsString;
+                result.Damage = b["Damage"].AsInt32;
+                result.MovementSpeed = b["MovementSpeed"].AsInt32;
+                result.MeleeSpeed = b["MeleeSpeed"].AsInt32;
+                result.CriticalChance = b["CriticalChance"].AsInt32;
+                result.DefensePoints = b["Defense"].AsInt32;
+                result.ManaCost = b["ManaCost"].AsInt32;
+                result.Size = b["Size"].AsInt32;
+                result.Velocity = b["Velocity"].AsInt32;
+                result.Knockback = b["Knockback"].AsInt32;
+                result.Tier = b["Tier"].AsInt32;
+                result.Value = b["Value"].AsDouble;
+                
                 return result;
             });
     }

@@ -165,6 +165,8 @@ public class PlayerModel
             
             _equips.Loadouts[0].Armor[i] = item;
             _equips.Loadouts[0].Armor[i].Prefix = reader.ReadByte();
+            
+            //unitOfWork.ModifierRepository.GetById(_equips.Loadouts[0].Armor[i].Prefix);
         }
 
         for (int i = 0; i < _equips.Loadouts[0].Dye.Length; i++)
@@ -193,7 +195,7 @@ public class PlayerModel
                 _inventories.Inventory[i].Name = item.Name;
                 _inventories.Inventory[i].Description = item.Description;
                 _inventories.Inventory[i].Image = item.Image;
-                _inventories.Inventory[i].Sell = item.Sell;
+                _inventories.Inventory[i].CostBySell = item.CostBySell;
             }
         }
 
@@ -250,7 +252,7 @@ public class PlayerModel
                 _inventories.Bank1[i].Name = item.Name;
                 _inventories.Bank1[i].Description = item.Description;
                 _inventories.Bank1[i].Image = item.Image;
-                _inventories.Bank1[i].Sell = item.Sell;
+                _inventories.Bank1[i].CostBySell = item.CostBySell;
             }
         }
         
@@ -270,7 +272,7 @@ public class PlayerModel
                 _inventories.Bank2[i].Name = item.Name;
                 _inventories.Bank2[i].Description = item.Description;
                 _inventories.Bank2[i].Image = item.Image;
-                _inventories.Bank2[i].Sell = item.Sell;
+                _inventories.Bank2[i].CostBySell = item.CostBySell;
             }
         }
         
@@ -290,7 +292,7 @@ public class PlayerModel
                 _inventories.Bank3[i].Name = item.Name;
                 _inventories.Bank3[i].Description = item.Description;
                 _inventories.Bank3[i].Image = item.Image;
-                _inventories.Bank3[i].Sell = item.Sell;
+                _inventories.Bank3[i].CostBySell = item.CostBySell;
             }
         }
         
@@ -311,7 +313,7 @@ public class PlayerModel
                 _inventories.Bank4[i].Name = item.Name;
                 _inventories.Bank4[i].Description = item.Description;
                 _inventories.Bank4[i].Image = item.Image;
-                _inventories.Bank4[i].Sell = item.Sell;
+                _inventories.Bank4[i].CostBySell = item.CostBySell;
             }
         }
 

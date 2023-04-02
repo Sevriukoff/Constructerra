@@ -10,6 +10,7 @@ public class UnitOfWork : IDisposable
     public IItemsRepository ItemsRepository { get; set; }
     public IBuffsRepository BuffsRepository { get; set; }
     public IAppearanceRepository AppearanceRepository { get; set; }
+    public IModifierRepository ModifierRepository { get; set; }
     public IPlayerRepository PlayerRepository { get; set; }
     
     private readonly ILiteDatabase _itemsDatabase;
@@ -20,7 +21,8 @@ public class UnitOfWork : IDisposable
         IItemsRepository itemsRepository,
         IBuffsRepository buffsRepository,
         IPlayerRepository playerRepository,
-        IAppearanceRepository appearanceRepository)
+        IAppearanceRepository appearanceRepository,
+        IModifierRepository modifierRepository)
     {
         _itemsDatabase = itemsDatabase;
         _playersDatabase = playersDatabase;
@@ -28,6 +30,7 @@ public class UnitOfWork : IDisposable
         BuffsRepository = buffsRepository;
         PlayerRepository = playerRepository;
         AppearanceRepository = appearanceRepository;
+        ModifierRepository = modifierRepository;
     }
 
     public void Rollback()

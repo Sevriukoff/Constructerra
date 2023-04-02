@@ -87,19 +87,19 @@ public class InventoriesViewModel : ReactiveObject
             Link = "VoidInventory",
         };
 
-        var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _mainInventory.Coins = GetCoinsList(mainInventorySum);
         
-        var Bank1Sum = (int) Model.Bank1.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank1Sum = (int) Model.Bank1.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank1.Coins = GetCoinsList(Bank1Sum);
         
-        var Bank2Sum = (int) Model.Bank2.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank2Sum = (int) Model.Bank2.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank2.Coins = GetCoinsList(Bank2Sum);
         
-        var Bank3Sum = (int) Model.Bank3.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank3Sum = (int) Model.Bank3.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank3.Coins = GetCoinsList(Bank3Sum);
         
-        var Bank4Sum = (int) Model.Bank4.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank4Sum = (int) Model.Bank4.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank4.Coins = GetCoinsList(Bank4Sum);
 
         NavigationCards = new ObservableCollection<InventoryNavigationCard>();
@@ -156,19 +156,19 @@ public class InventoriesViewModel : ReactiveObject
     
     public void Update()
     {
-        var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var mainInventorySum = (int) Model.Inventory.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _mainInventory.Coins = GetCoinsList(mainInventorySum);
         
-        var Bank1Sum = (int) Model.Bank1.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank1Sum = (int) Model.Bank1.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank1.Coins = GetCoinsList(Bank1Sum);
         
-        var Bank2Sum = (int) Model.Bank2.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank2Sum = (int) Model.Bank2.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank2.Coins = GetCoinsList(Bank2Sum);
         
-        var Bank3Sum = (int) Model.Bank3.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank3Sum = (int) Model.Bank3.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank3.Coins = GetCoinsList(Bank3Sum);
         
-        var Bank4Sum = (int) Model.Bank4.Where(x => x != null).Sum(x => x.Sell * x.Stack);
+        var Bank4Sum = (int) Model.Bank4.Where(x => x != null).Sum(x => x.CostBySell * x.Stack);
         _bank4.Coins = GetCoinsList(Bank4Sum);
     }
 }

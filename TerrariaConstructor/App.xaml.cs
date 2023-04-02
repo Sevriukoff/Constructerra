@@ -86,6 +86,10 @@ namespace TerrariaConstructor
             builder.RegisterType<AppearanceRepository>().As<IAppearanceRepository>()
                 .InstancePerLifetimeScope()
                 .WithParameter(parameterSelector, valueProvider);
+
+            builder.RegisterType<ModifierRepository>().As<IModifierRepository>()
+                .InstancePerLifetimeScope()
+                .WithParameter(parameterSelector, valueProvider);
             
             builder.RegisterType<PlayerRepository>().As<IPlayerRepository>()
                 .InstancePerLifetimeScope()
