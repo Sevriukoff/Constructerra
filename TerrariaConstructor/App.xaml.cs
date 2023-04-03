@@ -65,7 +65,7 @@ namespace TerrariaConstructor
                 .WithParameter((pi, ctx) => pi.ParameterType == typeof(string),
                 (pi, ctx) => itemsDatabaseName)
                 .WithParameter((pi, ctx) => pi.ParameterType == typeof(BsonMapper),
-                    (pi, ctx) => new ItemMapper());
+                    (pi, ctx) => new ItemsDatabaseMapper());
             
             builder.RegisterType<LiteDatabase>().Named<ILiteDatabase>(playersDatabaseName)
                 .InstancePerLifetimeScope()

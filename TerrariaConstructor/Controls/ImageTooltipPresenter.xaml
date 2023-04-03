@@ -29,6 +29,7 @@
                                                         Stroke="#272727"
                                                         StrokeThickness="0.3"
                                                         FontWeight="Medium" />
+                            <TextBlock></TextBlock>
                         </StackPanel>
                         <TextBlock Text="{Binding Item.Description, RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                    TextWrapping="WrapWithOverflow" />

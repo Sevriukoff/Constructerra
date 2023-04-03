@@ -130,7 +130,7 @@ public class PlayerModel
         _characteristic.Hair = reader.ReadInt32();
         _characteristic.HairDye = reader.ReadByte();
         _characteristic.HideBytes = reader.ReadBytes(3);
-        _characteristic.SkinVariant = reader.ReadByte(); //TODO: Fix SkinId
+        _characteristic.SkinVariant = reader.ReadByte();
         
         _characteristic.Health = reader.ReadInt32();
         _characteristic.MaxHealth = reader.ReadInt32();
@@ -161,160 +161,97 @@ public class PlayerModel
         for (int i = 0; i < _equips.Loadouts[0].Armor.Length; i++)
         {
             int id = reader.ReadInt32();
-            var item = unitOfWork.ItemsRepository.GetById(id);
-            
-            _equips.Loadouts[0].Armor[i] = item;
-            _equips.Loadouts[0].Armor[i].Prefix = reader.ReadByte();
-            
-            //unitOfWork.ModifierRepository.GetById(_equips.Loadouts[0].Armor[i].Prefix);
+            byte prefix = reader.ReadByte();
+
+            _equips.Loadouts[0].Armor[i] = GetItem(id, prefix);
         }
 
         for (int i = 0; i < _equips.Loadouts[0].Dye.Length; i++)
         {
-            _equips.Loadouts[0].Dye[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
-            };
+            int id = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
+
+            _equips.Loadouts[0].Dye[i] = GetItem(id, prefix);
         }
-        
+
         for (int i = 0; i < _inventories.Inventory.Length; i++)
         {
-            _inventories.Inventory[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte(),
-                IsFavorite = reader.ReadBoolean()
-            };
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
+            bool isFavorite = reader.ReadBoolean();
 
-            if (_inventories.Inventory[i].Id > 0)
-            {
-                var item = unitOfWork.ItemsRepository.GetById(_inventories.Inventory[i].Id);
-
-                _inventories.Inventory[i].Name = item.Name;
-                _inventories.Inventory[i].Description = item.Description;
-                _inventories.Inventory[i].Image = item.Image;
-                _inventories.Inventory[i].CostBySell = item.CostBySell;
-            }
+            _inventories.Inventory[i] = GetItem(id, prefix, stack, isFavorite);
         }
 
         for (int i = 0; i < _equips.Purse.Length; i++)
         {
-            _equips.Purse[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte(),
-                IsFavorite = reader.ReadBoolean()
-            };
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
+            bool isFavorite = reader.ReadBoolean();
+
+            _equips.Purse[i] = GetItem(id, prefix, stack, isFavorite);
         }
 
         for (int i = 0; i < _equips.Ammo.Length; i++)
         {
-            _equips.Ammo[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte(),
-                IsFavorite = reader.ReadBoolean()
-            };
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
+            bool isFavorite = reader.ReadBoolean();
+
+            _equips.Ammo[i] = GetItem(id, prefix, stack, isFavorite);
         }
 
         for (int i = 0; i < _tools.MiscEquip.Length; i++)
         {
-            _tools.MiscEquip[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Prefix = reader.ReadByte(),
-            };
+            int id = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
 
-            _tools.MiscDye[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
-            };
+            _tools.MiscEquip[i] = GetItem(id, prefix);
+
+            id = reader.ReadInt32();
+            prefix = reader.ReadByte();
+
+            _tools.MiscDye[i] = GetItem(id, prefix);
         }
 
         for (int i = 0; i < _inventories.Bank1.Length; i++)
         {
-            _inventories.Bank1[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
-            };
-            
-            if (_inventories.Bank1[i].Id > 0)
-            {
-                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank1[i].Id);
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
 
-                _inventories.Bank1[i].Name = item.Name;
-                _inventories.Bank1[i].Description = item.Description;
-                _inventories.Bank1[i].Image = item.Image;
-                _inventories.Bank1[i].CostBySell = item.CostBySell;
-            }
+            _inventories.Bank1[i] = GetItem(id, prefix, stack);
         }
         
         for (int i = 0; i < _inventories.Bank2.Length; i++)
         {
-            _inventories.Bank2[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
-            };
-            
-            if (_inventories.Bank2[i].Id > 0)
-            {
-                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank2[i].Id);
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
 
-                _inventories.Bank2[i].Name = item.Name;
-                _inventories.Bank2[i].Description = item.Description;
-                _inventories.Bank2[i].Image = item.Image;
-                _inventories.Bank2[i].CostBySell = item.CostBySell;
-            }
+            _inventories.Bank2[i] = GetItem(id, prefix, stack);
         }
         
         for (int i = 0; i < _inventories.Bank3.Length; i++)
         {
-            _inventories.Bank3[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte()
-            };
-            
-            if (_inventories.Bank3[i].Id > 0)
-            {
-                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank3[i].Id);
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
 
-                _inventories.Bank3[i].Name = item.Name;
-                _inventories.Bank3[i].Description = item.Description;
-                _inventories.Bank3[i].Image = item.Image;
-                _inventories.Bank3[i].CostBySell = item.CostBySell;
-            }
+            _inventories.Bank3[i] = GetItem(id, prefix, stack);
         }
-        
+
         for (int i = 0; i < _inventories.Bank4.Length; i++)
         {
-            _inventories.Bank4[i] = new Item
-            {
-                Id = reader.ReadInt32(),
-                Stack = reader.ReadInt32(),
-                Prefix = reader.ReadByte(),
-                IsFavorite = reader.ReadBoolean()
-            };
-            
-            if (_inventories.Bank4[i].Id > 0)
-            {
-                var item = unitOfWork.ItemsRepository.GetById(_inventories.Bank4[i].Id);
+            int id = reader.ReadInt32();
+            int stack = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
+            bool isFavorite = reader.ReadBoolean();
 
-                _inventories.Bank4[i].Name = item.Name;
-                _inventories.Bank4[i].Description = item.Description;
-                _inventories.Bank4[i].Image = item.Image;
-                _inventories.Bank4[i].CostBySell = item.CostBySell;
-            }
+            _inventories.Bank4[i] = GetItem(id, prefix, stack, isFavorite);
         }
 
         _characteristic.VoidVaultInfo = reader.ReadByte();
@@ -483,6 +420,17 @@ public class PlayerModel
         }
         
         OnPlayerUpdated();
+        
+        Item GetItem(int id, byte prefix, int stack = -1, bool isFavorite = false)
+        {
+            var item = unitOfWork.ItemsRepository.GetById(id);
+            
+            item.Modifier = unitOfWork.ModifierRepository.GetById(prefix);
+            item.Stack = stack;
+            item.IsFavorite = isFavorite;
+
+            return item;
+        }
     }
     
     public void SavePlayer(string plrPath)
@@ -1096,4 +1044,5 @@ public class PlayerModel
             };
         }
     }
+    
 }
