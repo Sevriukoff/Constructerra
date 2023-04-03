@@ -6,6 +6,7 @@
     <Style TargetType="{x:Type controls:ImageTooltipPresenter}">
         <Style.Resources>
             <converters:RarityToColorConverter x:Key="RarityToColorConverter"/>
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
         </Style.Resources>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
@@ -14,23 +15,42 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:ImageTooltipPresenter}">
                     <StackPanel>
-                        <StackPanel Orientation="Horizontal">
-                            <controls:OutlinedTextBlock Text="{Binding Item.Name, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <controls:OutlinedTextBlock Grid.Column="0" Text="{Binding Item.Modifier.Name, RelativeSource={RelativeSource Mode=TemplatedParent}, StringFormat='[{0}]'}"
                                                         Fill="{Binding Item.Rarity, 
                                                             RelativeSource={RelativeSource Mode=TemplatedParent}, 
                                                             Converter={StaticResource RarityToColorConverter}}"
-                                                        FontSize="9pt"
+                                                        FontSize="11pt"
                                                         FontWeight="ExtraBold"
                                                         Stroke="#272727"
-                                                        StrokeThickness="0.5"/>
+                                                        StrokeThickness="0.8"
+                                                        Margin="0,0,5,0"
+                                                        Visibility="{Binding Item.Modifier.Id, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}}"/>
                             
-                            <controls:OutlinedTextBlock Text="{Binding Item.Id ,RelativeSource={RelativeSource TemplatedParent}, StringFormat=' (#{0})'}"
+                            <controls:OutlinedTextBlock Grid.Column="1" Text="{Binding Item.Name, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                                        Fill="{Binding Item.Rarity, 
+                                                            RelativeSource={RelativeSource Mode=TemplatedParent}, 
+                                                            Converter={StaticResource RarityToColorConverter}}"
+                                                        FontSize="11pt"
+                                                        FontWeight="ExtraBold"
+                                                        Stroke="#272727"
+                                                        StrokeThickness="0.8"/>
+                            
+                            <controls:OutlinedTextBlock Grid.Column="2" Text="{Binding Item.Id ,RelativeSource={RelativeSource TemplatedParent}, StringFormat=' (#{0})'}"
                                                         Fill="White"
                                                         Stroke="#272727"
                                                         StrokeThickness="0.3"
-                                                        FontWeight="Medium" />
-                            <TextBlock></TextBlock>
-                        </StackPanel>
+                                                        FontSize="9pt"
+                                                        FontWeight="Medium" 
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Right"/>
+                        </Grid>
+                        <Separator Margin="0, 5" />
                         <TextBlock Text="{Binding Item.Description, RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                    TextWrapping="WrapWithOverflow" />
                         <TextBlock Text="{Binding Item.Stack}" />

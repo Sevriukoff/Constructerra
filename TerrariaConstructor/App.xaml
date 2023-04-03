@@ -13,6 +13,7 @@
                  <ui:ControlsDictionary />
                  <ResourceDictionary Source="Controls/GalleryNavigationPresenter.xaml"/>
                  <ResourceDictionary Source="Controls/ImageTooltipPresenter.xaml"/>
+                 <ResourceDictionary Source="Controls/InventoryCellPresenter.xaml"/>
              </ResourceDictionary.MergedDictionaries>
              <base:ViewModelLocator x:Key="Locator"/>
          </ResourceDictionary>
