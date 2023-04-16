@@ -64,12 +64,6 @@ public class MainViewModel : ReactiveObject
             },
             new NavigationViewItem
             {
-                Content = "Инструменты",
-                Icon = new SymbolIcon{Symbol = SymbolRegular.Ruler16},
-                TargetPageType = typeof(ToolsView)
-            },
-            new NavigationViewItem
-            {
                 Content = "Инвентарь",
                 Icon = new SymbolIcon{Symbol = SymbolRegular.Savings16},
                 TargetPageType = typeof(InventoriesView),
@@ -118,7 +112,13 @@ public class MainViewModel : ReactiveObject
                 Content = "Изучение",
                 Icon = new SymbolIcon{Symbol = SymbolRegular.BrainCircuit20},
                 TargetPageType = typeof(ResearchView)
-            }
+            },
+            new NavigationViewItem
+            {
+                Content = "Персонажи",
+                Icon = new SymbolIcon{Symbol = SymbolRegular.PeopleCommunity20},
+                TargetPageType = typeof(PlayersView)
+            },
         };
 
         FooterItems = new ObservableCollection<object>();
@@ -126,7 +126,7 @@ public class MainViewModel : ReactiveObject
         var uploadNavigationViewItem = new NavigationViewItem
         {
             Content = "Загрузить",
-            Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowUpload16},
+            Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowUpload16}
         };
         PlayerModel.CreateNewPlayer();
 
@@ -161,7 +161,7 @@ public class MainViewModel : ReactiveObject
         var saveNavigationViewItem = new NavigationViewItem
         {
             Content = "Сохранить",
-            Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowDownload16},
+            Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowDownload16}
         };
 
         saveNavigationViewItem.Click += (_, _) =>
@@ -181,7 +181,7 @@ public class MainViewModel : ReactiveObject
         var createNavigationViewItem = new NavigationViewItem
         {
             Content = "Создать",
-            Icon = new SymbolIcon {Symbol = SymbolRegular.Add12},
+            Icon = new SymbolIcon {Symbol = SymbolRegular.Add12}
         };
 
         createNavigationViewItem.Click += (_, _) =>

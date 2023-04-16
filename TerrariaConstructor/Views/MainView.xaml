@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TerrariaConstructor"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
         xmlns:views="clr-namespace:TerrariaConstructor.Views"
         xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
         DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
@@ -24,16 +25,21 @@
             
         </ui:TitleBar>
         
-        <ui:NavigationView Grid.Row="1"
+        <controls:CustomNavigationView Grid.Row="1"
                            x:Name="RootNavigation"
-                           PaneDisplayMode='LeftMinimal'
+                           PaneDisplayMode="LeftMinimal"
                            TransitionType="SlideLeft"
                            MenuItemsSource="{Binding NavigationItems, Mode=OneWay}"
-                           FooterMenuItemsSource="{Binding FooterItems, Mode=OneWay}">
+                           FooterMenuItemsSource="{Binding FooterItems, Mode=OneWay}"
+                           IsPaneOpen="False"
+                           IsBackButtonVisible="Collapsed"
+                           IsPaneToggleVisible="True"
+                           PaneOpened="RootNavigation_OnPaneOpened"
+                           Loaded="RootNavigation_OnLoaded">
             <ui:NavigationView.ContentOverlay>
                 <ui:Snackbar x:Name="RootSnackbar"/>
             </ui:NavigationView.ContentOverlay>
             
-        </ui:NavigationView>
+        </controls:CustomNavigationView>
     </Grid>
 </ui:FluentWindow>

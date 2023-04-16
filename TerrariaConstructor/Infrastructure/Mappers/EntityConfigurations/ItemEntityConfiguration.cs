@@ -42,7 +42,7 @@ public class ItemEntityConfiguration : IEntityConfiguration<Item>
             Id = bsonValue["_id"].AsInt32,
             Name = string.IsNullOrEmpty(bsonValue["RuName"].AsString) ? bsonValue["Name"] : bsonValue["RuName"],
             InternalName = bsonValue["InternalName"].AsString,
-            Tooltip = bsonValue["RuToolTip"].AsString,
+            Tooltip = bsonValue["RuToolTip"].AsString ?? "",
             Rarity = Enum.Parse<ItemRarity>(bsonValue["Rarity"].AsString),
             Damage = bsonValue["Damage"].AsInt32,
             DamageType = Enum.Parse<DamageType>(bsonValue["DamageType"].AsString),
@@ -64,6 +64,17 @@ public class ItemEntityConfiguration : IEntityConfiguration<Item>
                 ? bsonValue["Types"].AsArray.Count > 0 ? bsonValue["Types"].AsArray[0].AsString : "None"
                 : bsonValue["RuToolTip"]
         };
+
+        var types = bsonValue["Types"].AsArray;
+
+        string[] categories = new string[types.Count];
+
+        for (int i = 0; i < types.Count; i++)
+        {
+            categories[i] = types[i].AsString;
+        }
+
+        result.Categories = categories;
 
         return result;
     }

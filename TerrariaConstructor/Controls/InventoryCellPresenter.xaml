@@ -1,5 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
                     xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
                     xmlns:models="clr-namespace:TerrariaConstructor.Models"
                     xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
@@ -7,6 +8,7 @@
     <Style TargetType="{x:Type controls:InventoryCellPresenter}">
         <Style.Resources>
             <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
             <Style x:Key="CustomTooltip" TargetType="{x:Type ToolTip}">
                 <Setter Property="Background" Value="#F3F3F3"/>
                 <Setter Property="BorderThickness" Value="0"/>
@@ -35,27 +37,81 @@
                 <ControlTemplate TargetType="{x:Type controls:InventoryCellPresenter}">
                     <Grid>
                         <ui:Button
-                            Width="65"
-                            Height="65"
+                            Width="58.5"
+                            Height="58.5"
                             Margin="2"
                             Padding="0"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             Appearance="Secondary"
-                            FontSize="25">
+                            FontSize="25"
+                            BorderThickness="1"
+                            Cursor="Hand">
+                            <ui:Button.ToolTip>
+                                <ToolTip Style="{StaticResource CustomTooltip}"
+                                         Visibility="{Binding InventoryItem.Id,
+                                          RelativeSource={RelativeSource Mode=TemplatedParent},
+                                           Converter={StaticResource IntToVisibilityConverter}}">
+                                    <controls:ImageTooltipPresenter Item="{Binding InventoryItem,
+                                                                     RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                </ToolTip>
+                            </ui:Button.ToolTip>
+                            <ui:Button.Effect>
+                                <DropShadowEffect Color="Black" ShadowDepth="0" Opacity="0" BlurRadius="2.5"/>
+                            </ui:Button.Effect>
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="MouseDoubleClick">
+                                    <i:InvokeCommandAction
+                                        Command="{Binding ItemClickCommand,
+                                         RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                            <ui:Button.Style>
+                                <Style TargetType="ui:Button" BasedOn="{StaticResource DefaultButtonStyle}">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderBrush" Value="LightGray"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding InventoryItem.IsFavorite,
+                                                         RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                                     Value="True">
+                                            <Setter Property="BorderBrush" Value="#FFD3AA"/>
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="#FFD3AA" Opacity="0.25"/>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <EventTrigger RoutedEvent="MouseEnter">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" From="0" To="0.15" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <EventTrigger RoutedEvent="MouseLeave">
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" From="0.15" To="0" Duration="0:0:0.3"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </EventTrigger>
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Setter Property="BorderBrush" Value="#8F9BFF"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
                             <Image
                                 Stretch="Uniform"
                                 StretchDirection="DownOnly"
-                                MaxHeight="32"
-                                MaxWidth="32"
-                                Source="{Binding InventoryItem.Image, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource ByteArrayToImageSourceConverter}}">
-                                <Image.ToolTip>
-                                    <ToolTip Style="{StaticResource CustomTooltip}">
-                                        <controls:ImageTooltipPresenter Item="{Binding InventoryItem, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
-                                    </ToolTip>
-                                </Image.ToolTip>
-                            </Image>
+                                MaxHeight="28.8"
+                                MaxWidth="28.8"
+                                Source="{Binding InventoryItem.Image, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
                         </ui:Button>
+                        <TextBlock Text="{Binding InventoryItem.Stack, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                   Visibility="{Binding InventoryItem.MaxStack, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1 }"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Bottom"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

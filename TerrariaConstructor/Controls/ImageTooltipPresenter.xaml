@@ -51,9 +51,24 @@
                                                         HorizontalAlignment="Right"/>
                         </Grid>
                         <Separator Margin="0, 5" />
-                        <TextBlock Text="{Binding Item.Description, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                   TextWrapping="WrapWithOverflow" />
-                        <TextBlock Text="{Binding Item.Stack}" />
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding Item.Damage, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}}">
+                            <TextBlock Text="{Binding Item.Damage, RelativeSource={RelativeSource Mode=TemplatedParent}, StringFormat='{}{0} ед. урона типа'}"
+                                       TextWrapping="WrapWithOverflow"
+                                       Margin="0,0,3,0"/>
+                            
+                            <TextBlock Text="{Binding Item.DamageType, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding Item.DefensePoint, RelativeSource={RelativeSource Mode=TemplatedParent}, StringFormat='{}{0} ед. брони'}"
+                                   Visibility="{Binding Item.DefensePoint, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}}"/>
+                        <TextBlock Text="Можно поставить"
+                                   Visibility="{Binding Item.IsPlaceable, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="Материал"
+                                   Visibility="{Binding IsMaterial, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="Расходуется"
+                                   Visibility="{Binding IsConsumable, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding Item.Tooltip, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                   TextWrapping="WrapWithOverflow"
+                                   Visibility="{Binding Item.Tooltip.Length, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>

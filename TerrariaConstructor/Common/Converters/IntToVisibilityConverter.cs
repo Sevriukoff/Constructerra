@@ -9,7 +9,9 @@ public class IntToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is int intValue && intValue == 0)
+        int.TryParse(parameter?.ToString(), out var minValue);
+        
+        if (value is int intValue && intValue <= minValue)
         {
             return Visibility.Collapsed;
         }

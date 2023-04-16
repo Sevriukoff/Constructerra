@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Reactive;
 using System.Windows;
 using System.Windows.Controls;
@@ -35,4 +36,7 @@ public class ImageTooltipPresenter : Control
     {
         
     }
+
+    public bool IsMaterial => Item.Categories.Contains("Crafting material");
+    public bool IsConsumable => Item.Categories.Contains("Consumable");
 }

@@ -2,6 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using Autofac;
 using Splat;
 using TerrariaConstructor.Models;
@@ -72,6 +74,27 @@ namespace TerrariaConstructor.Views
             {
                  RootNavigation.PaneDisplayMode = NavigationViewPaneDisplayMode.LeftMinimal;
             }
+        }
+
+        private void RootNavigation_OnPaneOpened(object sender, RoutedEventArgs e)
+        {
+            RootNavigation.PaneDisplayMode = RootNavigation.PaneDisplayMode == NavigationViewPaneDisplayMode.LeftFluent
+                ? NavigationViewPaneDisplayMode.LeftMinimal
+                : NavigationViewPaneDisplayMode.LeftFluent;
+        }
+
+        private void RootNavigation_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            // var navView = sender as NavigationView;
+            // var rootGrid = VisualTreeHelper.GetChild(navView, 0) as Grid;
+            //
+            // var paneToggleButtonGrid = VisualTreeHelper.GetChild(rootGrid, 0) as Grid;
+            // var border = VisualTreeHelper.GetChild(paneToggleButtonGrid, 0) as Border;
+            // var firstGrid = VisualTreeHelper.GetChild(border, 0) as  Grid;
+            // var secondGrid = VisualTreeHelper.GetChild(firstGrid, 0) as Grid;
+            // var toggleButton = VisualTreeHelper.GetChild(secondGrid, 0) as Button;
+            //
+            // toggleButton.Click += RootNavigation_OnPaneOpened;
         }
     }
 }

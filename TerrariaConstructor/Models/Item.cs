@@ -11,6 +11,7 @@ public class Item
     public string Description { get; set; }
     public string Tooltip { get; set; }
     public ItemRarity Rarity { get; set; }
+    public string[] Categories { get; set; }
 
     #region Damage
 

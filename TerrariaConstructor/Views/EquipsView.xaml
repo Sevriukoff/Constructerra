@@ -13,29 +13,31 @@
              d:DesignHeight="300" d:DesignWidth="900" d:DataContext="{d:DesignInstance vm:EquipsViewModel}">
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
-        <Style x:Key="MyToolTipStyle" TargetType="{x:Type ToolTip}">
-            <Setter Property="Background" Value="#F3F3F3"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="SnapsToDevicePixels" Value="True"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ToolTip}">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="5"
-                                MaxWidth="350">
-                            <ContentPresenter Margin="10"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <converters:SelectedIndexToBrushConverter x:Key="SelectedIndexToBrushConverter"/>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="MinWidth" Value="150"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="CaptionText">
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignIconButton}" x:Key="RoundButton">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                </Style>
+            </Style.Resources>
         </Style>
     </Page.Resources>
-    <Grid>
+    <Grid Margin="15">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="690"/>
+            <ColumnDefinition Width="630"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -44,22 +46,39 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         
-        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal">
-            <TextBlock Text="Выберите вкладку экипировки"/>
-            <Button Command="{Binding ChangeLoadout}" CommandParameter="0" Content="1" />
-            <Button Command="{Binding ChangeLoadout}" CommandParameter="1" Content="2" />
-            <Button Command="{Binding ChangeLoadout}" CommandParameter="2" Content="3" />
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,5">
+            <TextBlock Text="Выберите вкладку экипировки" Margin="0,0,15,0" Style="{StaticResource CaptionText}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Command="{Binding ChangeLoadout}" CommandParameter="0" Content="1"
+                        BorderBrush="{Binding SelectedIndex, Converter={StaticResource SelectedIndexToBrushConverter}, ConverterParameter='0'}"/>
+                <Button Command="{Binding ChangeLoadout}" CommandParameter="1" Content="2" Margin="15,0"
+                        BorderBrush="{Binding SelectedIndex, Converter={StaticResource SelectedIndexToBrushConverter}, ConverterParameter='1'}"/>
+                <Button Command="{Binding ChangeLoadout}" CommandParameter="2" Content="3"
+                        BorderBrush="{Binding SelectedIndex, Converter={StaticResource SelectedIndexToBrushConverter}, ConverterParameter='2'}"/>
+            </StackPanel>
         </StackPanel>
         
-        <StackPanel Grid.Row="1" Grid.Column="0" Background="Bisque">
-            <ui:VirtualizingItemsControl ItemsSource="{Binding SelectedLoadout}" MinWidth="690">
+        <StackPanel Grid.Row="1" Grid.Column="0">
+            <ui:VirtualizingItemsControl ItemsSource="{Binding SelectedLoadout}" MinWidth="630">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Item}">
                          <controls:InventoryCellPresenter InventoryItem="{Binding}"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ui:VirtualizingItemsControl>
+            
+            <Separator BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="630"
+                    Margin="15,5" />
+            
+            <ui:VirtualizingItemsControl ItemsSource="{Binding Tools}" MinWidth="630">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type model:Item}">
+                        <controls:InventoryCellPresenter InventoryItem="{Binding}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ui:VirtualizingItemsControl>
         </StackPanel>
         <StackPanel Grid.Row="2" Grid.Column="0" Background="Beige"></StackPanel>
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Background="Azure"></Grid>
     </Grid>
 </Page>

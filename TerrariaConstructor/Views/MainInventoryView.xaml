@@ -8,6 +8,7 @@
       xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
       xmlns:models="clr-namespace:TerrariaConstructor.Models"
       xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
+      xmlns:controlrs="clr-namespace:TerrariaConstructor.Controls"
       mc:Ignorable="d"
       d:DataContext="{d:DesignInstance vm:MainInventoryViewModel}">
     <Page.Resources>
@@ -16,52 +17,12 @@
     <Grid>
         <ui:VirtualizingItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
                                      VirtualizingPanel.CacheLengthUnit="Item"
-                                     MaxWidth="690"
+                                     MaxWidth="630"
                                      HorizontalAlignment="Left"
                                      VerticalAlignment="Top">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Item}">
-                    <Grid>
-                        <ui:Button
-                            Width="65"
-                            Height="65"
-                            Margin="2"
-                            Padding="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Appearance="Secondary"
-                            FontSize="25">
-                            <Image
-                                Stretch="Uniform"
-                                StretchDirection="DownOnly"
-                                MaxHeight="32"
-                                MaxWidth="32"
-                                Source="{Binding Image,
-                        Converter={StaticResource ByteArrayToImageSourceConverter}}">
-                                <Image.ToolTip>
-                                    <StackPanel>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding Name}"
-                                                       Foreground="#8263FF"
-                                                       FontWeight="Medium"/>
-                                            <TextBlock Text="{Binding Id, StringFormat=' (#{0})'}"
-                                                       Foreground="#8263FF"
-                                                       FontWeight="Medium"/>
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding Description}"
-                                                   TextWrapping="WrapWithOverflow"/>
-                                        <TextBlock Text="{Binding Stack}"/>
-                                    </StackPanel>
-                                </Image.ToolTip>
-                            </Image>
-                        </ui:Button>
-                        <TextBlock Text="{Binding Stack}"
-                                   FontSize="11"
-                                   FontWeight="Light"
-                                   Padding="5"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"/>
-                    </Grid>
+                    <controlrs:InventoryCellPresenter InventoryItem="{Binding}"/>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ui:VirtualizingItemsControl>

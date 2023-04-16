@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace TerrariaConstructor.Views;
 
-public partial class ToolsView : UserControl
+public partial class PlayersView : UserControl
 {
-    public ToolsView()
+    public PlayersView()
     {
         InitializeComponent();
     }

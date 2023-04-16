@@ -16,7 +16,7 @@
              d:DataContext="{d:DesignInstance vm:CharacteristicsViewModel}">
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter" />
-        <converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter" />
+        <converters:BoolToBrushConverter x:Key="BooleanToBrushConverter" />
         <converters:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
@@ -37,6 +37,29 @@
                     <Setter Property="BorderThickness" Value="1" />
                 </Style>
             </Style.Resources>
+        </Style>
+        <Style x:Key="AnimationButton" TargetType="ui:Button" BasedOn="{StaticResource DefaultButtonStyle}">
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" ShadowDepth="0" Opacity="0" BlurRadius="9.5"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" From="0" To="0.45" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="Effect.Opacity" From="0.45" To="0" Duration="0:0:0.3"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
         </Style>
     </Page.Resources>
     <ScrollViewer>
@@ -204,10 +227,11 @@
                                             Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
                                             Appearance="Secondary"
                                             BorderThickness="1"
-                                            MouseOverBorderBrush="Transparent"
                                             Command="{Binding DataContext.SelectHairCommand,
                                                     RelativeSource={RelativeSource AncestorType={x:Type Page}}}"
                                             CommandParameter="{Binding }"
+                                            Cursor="Hand"
+                                            Style="{StaticResource AnimationButton}"
                                             Padding="5"
                                             Margin="5">
                                             <Image Stretch="Fill" StretchDirection="DownOnly" Width="32" Height="56"
@@ -254,10 +278,11 @@
                                             Background="{Binding IsSelected, Converter={StaticResource BooleanToBrushConverter}}"
                                             Appearance="Secondary"
                                             BorderThickness="1"
-                                            MouseOverBorderBrush="Transparent"
                                             Command="{Binding DataContext.SelectSkinCommand,
                                                     RelativeSource={RelativeSource AncestorType={x:Type Page}}}"
                                             CommandParameter="{Binding }"
+                                            Style="{StaticResource AnimationButton}"
+                                            Cursor="Hand"
                                             Padding="5"
                                             Margin="5">
                                             <Image Stretch="Fill" StretchDirection="DownOnly" Width="32" Height="56"
