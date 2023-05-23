@@ -12,9 +12,10 @@
                  <ui:ThemesDictionary Theme="Light"/>
                  <ui:ControlsDictionary />
                  <ResourceDictionary Source="Controls/GalleryNavigationPresenter.xaml"/>
-                 <ResourceDictionary Source="Controls/ImageTooltipPresenter.xaml"/>
+                 <ResourceDictionary Source="Controls/ItemTooltipPresenter.xaml"/>
                  <ResourceDictionary Source="Controls/InventoryCellPresenter.xaml"/>
                  <ResourceDictionary Source="Controls/CustomNavigationView.xaml"/>
+                 <ResourceDictionary Source="Controls/BuffTooltipPresenter.xaml"/>
                  <ResourceDictionary Source="Common/Styles/CheckBox.xaml"/>
              </ResourceDictionary.MergedDictionaries>
              <base:ViewModelLocator x:Key="Locator"/>

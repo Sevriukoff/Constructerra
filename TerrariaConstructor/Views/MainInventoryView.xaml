@@ -13,6 +13,7 @@
       d:DataContext="{d:DesignInstance vm:MainInventoryViewModel}">
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
     </Page.Resources>
     <Grid>
         <ui:VirtualizingItemsControl ItemsSource="{Binding Items, Mode=OneWay}"
@@ -22,7 +23,20 @@
                                      VerticalAlignment="Top">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type models:Item}">
-                    <controlrs:InventoryCellPresenter InventoryItem="{Binding}"/>
+                    <controlrs:InventoryCellPresenter ItemId="{Binding Id}"
+                                                      Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                      IsFavorite="{Binding IsFavorite}"
+                                                      WikiUrl="{Binding WikiUrl}">
+                        <controlrs:InventoryCellPresenter.TooltipContent>
+                            <controlrs:ItemTooltipPresenter Item="{Binding}"/>
+                        </controlrs:InventoryCellPresenter.TooltipContent>
+                        <controlrs:InventoryCellPresenter.FooterContent>
+                            <TextBlock Text="{Binding Stack}"
+                                       Visibility="{Binding MaxStack,
+                                         Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1 }"/>
+                        </controlrs:InventoryCellPresenter.FooterContent>
+                    </controlrs:InventoryCellPresenter>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ui:VirtualizingItemsControl>

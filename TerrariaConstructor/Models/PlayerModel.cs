@@ -269,6 +269,9 @@ public class PlayerModel
             {
                 var buff = unitOfWork.BuffsRepository.GetById(_buffs.Buffs[i].Id);
                 _buffs.Buffs[i].Image = buff.Image;
+                _buffs.Buffs[i].Name = buff.Name;
+                _buffs.Buffs[i].WikiUrl = buff.WikiUrl;
+                _buffs.Buffs[i].ToolTip = buff.ToolTip;
                 //_buffs.Buffs[i].DurationTime = buff.DurationTime;
             }
             

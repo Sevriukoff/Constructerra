@@ -46,14 +46,17 @@
       <Compile Update="Controls\GalleryNavigationPresenter.cs">
         <DependentUpon>GalleryNavigationPresenter.xaml</DependentUpon>
       </Compile>
-      <Compile Update="Controls\ImageTooltipPresenter.cs">
-        <DependentUpon>ImageTooltipPresenter.xaml</DependentUpon>
+      <Compile Update="Controls\ItemTooltipPresenter.cs">
+        <DependentUpon>ItemTooltipPresenter.xaml</DependentUpon>
       </Compile>
       <Compile Update="Controls\InventoryCellPresenter.cs">
         <DependentUpon>InventoryCellPresenter.xaml</DependentUpon>
       </Compile>
       <Compile Update="Controls\CustomNavigationView.cs">
         <DependentUpon>CustomNavigationView.xaml</DependentUpon>
+      </Compile>
+      <Compile Update="Controls\BuffTooltipPresenter.cs">
+        <DependentUpon>BuffTooltipPresenter.xaml</DependentUpon>
       </Compile>
     </ItemGroup>
 

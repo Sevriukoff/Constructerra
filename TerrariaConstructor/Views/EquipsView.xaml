@@ -14,6 +14,7 @@
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
         <converters:SelectedIndexToBrushConverter x:Key="SelectedIndexToBrushConverter"/>
+        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
         <Style TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
         </Style>
@@ -62,23 +63,43 @@
             <ui:VirtualizingItemsControl ItemsSource="{Binding SelectedLoadout}" MinWidth="630">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Item}">
-                         <controls:InventoryCellPresenter InventoryItem="{Binding}"/>
+                        <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                          Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                          IsFavorite="{Binding IsFavorite}"
+                                                          WikiUrl="{Binding WikiUrl}">
+                            <controls:InventoryCellPresenter.TooltipContent>
+                                <controls:ItemTooltipPresenter Item="{Binding}"/>
+                            </controls:InventoryCellPresenter.TooltipContent>
+                        </controls:InventoryCellPresenter>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ui:VirtualizingItemsControl>
             
-            <Separator BorderThickness="1" BorderBrush="#8263FF" HorizontalAlignment="Left" Width="630"
-                    Margin="15,5" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="630"
+                        Margin="15,5">
+                <Separator BorderThickness="1" BorderBrush="#8263FF" Width="250" Height="1.5" />
+                <TextBlock Text="Инструменты" Style="{StaticResource MaterialDesignSubtitle2TextBlock}" Margin="5,0"/>
+                <Separator BorderThickness="1" BorderBrush="#8263FF" Width="250" Height="1.5" />
+            </StackPanel>
             
             <ui:VirtualizingItemsControl ItemsSource="{Binding Tools}" MinWidth="630">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Item}">
-                        <controls:InventoryCellPresenter InventoryItem="{Binding}"/>
+                        <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                         Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                         IsFavorite="{Binding IsFavorite}"
+                                                         WikiUrl="{Binding WikiUrl}">
+                            <controls:InventoryCellPresenter.TooltipContent>
+                                <controls:ItemTooltipPresenter Item="{Binding}"/>
+                            </controls:InventoryCellPresenter.TooltipContent>
+                        </controls:InventoryCellPresenter>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ui:VirtualizingItemsControl>
         </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0" Background="Beige"></StackPanel>
-        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Background="Azure"></Grid>
+        <StackPanel Grid.Row="2" Grid.Column="0" ></StackPanel>
+        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" ></Grid>
     </Grid>
 </Page>

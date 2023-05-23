@@ -3,7 +3,7 @@
                     xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
                     xmlns:models="clr-namespace:TerrariaConstructor.Models"
                     xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters">
-    <Style TargetType="{x:Type controls:ImageTooltipPresenter}">
+    <Style TargetType="{x:Type controls:ItemTooltipPresenter}">
         <Style.Resources>
             <converters:RarityToColorConverter x:Key="RarityToColorConverter"/>
             <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
@@ -13,7 +13,7 @@
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:ImageTooltipPresenter}">
+                <ControlTemplate TargetType="{x:Type controls:ItemTooltipPresenter}">
                     <StackPanel>
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -69,6 +69,8 @@
                         <TextBlock Text="{Binding Item.Tooltip, RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                    TextWrapping="WrapWithOverflow"
                                    Visibility="{Binding Item.Tooltip.Length, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}}"/>
+                        <TextBlock Text="Отсутствуют дополнительные сведения" Foreground="LightGray"
+                                   Visibility="{Binding IsNothingToShow, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource BoolToVisibilityConverter}}"/>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>

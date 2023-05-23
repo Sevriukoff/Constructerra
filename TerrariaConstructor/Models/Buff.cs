@@ -13,4 +13,5 @@ public class Buff
     public Item[] Sources { get; set; }
     public string ToolTip { get; set; }
     public string EffectDescription { get; set; }
+    public string WikiUrl { get; set; }
 }

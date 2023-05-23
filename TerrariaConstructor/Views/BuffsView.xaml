@@ -8,11 +8,12 @@
              xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
              xmlns:models="clr-namespace:TerrariaConstructor.Models"
              xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
+             xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance vm:BuffsViewModel}"
              d:DesignHeight="500" d:DesignWidth="500">
     <Page.Resources>
-        <converters:ByteArrayToImageSourceConverter x:Key="ImageSourceConverter"/>
+        <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
     </Page.Resources>
     <Grid>
        <ui:VirtualizingItemsControl ItemsSource="{Binding Buffs, Mode=OneWay}"
@@ -21,7 +22,20 @@
                                     VerticalAlignment="Top">
            <ItemsControl.ItemTemplate>
                <DataTemplate DataType="{x:Type models:Buff}">
-                   <Grid>
+                   <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                    Image="{Binding Image,
+                                                     Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                    WikiUrl="{Binding WikiUrl}"
+                                                    IsFavorite="{Binding IsNegative}">
+                       <controls:InventoryCellPresenter.TooltipContent>
+                           <controls:BuffTooltipPresenter Buff="{Binding}"/>
+                       </controls:InventoryCellPresenter.TooltipContent>
+                       <controls:InventoryCellPresenter.FooterContent>
+                           <TextBlock Text="{Binding StringFormat={}{0}м, Path=DurationTime.Hours}"
+                                      HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                       </controls:InventoryCellPresenter.FooterContent>
+                   </controls:InventoryCellPresenter>
+                   <!--<Grid>
                        <ui:Button
                            Width="65"
                            Height="65"
@@ -40,7 +54,7 @@
                        </ui:Button>
                        <TextBlock Text="{Binding StringFormat={}{0}M, Path=DurationTime.Hours}"
                                   HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                   </Grid>
+                   </Grid>-->
                </DataTemplate>
            </ItemsControl.ItemTemplate>
            

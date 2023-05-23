@@ -49,11 +49,11 @@
                             Cursor="Hand">
                             <ui:Button.ToolTip>
                                 <ToolTip Style="{StaticResource CustomTooltip}"
-                                         Visibility="{Binding InventoryItem.Id,
+                                         Visibility="{Binding ItemId,
                                           RelativeSource={RelativeSource Mode=TemplatedParent},
-                                           Converter={StaticResource IntToVisibilityConverter}}">
-                                    <controls:ImageTooltipPresenter Item="{Binding InventoryItem,
-                                                                     RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
+                                           Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1}">
+                                    <ContentPresenter Content="{Binding TooltipContent,
+                                     RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
                                 </ToolTip>
                             </ui:Button.ToolTip>
                             <ui:Button.Effect>
@@ -71,7 +71,7 @@
                                     <Setter Property="Background" Value="Transparent"/>
                                     <Setter Property="BorderBrush" Value="LightGray"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding InventoryItem.IsFavorite,
+                                        <DataTrigger Binding="{Binding IsFavorite,
                                                          RelativeSource={RelativeSource Mode=TemplatedParent}}"
                                                      Value="True">
                                             <Setter Property="BorderBrush" Value="#FFD3AA"/>
@@ -106,12 +106,12 @@
                                 StretchDirection="DownOnly"
                                 MaxHeight="28.8"
                                 MaxWidth="28.8"
-                                Source="{Binding InventoryItem.Image, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource ByteArrayToImageSourceConverter}}"/>
+                                Source="{Binding Image, RelativeSource={RelativeSource Mode=TemplatedParent}}"/>
                         </ui:Button>
-                        <TextBlock Text="{Binding InventoryItem.Stack, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-                                   Visibility="{Binding InventoryItem.MaxStack, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1 }"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Bottom"/>
+                        <ContentPresenter Content="{Binding FooterContent,
+                                           RelativeSource={RelativeSource Mode=TemplatedParent}}"
+                                          HorizontalAlignment="Right"
+                                          VerticalAlignment="Bottom"/>
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>

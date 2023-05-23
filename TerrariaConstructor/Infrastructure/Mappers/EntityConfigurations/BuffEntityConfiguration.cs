@@ -25,6 +25,7 @@ public class BuffEntityConfiguration : IEntityConfiguration<Buff>
         result.ToolTip = bsonValue["RuTooltip"].AsString;
         result.EffectDescription = bsonValue["RuEffectDescription"].AsString;
         result.ImageId = bsonValue["ImageId"].AsInt32;
+        result.WikiUrl = bsonValue["WikiUrl"].AsString;
                 
         if (bsonValue["Durations"].Type != BsonType.Null)
         {

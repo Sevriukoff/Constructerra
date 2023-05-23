@@ -7,7 +7,7 @@
       xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       xmlns:local="clr-namespace:TerrariaConstructor.Views"
       mc:Ignorable="d"
-      d:DesignHeight="500" d:DesignWidth="600">
+      d:DesignHeight="1000" d:DesignWidth="600">
     <ScrollViewer>
         <Grid Margin="5">
             <Grid.Resources>
@@ -59,13 +59,16 @@
                         <StackPanel Margin="15">
                             <TextBlock Text="Обновления:" FontWeight="Medium" Margin="0,0,0,15"/>
                             <TextBlock Text="Последние обновление было&#32;">
-                                <Run Text="05.02.23" Foreground="#90BDFF" />
+                                <Run Text="09.04.23" Foreground="#90BDFF" />
                                 <Run Text="(для Террарии"/>
-                                <Run Text="1.4.4.x):" Foreground="#90BDFF"/>
+                                <Run Text="1.4.4.x:" Foreground="#90BDFF"/>
+                                <Run Text=")"/>
                             </TextBlock>
-                            <TextBlock Text="- Что-то добавлено #1"/>
-                            <TextBlock Text="- Что-то ещё добавлено #2"/>
-                            <TextBlock Text="- Что-то пофикшено, наверно баг какой-то #3"/>
+                            <TextBlock Text="- Добавлено окно для удобного выбора цвета"/>
+                            <TextBlock Text="- Добавлено отображение списка активных баффов"/>
+                            <TextBlock Text="- Добавлена подсказка при наведении на предмет"/>
+                            <TextBlock Text="- Добавлена возможность сворачивать навигационное меню"/>
+                            <TextBlock Text="- Исправлена ошибка при загрузке персонажа"/>
                         </StackPanel>
                         <ui:Card.Footer>
                             <StackPanel Background="White">
@@ -84,7 +87,7 @@
                 </Expander>
                 
             </StackPanel>
-            <TextBlock Text="Версия приложения: 0.1"
+            <TextBlock Text="Версия приложения: 0.3"
                        FontSize="9"
                        FontWeight="Light"
                        VerticalAlignment="Bottom"
