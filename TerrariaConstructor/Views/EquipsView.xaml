@@ -44,7 +44,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition/>
-            <RowDefinition/>
         </Grid.RowDefinitions>
         
         <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="0,0,0,5">
@@ -60,8 +59,8 @@
         </StackPanel>
         
         <StackPanel Grid.Row="1" Grid.Column="0">
-            <ui:VirtualizingItemsControl ItemsSource="{Binding SelectedLoadout}" MinWidth="630">
-                <ItemsControl.ItemTemplate>
+            <ListView ItemsSource="{Binding SelectedLoadout}" MinWidth="630">
+                <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Item}">
                         <controls:InventoryCellPresenter ItemId="{Binding Id}"
                                                           Image="{Binding Image,
@@ -73,8 +72,13 @@
                             </controls:InventoryCellPresenter.TooltipContent>
                         </controls:InventoryCellPresenter>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ui:VirtualizingItemsControl>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" MaxWidth="630"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
             
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Width="630"
                         Margin="15,5">
@@ -83,8 +87,8 @@
                 <Separator BorderThickness="1" BorderBrush="#8263FF" Width="250" Height="1.5" />
             </StackPanel>
             
-            <ui:VirtualizingItemsControl ItemsSource="{Binding Tools}" MinWidth="630">
-                <ItemsControl.ItemTemplate>
+            <ListView ItemsSource="{Binding Tools}" MinWidth="630">
+                <ListView.ItemTemplate>
                     <DataTemplate DataType="{x:Type model:Item}">
                         <controls:InventoryCellPresenter ItemId="{Binding Id}"
                                                          Image="{Binding Image,
@@ -96,10 +100,13 @@
                             </controls:InventoryCellPresenter.TooltipContent>
                         </controls:InventoryCellPresenter>
                     </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ui:VirtualizingItemsControl>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" MaxWidth="630"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
         </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0" ></StackPanel>
-        <Grid Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" ></Grid>
     </Grid>
 </Page>

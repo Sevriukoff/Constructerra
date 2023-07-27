@@ -11,6 +11,8 @@ using System.Windows.Media;
 using Autofac;
 using Autofac.Core;
 using LiteDB;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 using TerrariaConstructor.Infrastructure;
 using TerrariaConstructor.Infrastructure.Interfaces;
 using TerrariaConstructor.Infrastructure.Mappers;
@@ -18,6 +20,7 @@ using TerrariaConstructor.Infrastructure.Repositories;
 using TerrariaConstructor.Models;
 using TerrariaConstructor.Services;
 using TerrariaConstructor.ViewModels;
+using TerrariaConstructor.ViewModels.Inventories;
 using TerrariaConstructor.Views;
 using Wpf.Ui.Contracts;
 using Wpf.Ui.Services;
@@ -35,6 +38,11 @@ namespace TerrariaConstructor
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            
+            var paletteHelper = new PaletteHelper();
+            ITheme theme = paletteHelper.GetTheme();
+            theme.SetPrimaryColor(Color.FromRgb(130,99,255));
+            paletteHelper.SetTheme(theme);
 
             Wpf.Ui.Appearance.Accent.Apply(Wpf.Ui.Appearance.Accent.SystemAccent, 
                 Wpf.Ui.Appearance.Accent.PrimaryAccent, Color.FromRgb(130,99,255), 
@@ -96,6 +104,11 @@ namespace TerrariaConstructor
                 .WithParameter(parameterSelector,
                     (pi, ctx) => ctx.ResolveNamed<ILiteDatabase>(playersDatabaseName));
 
+            builder.RegisterType<SettingsRepository>().As<ISettingsRepository>()
+                .InstancePerLifetimeScope()
+                .WithParameter(parameterSelector,
+                    (pi, ctx) => ctx.ResolveNamed<ILiteDatabase>(playersDatabaseName));
+
             builder.RegisterType<UnitOfWork>().AsSelf()
                 .InstancePerLifetimeScope()
                 .WithParameter(parameterSelector, valueProvider)
@@ -110,6 +123,7 @@ namespace TerrariaConstructor
             builder.RegisterType<InventoriesModel>().SingleInstance();
             builder.RegisterType<BuffsModel>().SingleInstance();
             builder.RegisterType<ResearchModel>().SingleInstance();
+            builder.RegisterType<AppSettings>().AsSelf().SingleInstance();
 
             builder.RegisterType<MainViewModel>().AsSelf();
             
@@ -122,6 +136,9 @@ namespace TerrariaConstructor
             builder.RegisterType<ForgeInventoryViewModel>().AsSelf();
             builder.RegisterType<VoidInventoryViewModel>().AsSelf();
             builder.RegisterType<BuffsViewModel>().AsSelf();
+            builder.RegisterType<ResearchViewModel>().AsSelf();
+            builder.RegisterType<SettingsViewModel>().AsSelf();
+            builder.RegisterType<PlayersViewModel>().AsSelf();
             
             builder.RegisterType<MainWindow>().AsSelf();
             builder.RegisterType<WelcomeView>().AsSelf();
@@ -132,9 +149,11 @@ namespace TerrariaConstructor
             builder.RegisterType<MainInventoryView>().AsSelf();
             builder.RegisterType<BuffsView>().AsSelf();
             builder.RegisterType<ResearchView>().AsSelf();
+            builder.RegisterType<SettingsView>().AsSelf();
 
             builder.RegisterType<NavigationPageService>().As<INavigationService>().SingleInstance();
             builder.RegisterType<SnackbarService>().As<ISnackbarService>().SingleInstance();
+            builder.RegisterType<DialogService>().As<IDialogService>().SingleInstance();
 
            return builder.Build();
         }

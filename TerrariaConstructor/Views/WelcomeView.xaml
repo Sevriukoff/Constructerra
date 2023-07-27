@@ -49,7 +49,7 @@
                 <ui:Card Margin="0,30">
                     <StackPanel >
                         <TextBlock Text="Конструктерра сделан&#32;">
-                            <Run Text="Bellatrix270" Foreground="#90BDFF" />
+                            <Run Text="Hook Ajor" Foreground="#8263FF" />
                         </TextBlock>
                     </StackPanel>
                 </ui:Card>
@@ -59,20 +59,20 @@
                         <StackPanel Margin="15">
                             <TextBlock Text="Обновления:" FontWeight="Medium" Margin="0,0,0,15"/>
                             <TextBlock Text="Последние обновление было&#32;">
-                                <Run Text="09.04.23" Foreground="#90BDFF" />
+                                <Run Text="09.06.23" Foreground="#8263FF" />
                                 <Run Text="(для Террарии"/>
-                                <Run Text="1.4.4.x:" Foreground="#90BDFF"/>
+                                <Run Text="1.4.4.x:" Foreground="#8263FF"/>
                                 <Run Text=")"/>
                             </TextBlock>
-                            <TextBlock Text="- Добавлено окно для удобного выбора цвета"/>
-                            <TextBlock Text="- Добавлено отображение списка активных баффов"/>
-                            <TextBlock Text="- Добавлена подсказка при наведении на предмет"/>
-                            <TextBlock Text="- Добавлена возможность сворачивать навигационное меню"/>
-                            <TextBlock Text="- Исправлена ошибка при загрузке персонажа"/>
+                            <TextBlock Text="- Добавлена возможность редактирования предметов в инвентарях персонажа." TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="- Добавлена возможность редактирования баффов. "/>
+                            <TextBlock Text="- Добавлена страница с изученными предметами персонажем."/>
+                            <TextBlock Text="- Добавлен новый режим - МЕНЕДЖЕР. В котором теперь нет обходимости указывать путь до каждого файла персонажа, программа сделает это автоматически, ну или постарается." TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="- Добавлена страница с настройками приложения. На странице можно изменить режим работы программы (конструктор или менеджер)" TextWrapping="WrapWithOverflow"/>
                         </StackPanel>
                         <ui:Card.Footer>
                             <StackPanel Background="White">
-                                <ui:ThumbRate State="None" Background="White"/>
+                                <ui:ThumbRate State="None" Background="White" Foreground="#8263FF"/>
                             </StackPanel>
                         </ui:Card.Footer>
                     </ui:Card>
@@ -87,7 +87,7 @@
                 </Expander>
                 
             </StackPanel>
-            <TextBlock Text="Версия приложения: 0.3"
+            <TextBlock Text="Версия приложения: 0.5"
                        FontSize="9"
                        FontWeight="Light"
                        VerticalAlignment="Bottom"

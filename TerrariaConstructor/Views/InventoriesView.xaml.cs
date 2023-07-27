@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using TerrariaConstructor.ViewModels;
+using TerrariaConstructor.ViewModels.Inventories;
 using Wpf.Ui.Controls.Navigation;
 
 namespace TerrariaConstructor.Views;

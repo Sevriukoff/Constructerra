@@ -7,9 +7,10 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
              xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
+             xmlns:inventories="clr-namespace:TerrariaConstructor.ViewModels.Inventories"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance vm:InventoriesViewModel}">
+             d:DataContext="{d:DesignInstance inventories:InventoriesViewModel}">
     <Grid>
         <controls:GalleryNavigationPresenter Margin="0"
                                              Padding="0"

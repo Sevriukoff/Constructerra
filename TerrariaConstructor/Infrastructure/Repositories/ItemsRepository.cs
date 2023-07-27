@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using LiteDB;
 using TerrariaConstructor.Infrastructure.Interfaces;
 using TerrariaConstructor.Models;
@@ -29,10 +32,25 @@ public class ItemsRepository : IItemsRepository
         return result ?? new Item {Id = id};
     }
 
-    public Item GetByName(string name)
+    public Item GetByInternalName(string internalName)
     {
-        var result = _itemsDatabase.GetCollection<Item>("items").FindOne(x => x.Name == name);
+        var result = _itemsDatabase.GetCollection<Item>("items")
+            .FindOne(x => x.InternalName == internalName);
 
-        return result;
+        return result != null ? GetById(result.Id) : null;
+    }
+
+    public IEnumerable<Item> GetAll()
+    {
+        var items = _itemsDatabase.GetCollection<Item>("items").FindAll().ToArray();
+
+        foreach (var item in items)
+        {
+            var fileInfo = _itemsDatabase.FileStorage.OpenRead(item.Id.ToString());
+            item.Image = new byte[fileInfo.Length];
+            fileInfo.Read(item.Image, 0, (int) fileInfo.Length);
+        }
+
+        return items;
     }
 }

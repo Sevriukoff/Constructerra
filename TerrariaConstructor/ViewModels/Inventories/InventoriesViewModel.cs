@@ -10,7 +10,7 @@ using TerrariaConstructor.Infrastructure;
 using TerrariaConstructor.Models;
 using Wpf.Ui.Common;
 
-namespace TerrariaConstructor.ViewModels;
+namespace TerrariaConstructor.ViewModels.Inventories;
 
 public class InventoriesViewModel : ReactiveObject
 {

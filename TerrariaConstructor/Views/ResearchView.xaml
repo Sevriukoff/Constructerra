@@ -1,35 +1,134 @@
-<UserControl x:Class="TerrariaConstructor.Views.ResearchView"
+<Page x:Class="TerrariaConstructor.Views.ResearchView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:TerrariaConstructor.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:models="clr-namespace:TerrariaConstructor.Models"
+             xmlns:viewModels="clr-namespace:TerrariaConstructor.ViewModels"
+             xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
+             xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance viewModels:ResearchViewModel}">
+    <Page.Resources>
+        <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
+        <converters:DifferenceConverter x:Key="DifferenceConverter" />
+    </Page.Resources>
     <Grid>
-        <StackPanel HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-            <TextBlock Text="Страничка изучений"
-                       Foreground="#272727"
-                       FontWeight="Medium"
-                       FontSize="36"
-                       TextAlignment="Center"/>
-            <Border BorderThickness="1"
-                    BorderBrush="#272727" 
-                    HorizontalAlignment="Center"
-                    Width="300"
-                    Margin="0,15" />
-            <TextBlock Text="Пока здесь ничего нет"
-                       Foreground="#656464"
-                       FontWeight="Normal"
-                       FontSize="36"
-                       TextAlignment="Center"/>
-            <TextBlock Text="следите за обновлениями"
-                       Foreground="#939292"
-                       FontWeight="Light"
-                       FontSize="21"
-                       TextAlignment="Center"
-                       Margin="0,15,0,0"/>
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left">
+            <ListView ItemsSource="{Binding Items, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedEditItem}"
+                      materialDesign:ListBoxAssist.IsToggle="True"
+                      SelectionMode="Single">
+                <ListView.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="IsSelected" Value="True" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Item}">
+                        <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                          Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                          IsFavorite="{Binding IsFavorite}"
+                                                          WikiUrl="{Binding WikiUrl}">
+                            <controls:InventoryCellPresenter.TooltipContent>
+                                <StackPanel>
+                                    <controls:ItemTooltipPresenter Item="{Binding}" />
+                                    <TextBlock Foreground="#8263FF">
+                                        <TextBlock.Visibility>
+                                            <MultiBinding Converter="{StaticResource DifferenceConverter}">
+                                                <Binding Path="QuantityForResearch"/>
+                                                <Binding Path="Stack"/>
+                                            </MultiBinding>
+                                        </TextBlock.Visibility>
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource DifferenceConverter}">
+                                                <Binding Path="QuantityForResearch" />
+                                                <Binding Path="Stack" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                            </controls:InventoryCellPresenter.TooltipContent>
+                            <controls:InventoryCellPresenter.FooterContent>
+                                <TextBlock Text="{Binding Stack}"
+                                           Visibility="{Binding MaxStack,
+                                         Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1 }" />
+                            </controls:InventoryCellPresenter.FooterContent>
+                        </controls:InventoryCellPresenter>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" MaxWidth="680"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+        <GridSplitter Grid.Row="1" Grid.Column="0" Height="3" Width="250" Margin="0,5" HorizontalAlignment="Center" Background="#8263FF" ResizeDirection="Rows">
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="3"/>
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+        <Grid Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left">
+            <ListView ItemsSource="{Binding AllItems}"
+                      SelectedItem="{Binding SelectedAddItem}"
+                      materialDesign:ListBoxAssist.IsToggle="True"
+                      SelectionMode="Single"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.PanningMode="VerticalOnly">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Item}">
+                        <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                          Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                          IsFavorite="{Binding IsFavorite}"
+                                                          WikiUrl="{Binding WikiUrl}">
+                            <controls:InventoryCellPresenter.TooltipContent>
+                                <controls:ItemTooltipPresenter Item="{Binding}" />
+                            </controls:InventoryCellPresenter.TooltipContent>
+                        </controls:InventoryCellPresenter>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ui:VirtualizingWrapPanel Orientation="Vertical" HorizontalAlignment="Stretch" StretchItems="False" SpacingMode="None" />
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+        <GridSplitter Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="3" Height="250" Margin="5,0" HorizontalAlignment="Center" Background="#8263FF">
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="3"/>
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+        <controls:InventoryEditorPresenter Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
+                                            SelectedItem="{Binding SelectedEditItem}" IsItemMode="False"/>
     </Grid>
-</UserControl>
+</Page>

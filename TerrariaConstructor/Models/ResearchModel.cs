@@ -4,5 +4,5 @@ namespace TerrariaConstructor.Models;
 
 public class ResearchModel
 {
-    public List<Item> Items { get; set; } = new List<Item>();
+    public IList<Item> Items { get; set; } = new List<Item>();
 }

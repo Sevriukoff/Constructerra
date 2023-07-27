@@ -248,7 +248,7 @@ public class CharacteristicsViewModel : ReactiveObject, INavigationAware
         Skins = Model.GetSkins();
         
         Update();
-
+     
         var properties = new (Expression<Func<CharacteristicsViewModel, object>> property, Action<object> setter)[] {
             (x => x.Name, x => Model.Name = (string) x),
             (x => x.Difficulty, x => Model.Difficulty = (byte) x),

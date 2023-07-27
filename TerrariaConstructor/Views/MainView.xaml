@@ -37,9 +37,24 @@
                            PaneOpened="RootNavigation_OnPaneOpened"
                            Loaded="RootNavigation_OnLoaded">
             <ui:NavigationView.ContentOverlay>
-                <ui:Snackbar x:Name="RootSnackbar"/>
+                <ui:Snackbar x:Name="RootSnackbar" Timeout="3000"/>
             </ui:NavigationView.ContentOverlay>
             
         </controls:CustomNavigationView>
+        
+        <ui:Dialog
+            x:Name="RootDialog"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Padding="0,42,0,0"
+            Margin="-15,-5"
+            ButtonLeftAppearance="Danger"
+            ButtonLeftName="Удалить под чистую"
+            ButtonRightName="Ещё поиграю"
+            Title="Подверждение удаления">
+            <TextBlock Text="Вы действительно хотите удалить персонажа? Удаление персонажа необратимый процесс. Персонаж будет удалён из файловой системы и приложения." 
+                       TextWrapping="WrapWithOverflow"
+                       Margin="0,10,0,0"/>
+        </ui:Dialog>
     </Grid>
 </ui:FluentWindow>

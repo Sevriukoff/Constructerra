@@ -1,12 +1,15 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows;
+using System.Windows.Data;
 using Autofac;
 using Microsoft.Win32;
 using ReactiveUI;
 using TerrariaConstructor.Common.Events;
 using TerrariaConstructor.Models;
 using TerrariaConstructor.Services;
+using TerrariaConstructor.ViewModels.Inventories;
 using TerrariaConstructor.Views;
 using Wpf.Ui.Common;
 using Wpf.Ui.Contracts;
@@ -18,9 +21,10 @@ namespace TerrariaConstructor.ViewModels;
 public class MainViewModel : ReactiveObject
 {
     private readonly ISnackbarService _snackbarService;
+    private readonly AppSettings _appSettings;
     private ObservableCollection<object> _navigationItems;
     private ObservableCollection<object> _footerItems;
-    public PlayerModel PlayerModel { get; }
+    private readonly PlayerModel _playerModel;
 
     public ObservableCollection<object> NavigationItems
     {
@@ -36,11 +40,29 @@ public class MainViewModel : ReactiveObject
     
     public string Title => "ConstrucTerra - создавай своих героев";
 
-    public MainViewModel(PlayerModel playerModel, ISnackbarService snackbarService)
+    public MainViewModel(PlayerModel playerModel, ISnackbarService snackbarService, AppSettings appSettings)
     {
-        PlayerModel = playerModel;
+        _playerModel = playerModel;
         _snackbarService = snackbarService;
+        _appSettings = appSettings;
+        _appSettings.LoadSettings();
 
+        var navigationPlayersItem = new NavigationViewItem
+        {
+            Content = "Персонажи",
+            Icon = new SymbolIcon { Symbol = SymbolRegular.PeopleCommunity20 },
+            TargetPageType = typeof(PlayersView)
+        };
+
+        var binding = new Binding("IsManagerMode")
+        {
+            Source = _appSettings,
+            UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+            Mode = BindingMode.TwoWay // Установите режим привязки в OneWay, если вы хотите только просматривать значения свойства
+        };
+
+        BindingOperations.SetBinding(navigationPlayersItem, NavigationViewItem.IsEnabledProperty, binding);
+        
         NavigationItems = new ObservableCollection<object>
         {
             new NavigationViewItem
@@ -113,11 +135,12 @@ public class MainViewModel : ReactiveObject
                 Icon = new SymbolIcon{Symbol = SymbolRegular.BrainCircuit20},
                 TargetPageType = typeof(ResearchView)
             },
+            navigationPlayersItem,
             new NavigationViewItem
             {
-                Content = "Персонажи",
-                Icon = new SymbolIcon{Symbol = SymbolRegular.PeopleCommunity20},
-                TargetPageType = typeof(PlayersView)
+                Content = "Настройки",
+                Icon = new SymbolIcon{Symbol = SymbolRegular.Settings16},
+                TargetPageType = typeof(SettingsView)
             },
         };
 
@@ -128,20 +151,21 @@ public class MainViewModel : ReactiveObject
             Content = "Загрузить",
             Icon = new SymbolIcon {Symbol = SymbolRegular.ArrowUpload16}
         };
-        PlayerModel.CreateNewPlayer();
+        _playerModel.CreateNewPlayer();
 
         uploadNavigationViewItem.Click += (_, _) =>
         {
-            var openFileDialog = new OpenFileDialog();
+            var openFileDialog = new OpenFileDialog { Filter = "Plr files (*.plr)|*.plr" };
             if (openFileDialog.ShowDialog() == true)
             {
                 string filePath = openFileDialog.FileName;
                 string playerName = Path.GetFileNameWithoutExtension(filePath);
-                _snackbarService.Timeout = 3000;
                 
                 try
                 {
-                    PlayerModel.LoadPlayer(filePath);
+                    _playerModel.LoadPlayer(filePath);
+                    _snackbarService.Show("Успешно", $"Персонаж {playerName} был загружен", SymbolRegular.ArrowUpload16,
+                        ControlAppearance.Success);
                 }
                 catch (Exception e)
                 {
@@ -149,12 +173,7 @@ public class MainViewModel : ReactiveObject
                         $"При загрузке {playerName} произошла ошибка. Возможно файл повреждён или имеет не правильный формат",
                         SymbolRegular.ArrowUpload16,
                         ControlAppearance.Danger);
-                    
-                    return;
                 }
-                
-                _snackbarService.Show("Успешно", $"Персонаж {playerName} был загружен", SymbolRegular.ArrowUpload16,
-                    ControlAppearance.Success);
             }
         };
         
@@ -166,15 +185,52 @@ public class MainViewModel : ReactiveObject
 
         saveNavigationViewItem.Click += (_, _) =>
         {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Plr files (*.plr)|*.plr";
-            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            saveFileDialog.FileName = "Name";
-
-            if (saveFileDialog.ShowDialog() == true)
+            if (_appSettings.IsManagerMode)
             {
-                string fileName = saveFileDialog.FileName;
-                PlayerModel.SavePlayer(fileName);
+                try
+                {
+                    if (File.Exists(_playerModel.FilePath))
+                        File.Delete(_playerModel.FilePath);
+
+                    _playerModel.SavePlayer(_playerModel.FilePath);
+                    _snackbarService.Show("Успешно", $"Персонаж {_playerModel._characteristic.Name} был сохранён. Можете погамать",
+                        SymbolRegular.ArrowUpload16,
+                        ControlAppearance.Success);
+                }
+                catch (Exception e)
+                {
+                    _snackbarService.Show("Ошибка",
+                        $"При сохранении {_playerModel._characteristic.Name} произошла ошибка.",
+                        SymbolRegular.ArrowUpload16,
+                        ControlAppearance.Danger);
+                }
+            }
+            else
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "Plr files (*.plr)|*.plr";
+                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                saveFileDialog.FileName = "Name";
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    string fileName = saveFileDialog.FileName;
+                    try
+                    {
+                        _playerModel.SavePlayer(fileName);
+                        _snackbarService.Show("Успешно", $"Персонаж {_playerModel._characteristic.Name} был сохранён по пути {fileName}",
+                            SymbolRegular.ArrowUpload16,
+                            ControlAppearance.Success);
+                    }
+                    catch (Exception e)
+                    {
+                        _snackbarService.Show("Ошибка",
+                            $"При сохранении {_playerModel._characteristic.Name} произошла ошибка." +
+                            $" Возможно у приложения нет доступа к директории: {Path.GetDirectoryName(fileName)}",
+                            SymbolRegular.ArrowUpload16,
+                            ControlAppearance.Danger);
+                    }
+                }
             }
         };
         
@@ -186,7 +242,7 @@ public class MainViewModel : ReactiveObject
 
         createNavigationViewItem.Click += (_, _) =>
         {
-            PlayerModel.CreateNewPlayer();
+            _playerModel.CreateNewPlayer();
             
             _snackbarService.Timeout = 3000;
             _snackbarService.Show("Оповещение", $"Новый персонаж был создан, можете приступить к его настройке", SymbolRegular.Add16,
@@ -196,9 +252,8 @@ public class MainViewModel : ReactiveObject
         FooterItems.Add(uploadNavigationViewItem);
         FooterItems.Add(saveNavigationViewItem);
         FooterItems.Add(createNavigationViewItem);
-        
-        
-        PlayerModel.PlayerUpdated += () =>
+
+        _playerModel.PlayerUpdated += () =>
         {
             MessageBus.Current.SendMessage(new PlayerUpdatedEvent());
         };

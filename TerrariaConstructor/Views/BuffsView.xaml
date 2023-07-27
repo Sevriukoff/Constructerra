@@ -9,55 +9,114 @@
              xmlns:models="clr-namespace:TerrariaConstructor.Models"
              xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters"
              xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance vm:BuffsViewModel}"
              d:DesignHeight="500" d:DesignWidth="500">
     <Page.Resources>
         <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+        <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter"/>
     </Page.Resources>
     <Grid>
-       <ui:VirtualizingItemsControl ItemsSource="{Binding Buffs, Mode=OneWay}"
-                                    VirtualizingPanel.CacheLengthUnit="Item"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Top">
-           <ItemsControl.ItemTemplate>
-               <DataTemplate DataType="{x:Type models:Buff}">
-                   <controls:InventoryCellPresenter ItemId="{Binding Id}"
-                                                    Image="{Binding Image,
-                                                     Converter={StaticResource ByteArrayToImageSourceConverter}}"
-                                                    WikiUrl="{Binding WikiUrl}"
-                                                    IsFavorite="{Binding IsNegative}">
-                       <controls:InventoryCellPresenter.TooltipContent>
-                           <controls:BuffTooltipPresenter Buff="{Binding}"/>
-                       </controls:InventoryCellPresenter.TooltipContent>
-                       <controls:InventoryCellPresenter.FooterContent>
-                           <TextBlock Text="{Binding StringFormat={}{0}м, Path=DurationTime.Hours}"
-                                      HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                       </controls:InventoryCellPresenter.FooterContent>
-                   </controls:InventoryCellPresenter>
-                   <!--<Grid>
-                       <ui:Button
-                           Width="65"
-                           Height="65"
-                           Margin="2"
-                           Padding="0"
-                           HorizontalAlignment="Stretch"
-                           VerticalAlignment="Stretch"
-                           Appearance="Secondary"
-                           FontSize="25">
-                           <Image
-                               Stretch="Uniform"
-                               StretchDirection="DownOnly"
-                               Height="48"
-                               Width="48"
-                               Source="{Binding Image, Converter={StaticResource ImageSourceConverter}}"/>
-                       </ui:Button>
-                       <TextBlock Text="{Binding StringFormat={}{0}M, Path=DurationTime.Hours}"
-                                  HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
-                   </Grid>-->
-               </DataTemplate>
-           </ItemsControl.ItemTemplate>
-           
-       </ui:VirtualizingItemsControl>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" MinWidth="680" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="360" MinWidth="360"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left">
+            <ListView ItemsSource="{Binding Buffs, Mode=OneWay}"
+                      SelectedItem="{Binding SelectedEditBuff}"
+                      materialDesign:ListBoxAssist.IsToggle="True"
+                      SelectionMode="Single"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.PanningMode="VerticalOnly">
+                <ListView.Resources>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="IsSelected" Value="True" />
+                    </Style>
+                </ListView.Resources>
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Item}">
+                        <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                          Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                          IsFavorite="{Binding IsFavorite}"
+                                                          WikiUrl="{Binding WikiUrl}">
+                            <controls:InventoryCellPresenter.TooltipContent>
+                                <controls:BuffTooltipPresenter Buff="{Binding}" />
+                            </controls:InventoryCellPresenter.TooltipContent>
+                            <controls:InventoryCellPresenter.FooterContent>
+                                <TextBlock Text="{Binding Stack}"
+                                           Visibility="{Binding MaxStack,
+                                         Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=1 }" />
+                            </controls:InventoryCellPresenter.FooterContent>
+                        </controls:InventoryCellPresenter>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" MaxWidth="680"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+        <GridSplitter Grid.Row="1" Grid.Column="0" Height="3" Width="250" Margin="0,5" HorizontalAlignment="Center" Background="#8263FF" ResizeDirection="Rows">
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="3"/>
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+        <Grid Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left">
+            <ListView ItemsSource="{Binding AllBuffs}"
+                      SelectedItem="{Binding SelectedAddBuff}"
+                      materialDesign:ListBoxAssist.IsToggle="True"
+                      SelectionMode="Single"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.PanningMode="VerticalOnly"
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Standard">
+                <ListView.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:Item}">
+                        <controls:InventoryCellPresenter ItemId="{Binding Id}"
+                                                          Image="{Binding Image,
+                                                       Converter={StaticResource ByteArrayToImageSourceConverter}}"
+                                                          IsFavorite="{Binding IsFavorite}"
+                                                          WikiUrl="{Binding WikiUrl}">
+                            <controls:InventoryCellPresenter.TooltipContent>
+                                <controls:BuffTooltipPresenter Buff="{Binding}" />
+                            </controls:InventoryCellPresenter.TooltipContent>
+                        </controls:InventoryCellPresenter>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <ui:VirtualizingWrapPanel Orientation="Vertical" HorizontalAlignment="Stretch" StretchItems="False" SpacingMode="None"/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+            </ListView>
+        </Grid>
+        <GridSplitter Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Width="3" Height="250" Margin="5,0" HorizontalAlignment="Center" Background="#8263FF">
+            <GridSplitter.Template>
+                <ControlTemplate TargetType="GridSplitter">
+                    <Border Background="{TemplateBinding Background}" CornerRadius="3"/>
+                </ControlTemplate>
+            </GridSplitter.Template>
+        </GridSplitter>
+        <controls:BuffEditorPresenter Grid.Row="0" Grid.RowSpan="3" Grid.Column="2"
+                                            SelectedBuff="{Binding SelectedEditBuff}" />
     </Grid>
 </Page>

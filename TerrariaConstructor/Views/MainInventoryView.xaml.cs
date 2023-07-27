@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using ReactiveUI;
+using TerrariaConstructor.Models;
 using TerrariaConstructor.ViewModels;
 using Wpf.Ui.Controls.Navigation;
 

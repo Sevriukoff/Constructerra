@@ -223,7 +223,7 @@ public class OutlinedTextBlock : FrameworkElement
 
     private void EnsureFormattedText()
     {
-        string textByDefault = string.IsNullOrEmpty(Text) ? "some text" : Text;
+        string textByDefault = string.IsNullOrEmpty(Text) ? "" : Text; 
         
         if (formattedText != null)
         {

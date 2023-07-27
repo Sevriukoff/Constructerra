@@ -4,9 +4,9 @@ using Wpf.Ui.Controls.Navigation;
 
 namespace TerrariaConstructor.Views;
 
-public partial class PlayersView : INavigableView<PlayersViewModel>
+public partial class SettingsView : INavigableView<SettingsViewModel>
 {
-    public PlayersView(PlayersViewModel viewModel)
+    public SettingsView(SettingsViewModel viewModel)
     {
         ViewModel = viewModel;
         DataContext = ViewModel;
@@ -14,5 +14,5 @@ public partial class PlayersView : INavigableView<PlayersViewModel>
         InitializeComponent();
     }
 
-    public PlayersViewModel ViewModel { get; }
+    public SettingsViewModel ViewModel { get; }
 }

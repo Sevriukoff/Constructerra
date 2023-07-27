@@ -1,3 +1,9 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Autofac;
+using TerrariaConstructor.Infrastructure;
+
 namespace TerrariaConstructor.Models;
 
 public class InventoriesModel
@@ -9,4 +15,14 @@ public class InventoriesModel
     public Item[] Bank2 { get; set; } = new Item[40];
     public Item[] Bank3 { get; set; } = new Item[40];
     public Item[] Bank4 { get; set; } = new Item[40];
+
+    public List<Item> GetAllItems()
+    {
+        using (var scope = App.Container.BeginLifetimeScope())
+        {
+            var unitOfWork = scope.Resolve<UnitOfWork>();
+
+            return unitOfWork.ItemsRepository.GetAll().ToList();
+        }
+    }
 }

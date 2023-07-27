@@ -1,0 +1,149 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:TerrariaConstructor.Controls"
+                    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+                    xmlns:converters="clr-namespace:TerrariaConstructor.Common.Converters">
+    <Style TargetType="{x:Type controls:BuffEditorPresenter}">
+        <Style.Resources>
+            <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImageSourceConverter"/>
+        </Style.Resources>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:BuffEditorPresenter}">
+                    <TabControl>
+                        <TabItem Header="Редактирование">
+                            <TabItem.Style>
+                                <Style TargetType="TabItem" BasedOn="{StaticResource {x:Type TabItem}}">
+                                    <Style.Triggers>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedBuff.Id, RelativeSource={RelativeSource TemplatedParent}}"
+                                            Value="0">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Grid>
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center">
+                                                            <materialDesign:PackIcon Kind="TextSearch" Width="36"
+                                                                Height="36" Margin="0,0,10,0" />
+                                                            <TextBlock Text="Бафф не выбран" TextAlignment="Center"
+                                                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedBuff, RelativeSource={RelativeSource TemplatedParent}}"
+                                            Value="{x:Null}">
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Grid>
+                                                        <StackPanel Orientation="Horizontal"
+                                                                    HorizontalAlignment="Center"
+                                                                    VerticalAlignment="Center">
+                                                            <materialDesign:PackIcon Kind="TextSearch" Width="36"
+                                                                Height="36" Margin="0,0,10,0" />
+                                                            <TextBlock Text="Бафф не выбран" TextAlignment="Center"
+                                                                       Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                        <DataTrigger
+                                            Binding="{Binding SelectedBuff.Id,
+                                             RelativeSource={RelativeSource TemplatedParent},
+                                              Converter={StaticResource NotZeroConverter}}"
+                                            Value="True">
+                                            <Setter Property="DataContext"
+                                                    Value="{Binding RelativeSource={RelativeSource TemplatedParent}}" />
+                                            <Setter Property="Content">
+                                                <Setter.Value>
+                                                    <Grid Margin="10">
+                                                        <StackPanel
+                                                            DataContext="{Binding SelectedBuff}">
+                                                            <TextBlock
+                                                                Text="{Binding Name, StringFormat='Название баффа: {0}'}"
+                                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                                            <TextBlock
+                                                                Text="{Binding Id, StringFormat='Id баффа: {0}'}"
+                                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                                            <TextBlock
+                                                                Text="{Binding BaseDurationTime, StringFormat='Базовое время: {0:hh\\:mm\\:ss}'}"
+                                                                Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto" />
+                                                                    <ColumnDefinition Width="*" />
+                                                                </Grid.ColumnDefinitions>
+                                                                <TextBlock Grid.Column="0" Text="Текущие время: "
+                                                                           VerticalAlignment="Center"
+                                                                           Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                                                <materialDesign:TimePicker Grid.Column="1"
+                                                                    SelectedTime="{Binding CurrentDurationTime}"
+                                                                    Is24Hours="True"
+                                                                    SelectedTimeFormat="Short"
+                                                                    FontSize="16"
+                                                                    WithSeconds="True" />
+                                                            </Grid>
+                                                            <TextBlock Text="Источники получения баффа: "
+                                                                       Style="{StaticResource MaterialDesignBody1TextBlock}" />
+                                                            <ItemsControl ItemsSource="{Binding ItemSources}">
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <ui:Card Margin="0,0,0,10">
+                                                                            <Grid>
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition Width="*" />
+                                                                                    <ColumnDefinition Width="36" />
+                                                                                </Grid.ColumnDefinitions>
+                                                                                <StackPanel Grid.Column="0">
+                                                                                    <TextBlock
+                                                                                        Text="{Binding Id, StringFormat='Id предмета: {0}'}" />
+                                                                                    <TextBlock
+                                                                                        Text="{Binding Name, StringFormat='Название предмета: {0}'}" />
+                                                                                </StackPanel>
+                                                                                <Image Grid.Column="1"
+                                                                                    Stretch="Uniform"
+                                                                                    StretchDirection="DownOnly"
+                                                                                    MaxHeight="28.8"
+                                                                                    MaxWidth="28.8"
+                                                                                    Source="{Binding Image, Converter={StaticResource ByteArrayToImageSourceConverter}}" />
+                                                                            </Grid>
+                                                                        </ui:Card>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+                                                        </StackPanel>
+                                                        <ui:Button Appearance="Primary"
+                                                                   Foreground="White"
+                                                                   PressedForeground="White"
+                                                                   Icon="Delete16"
+                                                                   IconForeground="White"
+                                                                   Content="Снять бафф"
+                                                                   Command="{Binding DeleteSelectedBuffCommand}"
+                                                                   VerticalAlignment="Bottom"
+                                                                   HorizontalAlignment="Stretch" />
+                                                    </Grid>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TabItem.Style>
+
+                        </TabItem>
+                        <TabItem Header="Список баффов">
+
+                        </TabItem>
+                    </TabControl>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

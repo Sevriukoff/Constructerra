@@ -4,10 +4,12 @@
              xmlns:local="clr-namespace:TerrariaConstructor"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              xmlns:vm="clr-namespace:TerrariaConstructor.ViewModels"
-             xmlns:base="clr-namespace:TerrariaConstructor.ViewModels.Base">
+             xmlns:base="clr-namespace:TerrariaConstructor.ViewModels.Base"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Application.Resources>
          <ResourceDictionary>
              <ResourceDictionary.MergedDictionaries>
+                 <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Lime" /> <!--Изменяет стили-->
                  <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                  <ui:ThemesDictionary Theme="Light"/>
                  <ui:ControlsDictionary />
@@ -16,6 +18,8 @@
                  <ResourceDictionary Source="Controls/InventoryCellPresenter.xaml"/>
                  <ResourceDictionary Source="Controls/CustomNavigationView.xaml"/>
                  <ResourceDictionary Source="Controls/BuffTooltipPresenter.xaml"/>
+                 <ResourceDictionary Source="Controls/InventoryEditorPresenter.xaml"/>
+                 <ResourceDictionary Source="Controls/BuffEditorPresenter.xaml"/>
                  <ResourceDictionary Source="Common/Styles/CheckBox.xaml"/>
              </ResourceDictionary.MergedDictionaries>
              <base:ViewModelLocator x:Key="Locator"/>

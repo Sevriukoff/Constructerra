@@ -81,7 +81,7 @@
                             Margin="0,10" />
 
                     <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon x:Name="IconNameTextBox" Symbol="Edit16" Margin="0,0,5,0"/>
+                        <ui:SymbolIcon x:Name="IconNameTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Имя персонажа: " VerticalAlignment="Center" />
                         <TextBox x:Name="NameTextBox"
                                  Text="{Binding Name}"
@@ -181,7 +181,7 @@
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon x:Name="IconPlayTimeTextBox" Symbol="Edit16" Visibility="Collapsed" Margin="0,0,5,0"/>
                         <TextBlock Text="Время в игре: " VerticalAlignment="Center" />
-                        <TextBox x:Name="PlayTimeTextBox" Text="{Binding PlayTime.Seconds, Mode=OneWay}"
+                        <TextBox x:Name="PlayTimeTextBox" Text="{Binding PlayTime, StringFormat='hh\\:mm\\:ss', Mode=OneWay}"
                                  Foreground="#8263FF"
                                  BorderThickness="0"
                                  FontSize="14"
@@ -219,7 +219,7 @@
                             CornerRadius="5">
                         <ui:VirtualizingItemsControl ItemsSource="{Binding Hairs}"
                                                      VirtualizingPanel.CacheLengthUnit="Item"
-                                                     Height="150">
+                                                     Height="210">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:Appearance}">
                                     <Grid>
@@ -270,7 +270,7 @@
                             CornerRadius="5">
                         <ui:VirtualizingItemsControl ItemsSource="{Binding Skins}"
                                                      VirtualizingPanel.CacheLengthUnit="Item"
-                                                     Height="75">
+                                                     Height="85">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:Appearance}">
                                     <Grid>

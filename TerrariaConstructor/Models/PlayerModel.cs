@@ -12,6 +12,7 @@ using System.Text;
 using Autofac;
 using TerrariaConstructor.Common.Structures;
 using TerrariaConstructor.Infrastructure;
+using TerrariaConstructor.ViewModels;
 
 namespace TerrariaConstructor.Models;
 
@@ -19,15 +20,17 @@ public class PlayerModel
 {
     private const string EncryptKey = "h3y_gUyZ";
     public event Action PlayerUpdated;
+    public string FilePath { get; private set; }
 
     #region SubModels
 
-    private readonly CharacteristicsModel _characteristic;
+    public readonly CharacteristicsModel _characteristic;
     private readonly EquipsModel _equips;
     private readonly ToolsModel _tools;
     private readonly InventoriesModel _inventories;
     private readonly BuffsModel _buffs;
     private readonly ResearchModel _research;
+    private readonly AppSettings _appSettings;
 
     #endregion
     
@@ -44,7 +47,8 @@ public class PlayerModel
         ToolsModel tools,
         InventoriesModel inventories,
         BuffsModel buffs,
-        ResearchModel research)
+        ResearchModel research,
+        AppSettings appSettings)
     {
         _characteristic = characteristic;
         _equips = equips;
@@ -52,61 +56,16 @@ public class PlayerModel
         _inventories = inventories;
         _buffs = buffs;
         _research = research;
-    }
-
-    private BinaryReader DecryptPlayer(string path)
-    {
-        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
-
-        try
-        {
-            var managed = new RijndaelManaged{Padding = PaddingMode.None};
-            var decryptor = managed.CreateDecryptor(key, key);
-
-            using (MemoryStream memoryStream = new MemoryStream(File.ReadAllBytes(path)))
-            {
-                using (CryptoStream input = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
-                {
-                    byte[] buffer = new byte[memoryStream.Length];
-                    input.Read(buffer, 0, buffer.Length);
-                    var newMemoryStream = new MemoryStream(buffer);
-                    return new BinaryReader(newMemoryStream);
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-    }
-
-    private BinaryWriter EncryptPlayer(string path)
-    {
-        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
-        var managed = new RijndaelManaged();
-        var encryptor = managed.CreateEncryptor(key, key);
-        Stream fileStream = new FileStream(path, FileMode.Create);
-        CryptoStream output = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write);
-        return new BinaryWriter(output);
+        _appSettings = appSettings;
+        
+        _appSettings.LoadSettings();
     }
     
-    private void EncryptDatToPlr(string inputFilePath, string outputFilePath)
-    {
-        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
-        var managed = new RijndaelManaged();
-        var encryptor = managed.CreateEncryptor(key, key);
-
-        using (var inputFileStream = new FileStream(inputFilePath, FileMode.Open))
-        using (var outputFileStream = new FileStream(outputFilePath, FileMode.Create))
-        using (var cryptoStream = new CryptoStream(outputFileStream, encryptor, CryptoStreamMode.Write))
-        {
-            inputFileStream.CopyTo(cryptoStream);
-        }
-    }
-
     public void LoadPlayer(string plrPath)
     {
+        CreateNewPlayer(); //Check directory
+        FilePath = plrPath;
+        
         using var scope = App.Container.BeginLifetimeScope();
         var unitOfWork = scope.Resolve<UnitOfWork>();
 
@@ -261,9 +220,12 @@ public class PlayerModel
         {
             _buffs.Buffs[i] = new Buff
             {
-                Id = reader.ReadInt32(),
-                DurationTime = TimeSpan.FromSeconds(reader.ReadInt32())
+                Id = reader.ReadInt32()
             };
+
+            var seconds = reader.ReadInt32();
+            var dateTime = DateTime.MinValue.AddSeconds(seconds / 60);
+            _buffs.Buffs[i].CurrentDurationTime = dateTime;
 
             if (_buffs.Buffs[i].Id != 0)
             {
@@ -272,7 +234,8 @@ public class PlayerModel
                 _buffs.Buffs[i].Name = buff.Name;
                 _buffs.Buffs[i].WikiUrl = buff.WikiUrl;
                 _buffs.Buffs[i].ToolTip = buff.ToolTip;
-                //_buffs.Buffs[i].DurationTime = buff.DurationTime;
+                _buffs.Buffs[i].BaseDurationTime = buff.BaseDurationTime;
+                _buffs.Buffs[i].ItemSources = buff.ItemSources;
             }
             
             if (_buffs.Buffs[i].Id == 0)
@@ -280,7 +243,6 @@ public class PlayerModel
                 --i;
                 --buffIterator;
             }
-
         }
 
         for (int i = 0; i < SpawnX.Length; i++)
@@ -336,12 +298,11 @@ public class PlayerModel
         {
             string key = reader.ReadString();
             int value = reader.ReadInt32();
+
+            var item = unitOfWork.ItemsRepository.GetByInternalName(key);
+            item.Stack = value;
             
-            _research.Items.Add(new Item
-            {
-                Name = key,
-                Stack = value
-            });
+            _research.Items.Add(item);
         }
 
         BitsByte bitsByte = reader.ReadByte();
@@ -438,6 +399,12 @@ public class PlayerModel
     
     public void SavePlayer(string plrPath)
     {
+        if (string.IsNullOrEmpty(plrPath) && _appSettings.IsManagerMode)
+        {
+            plrPath = Path.Combine(_appSettings.PlayersPath, _characteristic.Name + ".plr");
+            FilePath = plrPath;
+        }
+        
         var writer = EncryptPlayer(plrPath);
         
         writer.Write(279);
@@ -578,7 +545,7 @@ public class PlayerModel
             else
             {
                 writer.Write(_buffs.Buffs[i].Id);
-                writer.Write((int)0); //TODO: Fix buff time
+                writer.Write(Convert.ToInt32(_buffs.Buffs[i].CurrentDurationTime?.TimeOfDay.TotalSeconds * 60 ?? 0)); //TODO: Fix bug, 60 magic number
             }
         }
         
@@ -620,11 +587,11 @@ public class PlayerModel
         
         writer.Write(_characteristic.GolferScoreAccumulated);
         
-        writer.Write(_research.Items.Count);
+        writer.Write(_research.Items.Count(x => !string.IsNullOrEmpty(x.InternalName)));
 
-        foreach (var researchItem in _research.Items)
+        foreach (var researchItem in _research.Items.Where(x => !string.IsNullOrEmpty(x.InternalName)))
         {
-            writer.Write(researchItem.Name);
+            writer.Write(researchItem.InternalName);
             writer.Write(researchItem.Stack);
         }
         
@@ -697,7 +664,7 @@ public class PlayerModel
 
     public void CreateNewPlayer()
     {
-        _characteristic.Name = "ConstrucTerraPlayer";
+        _characteristic.Name = "ConstrucTerra Player";
         _characteristic.Revision = 100;
         _characteristic.IsFavorite = false;
         _characteristic.Difficulty = 1;
@@ -763,15 +730,150 @@ public class PlayerModel
         InitializationArray(_inventories.Bank2);
         InitializationArray(_inventories.Bank3);
         InitializationArray(_inventories.Bank4);
-
-        _buffs.Buffs[0] = new Buff
+        
+        for (var i = 0; i < _buffs.Buffs.Length; i++)
         {
-            Id = 0
-        };
+            _buffs.Buffs[i] = new Buff
+            {
+                Id = 0
+            };
+        }
+
+        _research.Items.Clear();
         
         OnPlayerUpdated();
     }
+
+    public PlayerDto GetPlayer(string plrPath)
+    {
+        var playerDto = new PlayerDto{FilePath = plrPath};
+        
+        using var scope = App.Container.BeginLifetimeScope();
+        var unitOfWork = scope.Resolve<UnitOfWork>();
+
+        var reader = DecryptPlayer(plrPath);
+
+        playerDto.Version = reader.ReadInt32();
+        
+        long num1 = (long) reader.ReadUInt64();
+        if ((num1 & 72057594037927935L) != 27981915666277746L)
+            throw new FormatException("Expected Re-Logic file format.");
+        
+        playerDto.Revision = reader.ReadUInt32();
+        playerDto.IsFavorite = ((long) reader.ReadUInt64() & 1L) == 1L;
+        
+        playerDto.Name = reader.ReadString();
+        playerDto.Difficulty = reader.ReadByte();
+        playerDto.PlayTime = new TimeSpan(reader.ReadInt64());
+        reader.ReadBytes(9);
+        
+        playerDto.Health = reader.ReadInt32();
+        playerDto.MaxHealth = reader.ReadInt32();
+        playerDto.Mana = reader.ReadInt32();
+        playerDto.MaxMana = reader.ReadInt32();
+        reader.ReadBytes(44);
+
+        playerDto.Equips = new Item[4];
+        
+        for (int i = 0; i < playerDto.Equips.Length; i++)
+        {
+            int id = reader.ReadInt32();
+            byte prefix = reader.ReadByte();
+
+            playerDto.Equips[i] = GetItem(id, prefix);
+        }
+        
+        Item GetItem(int id, byte prefix, int stack = -1, bool isFavorite = false)
+        {
+            var item = unitOfWork.ItemsRepository.GetById(id);
+            
+            item.Modifier = unitOfWork.ModifierRepository.GetById(prefix);
+            item.Stack = stack;
+            item.IsFavorite = isFavorite;
+
+            return item;
+        }
+
+        return playerDto;
+    }
+
+    #region Private methods
+
+    #region Decrypt/Encrypt
+
+    private BinaryReader DecryptPlayer(string path)
+    {
+        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
+
+        try
+        {
+            var managed = new RijndaelManaged {Padding = PaddingMode.None};
+            var decryptor = managed.CreateDecryptor(key, key);
+
+            using (MemoryStream memoryStream = new MemoryStream(File.ReadAllBytes(path)))
+            {
+                using (CryptoStream input = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read))
+                {
+                    byte[] buffer = new byte[memoryStream.Length];
+                    input.Read(buffer, 0, buffer.Length);
+                    var newMemoryStream = new MemoryStream(buffer);
+                    return new BinaryReader(newMemoryStream);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private BinaryWriter EncryptPlayer(string path)
+    {
+        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
+        var managed = new RijndaelManaged();
+        var encryptor = managed.CreateEncryptor(key, key);
+        Stream fileStream = new FileStream(path, FileMode.Create);
+        CryptoStream output = new CryptoStream(fileStream, encryptor, CryptoStreamMode.Write);
+        return new BinaryWriter(output);
+    }
+
+    private void EncryptDatToPlr(string inputFilePath, string outputFilePath)
+    {
+        byte[] key = Encoding.Unicode.GetBytes(EncryptKey);
+        var managed = new RijndaelManaged();
+        var encryptor = managed.CreateEncryptor(key, key);
+
+        using (var inputFileStream = new FileStream(inputFilePath, FileMode.Open))
+        using (var outputFileStream = new FileStream(outputFilePath, FileMode.Create))
+        using (var cryptoStream = new CryptoStream(outputFileStream, encryptor, CryptoStreamMode.Write))
+        {
+            inputFileStream.CopyTo(cryptoStream);
+        }
+    }
+
+    #endregion
     
+    protected virtual void OnPlayerUpdated()
+    {
+        PlayerUpdated?.Invoke();
+    }
+
+    private void InitializationArray(IList<Item> items)
+    {
+        for (var i = 0; i < items.Count; i++)
+        {
+            items[i] = new Item
+            {
+                Id = 0,
+                Stack = 0,
+                Prefix = 0
+            };
+        }
+    }
+
+    #endregion
+
     [Obsolete]
     public void SavePlayerIntoDat(string plrPath)
     {
@@ -1029,23 +1131,4 @@ public class PlayerModel
 
         EncryptDatToPlr(plrPath, plrPath.Remove(plrPath.Length - 4));
     }
-
-    protected virtual void OnPlayerUpdated()
-    {
-        PlayerUpdated?.Invoke();
-    }
-
-    private void InitializationArray(Item[] items)
-    {
-        for (var i = 0; i < items.Length; i++)
-        {
-            items[i] = new Item
-            {
-                Id = 0,
-                Stack = 0,
-                Prefix = 0
-            };
-        }
-    }
-    
 }

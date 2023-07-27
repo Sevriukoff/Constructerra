@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using Autofac;
 using LiteDB;
 using TerrariaConstructor.Infrastructure.Interfaces;
 using TerrariaConstructor.Models;
@@ -29,7 +31,12 @@ public class BuffEntityConfiguration : IEntityConfiguration<Buff>
                 
         if (bsonValue["Durations"].Type != BsonType.Null)
         {
-            result.DurationTime = TimeSpan.FromTicks(bsonValue["Durations"].AsArray[0].AsInt64);
+            result.BaseDurationTime = TimeSpan.FromTicks(bsonValue["Durations"].AsArray[0].AsInt64);
+        }
+
+        if (!bsonValue["Source"].IsNull)
+        {
+            result.Sources = bsonValue["Source"].AsString.Split('/');
         }
 
         return result;
